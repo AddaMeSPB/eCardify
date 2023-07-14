@@ -1,0 +1,48 @@
+{
+  "identifier" : "BAC78A4E",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "6",
+      "familyShareable" : false,
+      "internalID" : "70B4530F",
+      "localizations" : [
+        {
+          "description" : "Basic version of ur product has fixed Design",
+          "displayName" : "Basic Card 🪪",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "BasicCard_eCardify_testing",
+      "referenceName" : "BasicCard",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "9",
+      "familyShareable" : false,
+      "internalID" : "E70B3B6E",
+      "localizations" : [
+        {
+          "description" : "Flexibility & customization options for user",
+          "displayName" : "Flexi Digital Card",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "FlexiCards_eCardify_testing",
+      "referenceName" : "FlexiCards",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}

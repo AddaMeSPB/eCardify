@@ -1,6 +1,6 @@
 import Foundation
 
-private let devDomainName = "localhost:3030"// "192.168.1.5:3030"
+private let devDomainName = "172.20.10.10:3030" //"192.168.1.28:3030" //"10.0.1.4:3030"
 
 public struct AppConfiguration {
 
@@ -54,8 +54,8 @@ public struct AppConfiguration {
     }
 
     private enum Keys {
-        static let appName = "LEARN_PLAY_GROW_IOS_APP_NAME"
-        static let apiEnvironment = "LEARN_PLAY_GROW_IOS_ENVIRONMENT"
+        static let appName = "eCardify_IOS_APP_NAME"
+        static let apiEnvironment = "eCardify_IOS_ENVIRONMENT"
     }
 
     public let appName: String
@@ -117,9 +117,9 @@ extension AppConfiguration {
 
     public static func mock() -> AppConfiguration {
         AppConfiguration(
-            appName: "LEARNPLAYGROW",
-            apiURL: "http://10.0.1.4:8080",
-            webSocketUrl: "ws://10.10.18.148:8080/v1/chat",
+            appName: "eCardify",
+            apiURL: "http://10.0.1.4:3030",
+            webSocketUrl: "ws://10.10.18.148:3030/v1/chat",
             apiEnvironment: .development,
             completeAppVersion: "0.0.1 (1)"
         )

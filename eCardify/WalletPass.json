@@ -1,0 +1,113 @@
+{
+    "imageURLs": [
+        {
+            "type": "icon",
+            "urlString": "https://learnplaygrow.ams3.digitaloceanspaces.com/uploads/images/9155F894-E500-453A-A691-6CDE8F722BDF/CECF3925-180E-4373-A15E-E7876760D18F/logo.png"
+        },
+        {
+            "type": "logo",
+            "urlString": "https://learnplaygrow.ams3.digitaloceanspaces.com/uploads/images/9155F894-E500-453A-A691-6CDE8F722BDF/CECF3925-180E-4373-A15E-E7876760D18F/logo.png"
+        },
+        {
+            "type": "thumbnail",
+            "urlString": "https://learnplaygrow.ams3.digitaloceanspaces.com/uploads/images/DC6E2827-FF38-4038-A3BB-6F2C40695EC5/CECF3925-180E-4373-A15E-E7876760D18F/thumbnail.png"
+        }
+    ],
+    "_id": "649d5dee6680ed82677e5c14",
+    "ownerId": "649d550360d6a7ba12b51ffc",
+    "pass": {
+        "formatVersion": 1,
+        "teamIdentifier": "6989658CU5",
+        "description": "It Consultant",
+        "foregroundColor": "rgb(0, 0, 255)",
+        "suppressStripShine": true,
+        "barcodes": [
+            {
+                "message": "https://addame.com",
+                "format": "PKBarcodeFormatQR",
+                "messageEncoding": "iso-8859-1"
+            }
+        ],
+        "serialNumber": "1B50B8AC-D17D-490B-AF7C-5FBA3FBEE7AF",
+        "backgroundColor": "rgb(255, 255, 255)",
+        "voided": false,
+        "generic": {
+            "headerFields": [
+                {
+                    "key": "header",
+                    "value": "Addame"
+                }
+            ],
+            "primaryFields": [
+                {
+                    "label": "Name",
+                    "key": "member",
+                    "value": "Saroar \nKkhandoker"
+                }
+            ],
+            "auxiliaryFields": [
+                {
+                    "label": "MOBILE",
+                    "key": "mobile",
+                    "value": "+351911700782"
+                },
+                {
+                    "label": "EMAIL",
+                    "key": "email",
+                    "value": "saroar9@gmail.com"
+                }
+            ],
+            "backFields": [
+                {
+                    "label": "spelled out",
+                    "key": "numberStyle",
+                    "value": "200"
+                },
+                {
+                    "label": "in Reals",
+                    "key": "currency",
+                    "value": "200"
+                },
+                {
+                    "dateStyle": "PKDateStyleFull",
+                    "label": "full date",
+                    "key": "dateFull",
+                    "value": "1980-05-07T10:00-05:00"
+                },
+                {
+                    "label": "full time",
+                    "key": "timeFull",
+                    "value": "1980-05-07T10:00-05:00",
+                    "timeStyle": "PKDateStyleFull"
+                },
+                {
+                    "dateStyle": "PKDateStyleShort",
+                    "label": "short date and time",
+                    "key": "dateTime",
+                    "value": "1980-05-07T10:00-05:00",
+                    "timeStyle": "PKDateStyleShort"
+                },
+                {
+                    "dateStyle": "PKDateStyleShort",
+                    "label": "relative date",
+                    "key": "relStyle",
+                    "value": "2013-04-24T10:00-05:00"
+                }
+            ],
+            "secondaryFields": [
+                {
+                    "label": "POSITION",
+                    "key": "subtitle",
+                    "value": "IOS Developer"
+                }
+            ]
+        },
+        "sharingProhibited": false,
+        "logoText": "",
+        "organizationName": "Addame",
+        "passTypeIdentifier": "pass.ecardify.addame.com",
+        "labelColor": "rgb(0, 0, 0)"
+    },
+    "updatedAt": "2023-06-29T12:44:42Z",
+    "createdAt": "2023-06-29T12:44:42Z"
+}

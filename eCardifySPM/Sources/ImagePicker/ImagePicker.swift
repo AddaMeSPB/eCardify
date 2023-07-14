@@ -38,12 +38,19 @@ extension PHPickerResult {
 }
 
 public struct ImagePickerReducer: ReducerProtocol {
+
+    public enum SelectType: String, Equatable {
+        case single, multi
+    }
+
     public struct State: Equatable {
       public var showingImagePicker: Bool
       public var image: UIImage?
+      public var selectType: SelectType
 
-      public init(showingImagePicker: Bool, image: UIImage? = nil) {
+      public init(showingImagePicker: Bool, selectType: SelectType, image: UIImage? = nil) {
         self.showingImagePicker = showingImagePicker
+        self.selectType = selectType
         self.image = image
       }
     }
@@ -110,7 +117,7 @@ public struct ImagePickerView: UIViewControllerRepresentable {
   ) -> some UIViewController {
     var config = PHPickerConfiguration()
     config.filter = PHPickerFilter.images
-    config.selectionLimit = 6
+    config.selectionLimit = viewStore.selectType == .single ? 1 : 6
 
     let picker = PHPickerViewController(configuration: config)
     picker.delegate = context.coordinator

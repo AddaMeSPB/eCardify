@@ -9,13 +9,18 @@
 /* Begin PBXBuildFile section */
 		C33733CE2A1661B1000A8C62 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = C33733CD2A1661B1000A8C62 /* AppFeature */; };
 		C34526BA2A1664E8000F3599 /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = C34526B92A1664E8000F3599 /* AppView */; };
+		C38FFE302A3B405B00BB3E8C /* Development.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C38FFE2F2A3B405B00BB3E8C /* Development.xcconfig */; };
 		C3A4523F2A07F4AC009D8F95 /* eCardifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A4523E2A07F4AC009D8F95 /* eCardifyApp.swift */; };
 		C3A452432A07F4AD009D8F95 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3A452422A07F4AD009D8F95 /* Assets.xcassets */; };
 		C3A452472A07F4AD009D8F95 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3A452462A07F4AD009D8F95 /* Preview Assets.xcassets */; };
 		C3A452502A07F4D7009D8F95 /* Pass.json in Resources */ = {isa = PBXBuildFile; fileRef = C3A4524F2A07F4D7009D8F95 /* Pass.json */; };
+		C3FDFDB92A4F45B100229340 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FDFDB82A4F45B100229340 /* StoreKit.framework */; };
+		C3FDFDBC2A50022F00229340 /* Production.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C3FDFDBB2A50022F00229340 /* Production.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C3118F3A2A532CD500D77A10 /* WalletPass.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WalletPass.json; sourceTree = "<group>"; };
+		C38FFE2F2A3B405B00BB3E8C /* Development.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Development.xcconfig; sourceTree = "<group>"; };
 		C3A4523B2A07F4AC009D8F95 /* eCardify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = eCardify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3A4523E2A07F4AC009D8F95 /* eCardifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eCardifyApp.swift; sourceTree = "<group>"; };
 		C3A452422A07F4AD009D8F95 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -23,6 +28,9 @@
 		C3A452462A07F4AD009D8F95 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C3A4524F2A07F4D7009D8F95 /* Pass.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Pass.json; sourceTree = "<group>"; };
 		C3DEA2802A0E962600EC76C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C3FDFDB72A4F28CE00229340 /* Cards.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cards.storekit; sourceTree = "<group>"; };
+		C3FDFDB82A4F45B100229340 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		C3FDFDBB2A50022F00229340 /* Production.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Production.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -30,6 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3FDFDB92A4F45B100229340 /* StoreKit.framework in Frameworks */,
 				C33733CE2A1661B1000A8C62 /* AppFeature in Frameworks */,
 				C34526BA2A1664E8000F3599 /* AppView in Frameworks */,
 			);
@@ -38,9 +47,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C38FFE2E2A3B3FC300BB3E8C /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				C38FFE2F2A3B405B00BB3E8C /* Development.xcconfig */,
+				C3FDFDBB2A50022F00229340 /* Production.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		C3A452322A07F4AC009D8F95 = {
 			isa = PBXGroup;
 			children = (
+				C3FDFDB72A4F28CE00229340 /* Cards.storekit */,
 				C3A4523D2A07F4AC009D8F95 /* eCardify */,
 				C3A4523C2A07F4AC009D8F95 /* Products */,
 				C3DEA2812A0E962F00EC76C1 /* Frameworks */,
@@ -58,9 +77,11 @@
 		C3A4523D2A07F4AC009D8F95 /* eCardify */ = {
 			isa = PBXGroup;
 			children = (
+				C38FFE2E2A3B3FC300BB3E8C /* Config */,
 				C3DEA2802A0E962600EC76C1 /* Info.plist */,
 				C3A4523E2A07F4AC009D8F95 /* eCardifyApp.swift */,
 				C3A4524F2A07F4D7009D8F95 /* Pass.json */,
+				C3118F3A2A532CD500D77A10 /* WalletPass.json */,
 				C3A452422A07F4AD009D8F95 /* Assets.xcassets */,
 				C3A452442A07F4AD009D8F95 /* eCardify.entitlements */,
 				C3A452452A07F4AD009D8F95 /* Preview Content */,
@@ -79,6 +100,7 @@
 		C3DEA2812A0E962F00EC76C1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C3FDFDB82A4F45B100229340 /* StoreKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -145,8 +167,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3FDFDBC2A50022F00229340 /* Production.xcconfig in Resources */,
 				C3A452502A07F4D7009D8F95 /* Pass.json in Resources */,
 				C3A452472A07F4AD009D8F95 /* Preview Assets.xcassets in Resources */,
+				C38FFE302A3B405B00BB3E8C /* Development.xcconfig in Resources */,
 				C3A452432A07F4AD009D8F95 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -167,6 +191,7 @@
 /* Begin XCBuildConfiguration section */
 		C3A452482A07F4AD009D8F95 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C38FFE2F2A3B405B00BB3E8C /* Development.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -225,6 +250,7 @@
 		};
 		C3A452492A07F4AD009D8F95 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C3FDFDBB2A50022F00229340 /* Production.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -276,8 +302,9 @@
 		};
 		C3A4524B2A07F4AD009D8F95 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C38FFE2F2A3B405B00BB3E8C /* Development.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconCircle;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = eCardify/eCardify.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -316,8 +343,9 @@
 		};
 		C3A4524C2A07F4AD009D8F95 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C3FDFDBB2A50022F00229340 /* Production.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconCircle;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = eCardify/eCardify.entitlements;
 				CODE_SIGN_STYLE = Automatic;

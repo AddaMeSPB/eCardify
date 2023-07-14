@@ -89,13 +89,13 @@ public struct AppDelegateReducer: ReducerProtocol {
 
         let device = DeviceModel(
             _id: .init(),
+            ownerId: nil,
             identifierForVendor: identifierForVendor,
             name: UIDevice.current.name,
             model: UIDevice.current.model,
             osVersion: UIDevice.current.systemVersion,
             pushToken: token,
-            voipToken: "",
-            ownerId: nil
+            voipToken: ""
         )
 
         return .task {

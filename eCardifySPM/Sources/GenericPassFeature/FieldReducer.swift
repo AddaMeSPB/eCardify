@@ -5,24 +5,30 @@ import ComposableArchitecture
 public struct FieldReducer: ReducerProtocol {
     public struct State: Equatable, Identifiable {
         public var id: UUID
-        public var field: Field
+        @BindingState public var field: Field
         public var fieldType: FieldTypes
     }
 
-    public enum Action: Equatable {
-        case changeText(String)
+    public enum Action: BindableAction, Equatable {
+        case binding(BindingAction<State>)
     }
 
     public init() {}
 
     public var body: some ReducerProtocol<State, Action> {
+        BindingReducer()
         Reduce(self.core)
     }
 
     func core(state: inout State, action: Action) -> EffectTask<Action> {
         switch action {
-        case .changeText(let string):
-            state.field.value = string
+        case .binding(\.$field.value):
+            if state.field.key == "email" {
+                state.field.value = state.field.value.lowercased()
+            }
+
+            return .none
+        case .binding:
             return .none
         }
     }
@@ -47,38 +53,60 @@ public struct FieldView: View {
                     
                 case .primary:
                     VStack(alignment: .leading) {
-                        Text("Primary field")
-                            .font(.title3)
-                            .fontWeight(.medium)
-                            .padding(.horizontal)
-                            .padding(.bottom, 5)
-
                         Text("NAME")
                             .font(.title3)
                             .fontWeight(.medium)
-                            .padding(.horizontal)
 
                         TextField(
                             "Your nice name",
-                            text: viewStore.binding(get: \.field.value, send: FieldReducer.Action.changeText)
+                            text: viewStore.binding(\.$field.value),
+                            axis: .vertical
                         )
-                        .font(.title)
+                        .font(.title2)
                         .fontWeight(.medium)
                         .lineLimit(2)
-                        .padding(.horizontal)
-                        .padding(.bottom, 5)
+                        .autocorrectionDisabled()
                     }
 
                 case .secondary:
-                    EmptyView()
+
+                    VStack(alignment: .leading) {
+                        Text(viewStore.field.key.uppercased())
+                            .font(.title3)
+                            .fontWeight(.medium)
+                        TextField(
+                            "\(viewStore.field.key.capitalized) goes here",
+                            text: viewStore.binding(\.$field.value),
+                            axis: .vertical
+                        )
+                        .font(.title3)
+                        .fontWeight(.medium)
+                        .lineLimit(2)
+                    }
+
 
                 case .auxiliary:
-                    EmptyView()
+                    VStack(alignment: .leading) {
+                        Text(viewStore.field.key.uppercased())
+                            .font(.title3)
+                            .fontWeight(.medium)
+
+                        TextField(
+                            "\(viewStore.field.key.capitalized) goes here",
+                            text: viewStore.binding(\.$field.value),
+                            axis: .vertical
+                        )
+                        .font(.title3)
+                        .fontWeight(.medium)
+                    }
+
 
                 case .back:
                     EmptyView()
                 }
             }
+            .padding(.horizontal)
+            .padding(.vertical, 3)
         }
     }
 }
@@ -87,8 +115,8 @@ public struct FieldView: View {
 struct FieldView_Previews: PreviewProvider {
     static var state = FieldReducer.State(
         id: UUID(),
-        field: .init(),
-        fieldType: .primary
+        field: .init(key: "mobile", value: "+38268820003, \n+38220230446, \n+38269999993"),
+        fieldType: .auxiliary
     )
     static var previews: some View {
         FieldView(store:
@@ -97,6 +125,24 @@ struct FieldView_Previews: PreviewProvider {
                 reducer: FieldReducer()
             )
         )
+        .foregroundColor(Color(red: 0.82, green: 0.94, blue: 1.00))
+        .background(Color(hex: "#2C71DA"))
+
     }
 }
 #endif
+
+extension Color {
+    init(hex: String) {
+        let scanner = Scanner(string: hex)
+        var rgbValue: UInt64 = 0
+
+        scanner.scanHexInt64(&rgbValue)
+
+        self.init(
+            red: Double((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: Double((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: Double(rgbValue & 0x0000FF) / 255.0
+        )
+    }
+}

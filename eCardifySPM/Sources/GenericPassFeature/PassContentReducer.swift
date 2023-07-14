@@ -36,9 +36,27 @@ public struct PassContentReducer: ReducerProtocol {
     func core(state: inout State, action: Action) -> EffectTask<Action> {
         switch action {
         case .onAppear:
+
+            for field in state.passContent.primaryFields {
+                state.fields.append(.init(id: UUID(), field: field, fieldType: .primary))
+            }
+
+            if let secondaryFields = state.passContent.secondaryFields  {
+                for field in secondaryFields {
+                    state.fields.append(.init(id: UUID(), field: field, fieldType: .secondary))
+                }
+            }
+
+            if let auxiliaryFields = state.passContent.auxiliaryFields  {
+                for field in auxiliaryFields {
+                    state.fields.append(.init(id: UUID(), field: field, fieldType: .auxiliary))
+                }
+            }
+
             return .none
 
         case .field(id: _, action: _):
+
             return .none
 
         case .passContent:
@@ -78,3 +96,23 @@ public struct PassContentView: View {
 }
 
 
+
+#if DEBUG
+struct PassContentView_Previews: PreviewProvider {
+    static var state = PassContentReducer.State(
+        passContent: .init(
+            primaryFields: [.init(key: "NAME")],
+            secondaryFields: [.init(key: "POSITION")],
+            auxiliaryFields: [.init(key: "MOBILE"), .init(key: "EMAIL")]
+        )
+    )
+    static var previews: some View {
+        PassContentView(store:
+            .init(
+                initialState: state,
+                reducer: PassContentReducer()
+            )
+        )
+    }
+}
+#endif

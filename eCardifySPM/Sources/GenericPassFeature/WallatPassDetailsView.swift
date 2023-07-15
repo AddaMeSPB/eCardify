@@ -178,7 +178,7 @@ public struct WallatPassDetailsView: View {
                     }
                     .padding()
                 }
-                .frame(height:130)
+                .frame(height: 130)
                 .onAppear {
                     viewStore.send(.onAppear)
                 }

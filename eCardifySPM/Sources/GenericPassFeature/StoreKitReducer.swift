@@ -7,6 +7,15 @@ import StoreKit
 
 public struct StoreKitReducer: ReducerProtocol {
     public struct State: Equatable {
+
+        public enum ProductType: String, Codable, CaseIterable, Identifiable {
+            public var id: Self {
+                return self
+            }
+
+            case basic, custom
+        }
+
         public init(
             basicCardProduct: Result<StoreKitClient.Product, StoreKitReducer.State.ProductError>? = nil,
             basicCardPurchasedAt: Date? = nil,
@@ -44,6 +53,16 @@ public struct StoreKitReducer: ReducerProtocol {
         public var isCustomCardPurchased: Bool {
           return self.customCardPurchasedAt != nil
         }
+
+        public var isBasicProduct: ProductType {
+            if basicCardProduct != nil {
+                return ProductType.basic
+            } else if customCardProduct != nil {
+                return ProductType.custom
+            } else {
+                return ProductType.basic
+            }
+        }
     }
 
     public enum Action: Equatable {
@@ -78,9 +97,7 @@ public struct StoreKitReducer: ReducerProtocol {
                 }
 
                 group.addTask {
-                  let response = try await self.storeKit.fetchProducts([
-                    "BasicCard_eCardify_testing", "FlexiCards_eCardify_testing"
-                  ])
+                  let response = try await self.storeKit.fetchProducts(["BasicCard_eCardify_testing", "FlexiCards_eCardify_testing"])
 
                   guard
                     let product = response.products.first(where: { product in
@@ -89,10 +106,9 @@ public struct StoreKitReducer: ReducerProtocol {
                   else { return }
                   await send(.basicCardProductResponse(product), animation: .default)
                 }
-
-
               }
             }
+
         case .basicCardProductResponse(let product):
             state.basicCardProduct = product
             return .none

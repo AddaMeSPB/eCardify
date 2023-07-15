@@ -35,6 +35,26 @@ extension PHPickerResult {
       }
     }
   }
+
+    func loadImageContinuation() async throws -> UIImage {
+        guard case let itemProvider = self.itemProvider,
+              itemProvider.canLoadObject(ofClass: UIImage.self)
+        else {
+            throw ImageError(message: "Unable to load image.")
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            itemProvider.loadObject(of: UIImage.self) { result in
+              switch result {
+              case let .success(image):
+                continuation.resume(with: .success(image))
+              case let .failure(error):
+                continuation.resume( with: .failure( ImageError(message: "\(error.localizedDescription) Asset is not an image.")))
+              }
+            }
+        }
+
+    }
 }
 
 public struct ImagePickerReducer: ReducerProtocol {
@@ -70,8 +90,11 @@ public struct ImagePickerReducer: ReducerProtocol {
       case imagePicked(image: UIImage)
 
       case pickerResultReceived(result: PHPickerResult)
-      case picked(result: Result<UIImage, PHPickerResult.ImageError>)
+      case picked(result: UIImage)
+      case dismissButtonTapped
     }
+
+    @Dependency(\.dismiss) var dismiss
 
     public init() {}
 
@@ -87,24 +110,23 @@ public struct ImagePickerReducer: ReducerProtocol {
               return .none
 
             case let .pickerResultReceived(result: result):
+                return .run { send in
+                    let image = try await result.loadImageContinuation()
+                    await send(.picked(result: image))
+                }
 
-              return result.loadImage()
-                .receive(on: DispatchQueue.main)
-                .catchToEffect(ImagePickerReducer.Action.picked(result:))
-
-            case let .picked(result: .success(image)):
+            case let .picked(result: image):
               state.image = image
               return .none
 
-            case .picked(result: .failure):
-              return .none
+            case .dismissButtonTapped:
+                return .fireAndForget { await self.dismiss() }
             }
         }
     }
 }
 
 public struct ImagePickerView: UIViewControllerRepresentable {
-  @Environment(\.presentationMode) var presentationMode
 
     let viewStore: ViewStoreOf<ImagePickerReducer>
 
@@ -143,10 +165,7 @@ public struct ImagePickerView: UIViewControllerRepresentable {
     ) {
 
       guard let result = results.first else {
-        parent.viewStore.send(
-          .picked(result: .failure(.init(message: "No image picked. or cancel button click")))
-        )
-        parent.presentationMode.wrappedValue.dismiss()
+          parent.viewStore.send(.dismissButtonTapped)
         return
       }
 

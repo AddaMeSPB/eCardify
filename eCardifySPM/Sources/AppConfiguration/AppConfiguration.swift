@@ -1,6 +1,6 @@
 import Foundation
 
-private let devDomainName = "172.20.10.10:3030" //"192.168.1.28:3030" //"10.0.1.4:3030"
+private let devDomainName = "10.0.1.4:3030" //"172.20.10.10:3030" //"192.168.1.28:3030" //"10.0.1.4:3030"
 
 public struct AppConfiguration {
 

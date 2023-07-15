@@ -5,12 +5,12 @@
   ],
   "products" : [
     {
-      "displayPrice" : "6",
+      "displayPrice" : "18",
       "familyShareable" : false,
       "internalID" : "70B4530F",
       "localizations" : [
         {
-          "description" : "Basic version of ur product has fixed Design",
+          "description" : "Basic version of product has fixed design!",
           "displayName" : "Basic Card 🪪",
           "locale" : "en_US"
         }
@@ -20,7 +20,7 @@
       "type" : "NonConsumable"
     },
     {
-      "displayPrice" : "9",
+      "displayPrice" : "36",
       "familyShareable" : false,
       "internalID" : "E70B3B6E",
       "localizations" : [

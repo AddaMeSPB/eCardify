@@ -34,12 +34,34 @@ public struct WallatPassView: View {
         WithViewStore(store, observe: ViewState.init) { viewStore in
             ZStack(alignment: .bottomTrailing) {
                 ScrollView {
-                    ForEachStore(
-                        self.store.scope(
-                            state: \.wPassLocal,
-                            action: WallatPassList.Action.wPass(id:action:))
-                    ) {
-                        WallatPassDetailsView(store: $0)
+                    Group {
+                        if viewStore.wPassLocal.count > 0 {
+                            ForEachStore(
+                                self.store.scope(
+                                    state: \.wPassLocal,
+                                    action: WallatPassList.Action.wPass(id:action:))
+                            ) {
+                                WallatPassDetailsView(store: $0)
+                            }
+                        } else {
+                            Button {
+                                viewStore.send(.createGenericFormButtonTapped)
+                            } label: {
+                                Image(systemName: "plus")
+                                    .resizable()
+                                    .frame(width: 60, height: 60)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 130)
+                                    .buttonBorderShape(.capsule)
+                                    .foregroundColor(.gray)
+                                    .padding()
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 25)
+                                            .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
+                                    )
+                            }
+                            .padding(20)
+                        }
                     }
                 }
                 .redacted(reason: viewStore.isLoadinWPL ? .placeholder : .init())
@@ -96,40 +118,35 @@ public struct WallatPassView: View {
                 }
 
 
-                Button {
-                    viewStore.send(.createGenericFormButtonTapped)
-                } label: {
-                    Image(systemName: "plus.square.fill")
-                        .resizable()
-                        .frame(width: 40, height: 40)
+                if viewStore.wPassLocal.count > 0 {
+                    Button {
+                        viewStore.send(.createGenericFormButtonTapped)
+                    } label: {
+                        Image(systemName: "plus.square.fill")
+                            .resizable()
+                            .frame(width: 40, height: 40)
+                    }
+                    .padding(32)
                 }
-                .padding(32)
-
             }
         }
     }
 }
 
-//struct WallatPassView_Previews: PreviewProvider {
-//    static var store = Store(
-//        initialState: WallatPassList.State(
-//            pass: .mock,
-//            wPass: .init(uniqueElements: [WallatPassO.State.init(wp: .mock), WallatPassO.State.init(wp: .mock1)]),
-//            passContentState: .init(
-//                passContent: .init(primaryFields: [.init(key: "NAME")])
-//            ),
-//            storeKitState: .init(),
-//            isFormPresented: false
-//        ),
-//        reducer: WallatPassList()
-//    )
-//
-//    static var previews: some View {
-//        WallatPassView(store: store)
-//    }
-//}
+struct WallatPassView_Previews: PreviewProvider {
+    static var store = Store(
+        initialState: WallatPassList.State(),
+        reducer: WallatPassList()
+    )
 
+    static var previews: some View {
+        NavigationView {
+            WallatPassView(store: store)
+        }
+    }
+}
 
+/// Move to TCA helper extention
 extension Binding where Value == Optional<String> {
     public var orEmpty: Binding<String> {
         Binding<String> {
@@ -139,12 +156,6 @@ extension Binding where Value == Optional<String> {
         }
     }
 }
-
-//struct PassFormView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        PassFormView()
-//    }
-//}
 
 extension String {
 

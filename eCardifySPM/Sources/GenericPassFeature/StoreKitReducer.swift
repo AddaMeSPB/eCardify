@@ -17,52 +17,32 @@ public struct StoreKitReducer: ReducerProtocol {
         }
 
         public init(
-            basicCardProduct: Result<StoreKitClient.Product, StoreKitReducer.State.ProductError>? = nil,
-            basicCardPurchasedAt: Date? = nil,
-            customCardProduct: Result<StoreKitClient.Product, StoreKitReducer.State.ProductError>? = nil,
-            customCardPurchasedAt: Date? = nil,
+            products: [StoreKitClient.Product] = [],
             isPurchasing: Bool = false,
             isRestoring: Bool = false
         ) {
-            self.basicCardProductResponse = basicCardProduct
-            self.basicCardPurchasedAt = basicCardPurchasedAt
-            self.customCardProductResponse = customCardProduct
-            self.customCardPurchasedAt = customCardPurchasedAt
+            self.products = products
             self.isPurchasing = isPurchasing
             self.isRestoring = isRestoring
         }
 
-        public var basicCardProduct: StoreKitClient.Product? = nil
-        public var customCardProduct: StoreKitClient.Product? = nil
-
-        public var basicCardProductResponse: Result<StoreKitClient.Product, ProductError>?
-        public var basicCardPurchasedAt: Date?
-
-        public var customCardProductResponse: Result<StoreKitClient.Product, ProductError>?
-        public var customCardPurchasedAt: Date?
+        public var product: StoreKitClient.Product? {
+            switch type {
+            case .basic:
+                return products.first
+            case .custom:
+                return products.last
+            }
+        }
+        
+        public var products: [StoreKitClient.Product] = []
+        public var type: ProductType = .basic
 
         public var isPurchasing: Bool
         public var isRestoring: Bool
 
         public struct ProductError: Error, Equatable {}
 
-        public var isBasicCardPurchased: Bool {
-          return self.basicCardPurchasedAt != nil
-        }
-
-        public var isCustomCardPurchased: Bool {
-          return self.customCardPurchasedAt != nil
-        }
-
-        public var isBasicProduct: ProductType {
-            if basicCardProduct != nil {
-                return ProductType.basic
-            } else if customCardProduct != nil {
-                return ProductType.custom
-            } else {
-                return ProductType.basic
-            }
-        }
     }
 
     public enum Action: Equatable {
@@ -71,7 +51,6 @@ public struct StoreKitReducer: ReducerProtocol {
         case productsResponse(TaskResult<StoreKitClient.ProductsResponse>)
         case restoreButtonTapped
         case tappedProduct(StoreKitClient.Product)
-        case basicCardProductResponse(StoreKitClient.Product)
         case buySuccess
     }
 
@@ -97,28 +76,20 @@ public struct StoreKitReducer: ReducerProtocol {
                 }
 
                 group.addTask {
-                  let response = try await self.storeKit.fetchProducts(["BasicCard_eCardify_testing", "FlexiCards_eCardify_testing"])
-
-                  guard
-                    let product = response.products.first(where: { product in
-                      product.productIdentifier == "BasicCard_eCardify_testing"
-                    })
-                  else { return }
-                  await send(.basicCardProductResponse(product), animation: .default)
+                  await send(.productsResponse(
+                    TaskResult {
+                        try await self.storeKit.fetchProducts(["BasicCard_eCardify_testing", "FlexiCards_eCardify_testing"])
+                    }
+                  ), animation: .default)
                 }
               }
             }
-
-        case .basicCardProductResponse(let product):
-            state.basicCardProduct = product
-            return .none
 
         case .paymentTransaction(.updatedTransactions(let pt)):
             guard let transactionState = pt.first?.transactionState
             else {
                 return .none
             }
-
 
             if transactionState == .purchased {
                 return .run { send in
@@ -136,12 +107,15 @@ public struct StoreKitReducer: ReducerProtocol {
 
             
         case .productsResponse(.success(let response)):
+            state.products = response.products
             return .none
-        case .productsResponse(.failure(let error)):
+        case .productsResponse(.failure):
+            // have to send message for analatices
             return .none
 
         case .restoreButtonTapped:
             return .none
+
         case .tappedProduct(let product):
             state.isPurchasing = true
             return .fireAndForget {
@@ -150,7 +124,6 @@ public struct StoreKitReducer: ReducerProtocol {
               payment.quantity = 1
               await self.storeKit.addPayment(payment)
             }
-
         }
     }
 }

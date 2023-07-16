@@ -54,6 +54,7 @@ public struct WallatPassList: ReducerProtocol {
         @BindingState public var pass: Pass?
         @PresentationState public var destination: Destination.State?
 
+        public var vCard: VCard? = .empty
         public var wPass: IdentifiedArrayOf<WallatPassDetails.State> = []
         public var wPassLocal: IdentifiedArrayOf<WallatPassDetails.State> = []
         public var isActivityIndicatorVisible = false
@@ -225,12 +226,24 @@ public struct WallatPassList: ReducerProtocol {
                 }
             }
 
+        case .destination(.dismiss):
+            switch state.destination {
+            case .some(.add(let addState)):
+                state.vCard = addState.vCard
+                return .none
+            case .some(.addPass):
+                return .none
+            case .some(.settings):
+                return .none
+            case .none:
+                return .none
+            }
        
         case .destination:
           return .none
 
         case .createGenericFormButtonTapped:
-            state.destination = .add(.init())
+            state.destination = .add(.init(vCard: state.vCard ?? .empty))
             return .none
 
         case .dismissAddGenericFormButtonTapped:

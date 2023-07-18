@@ -195,16 +195,4 @@ func parseVCard(_ vCardString: String) -> VCard {
     }
 
     return .empty
-
-//    VCard(fullName: fullName,
-//                 nameComponents: nameComponents,
-//                 title: title,
-//                 cellPhone: cellPhone,
-//                 workPhone: workPhone,
-//                 homePhone: homePhone,
-//                 imageURL: imageUrl,
-//                 workEmail: workEmail,
-//                 website: website,
-//                 address: address,
-//                 organization: organization)
 }

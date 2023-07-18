@@ -40,8 +40,8 @@ public struct AppDatabase {
                 t.column("_id", .text).notNull().unique()
                 t.primaryKey(["_id"])
                 t.column("ownerId", .text)
-                t.column("pass", .text).notNull()
-                t.column("imageURLs", .text).notNull()
+                t.column("vCard", .text).notNull()
+                t.column("colorPalette", .text).notNull()
                 t.column("isPaid", .boolean).notNull().defaults(to: false)
                 t.column("isDataSavedOnServer", .boolean).notNull().defaults(to: false)
 

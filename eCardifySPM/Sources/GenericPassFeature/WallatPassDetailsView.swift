@@ -17,7 +17,7 @@ public struct WallatPassDetails: ReducerProtocol {
     public struct State: Equatable, Identifiable {
         public var id: String { wp.id }
         public var wp: WalletPass
-        public var vCard: VCard = .empty
+        public var vCard: VCard
         public var qrCodeImage: Image? = nil
     }
 
@@ -26,7 +26,7 @@ public struct WallatPassDetails: ReducerProtocol {
 //        case sendToEmail
         case addPassToWallet
         case qrCode(Image)
-
+        case viewCardButtonTapped
     }
 
     public init() {}
@@ -39,14 +39,10 @@ public struct WallatPassDetails: ReducerProtocol {
         switch action {
         case .onAppear:
 
-            let vCardString = state.wp.pass.barcodes.first?.message ?? "ecardify.addame.com"
-            if let vCardString = state.wp.pass.barcodes.first?.message {
-                state.vCard = VCard.create(from: vCardString) ?? .empty
-                print(#line, state.vCard)
-            }
+            let vCardRepresentation = state.vCard.vCardRepresentation
 
             return .run { send in
-                if let image = await generateQRCode(from: vCardString) {
+                if let image = await generateQRCode(from: vCardRepresentation) {
                     let swiftuiImage = Image(uiImage: image)
                     await send(.qrCode(swiftuiImage))
                 }
@@ -58,6 +54,10 @@ public struct WallatPassDetails: ReducerProtocol {
 
         case .addPassToWallet:
             return .none
+
+        case .viewCardButtonTapped:
+            return .none
+
         }
     }
 
@@ -90,9 +90,11 @@ public struct WallatPassDetails: ReducerProtocol {
 
 }
 
+import SwiftUIExtension
 
 public struct WallatPassDetailsView: View {
 
+    @State var isShareViewPresented = false
     public let store: StoreOf<WallatPassDetails>
 
     public init(store: StoreOf<WallatPassDetails>) {
@@ -102,6 +104,22 @@ public struct WallatPassDetailsView: View {
     public var body: some View {
         WithViewStore(self.store) { viewStore in
             Menu {
+
+                Button {
+                    self.isShareViewPresented.toggle()
+                } label: {
+                    Text("🪪 Share card")
+                        .foregroundColor(Color.black)
+                }
+
+                Button {
+                    viewStore.send(.viewCardButtonTapped)
+                } label: {
+
+                    Text("Show card 🪪")
+                        .foregroundColor(Color.black)
+                }
+
                 Button {
                     viewStore.send(.addPassToWallet)
                 } label: {
@@ -110,16 +128,14 @@ public struct WallatPassDetailsView: View {
                         .foregroundColor(Color.black)
                 }
 
-//                AddPassToWalletButton() {
-//                    viewStore.send(.addPassToWallet)
-//                }
+
 
             } label: {
 
                 VStack(alignment: .leading) {
                     HStack {
 
-                        if let imageUrl = viewStore.wp.imageURLs.first(where: { $0.type == .thumbnail }) {
+                        if let imageUrl = viewStore.vCard.imageURLs.first(where: { $0.type == .thumbnail }) {
 
                             AsyncImage(url: URL(string: imageUrl.urlString)) { phase in
                                 if let image = phase.image {
@@ -137,8 +153,7 @@ public struct WallatPassDetailsView: View {
                         HStack {
 
                             VStack(alignment: .leading) {
-                                if let imageUrl = viewStore.wp.imageURLs.first(where: { $0.type == .icon }) {
-
+                                if let imageUrl = viewStore.vCard.imageURLs.first(where: { $0.type == .icon }) {
                                     AsyncImage(url: URL(string: imageUrl.urlString)) { phase in
                                         if let image = phase.image {
                                             image.resizable()
@@ -149,18 +164,20 @@ public struct WallatPassDetailsView: View {
                                                 .tint(Color.blue)
                                         }
                                     }
-                                    .frame(width: 50, height: 50)
+                                    .frame(width: 30, height: 30)
                                 }
 
                                 Spacer()
 
                                 VStack(alignment: .leading) {
-                                    Text(viewStore.vCard.contact.fullName)
+                                    Text(viewStore.vCard.contact.firstName)
+                                    Text(viewStore.vCard.position)
                                     Text(viewStore.vCard.organization ?? "")
-                                    
                                 }
-                                .padding(.vertical, 8)
+                                .lineLimit(1)
+                                .layoutPriority(1)
                             }
+
 
                             Spacer()
 
@@ -168,10 +185,11 @@ public struct WallatPassDetailsView: View {
                                 image
                                     .resizable()
                                     .interpolation(.none)
-                                    .frame(width: 100, height: 100)
+                                    .frame(width: 50, height: 100)
                                     .padding(.trailing, -16)
                             }
                         }
+                        .padding(.vertical, 14)
 
                         Spacer()
 
@@ -186,6 +204,10 @@ public struct WallatPassDetailsView: View {
                 .cornerRadius(10)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 16)
+                .sheet(isPresented: self.$isShareViewPresented) {
+                  ActivityView(activityItems: [URL(string: "https://apps.apple.com/ru/app/new-word-learn-word-vocabulary/id1619504857?l=en")!])
+                    .ignoresSafeArea()
+                }
             }
         }
     }
@@ -195,7 +217,7 @@ struct WallatPassDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         WallatPassDetailsView(
             store: .init(
-                initialState: WallatPassDetails.State.init(wp: .mock),
+                initialState: WallatPassDetails.State.init(wp: .mock, vCard: .demo),
                 reducer: WallatPassDetails()
             )
         )

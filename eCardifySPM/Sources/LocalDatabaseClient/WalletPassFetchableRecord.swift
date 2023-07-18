@@ -7,8 +7,8 @@ extension WalletPass: FetchableRecord {
     enum Columns {
         static let _id = Column(CodingKeys._id)
         static let ownerId = Column(CodingKeys.ownerId)
-        static let pass = Column(CodingKeys.pass)
-        static let imageURLs = Column(CodingKeys.imageURLs)
+        static let vCard = Column(CodingKeys.vCard)
+        static let colorPalette = Column(CodingKeys.colorPalette)
         static let isPaid = Column(CodingKeys.isPaid)
         static let isDataSavedOnServer = Column(CodingKeys.isDataSavedOnServer)
         static let createdAt = Column(CodingKeys.createdAt)

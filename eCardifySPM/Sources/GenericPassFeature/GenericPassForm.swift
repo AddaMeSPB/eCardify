@@ -61,8 +61,10 @@ public struct GenericPassForm: ReducerProtocol {
         @BindingState public var email: String
         @BindingState public var storeKitState: StoreKitReducer.State
         @PresentationState public var imagePicker: ImagePickerReducer.State?
+        @PresentationState public var digitalCardDesign: CardDesignListReducer.State?
 
         public var pass: Pass = .draff
+        public var colorPalette: ColorPalette = .default
         public var isActivityIndicatorVisible = false
         public var isUploadingImage: Bool = false
         public var logoImage: UIImage?
@@ -84,6 +86,8 @@ public struct GenericPassForm: ReducerProtocol {
     public enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
         case imagePicker(PresentationAction<ImagePickerReducer.Action>)
+        case digitalCardDesign(PresentationAction<CardDesignListReducer.Action>)
+        case dcdSheetIsPresentedButtonTapped
         case onAppear
         case isUploadingImage
         case isImagePicker(isPresented: Bool)
@@ -133,6 +137,9 @@ public struct GenericPassForm: ReducerProtocol {
             .ifLet(\.$imagePicker, action: /Action.imagePicker) {
                 ImagePickerReducer()
             }
+            .ifLet(\.$digitalCardDesign, action: /Action.digitalCardDesign) {
+                CardDesignListReducer()
+            }
     }
 
     func core(state: inout State, action: Action) -> EffectTask<Action> {
@@ -158,10 +165,10 @@ public struct GenericPassForm: ReducerProtocol {
                 state.user = try self.keychainClient.readCodable(.user, self.build.identifier(), UserOutput.self)
             } catch { }
 
-            if TARGET_OS_SIMULATOR == 1 {
-                state.vCard.imageURLs = ImageURL.draff
-                state.isFormValid = true
-            }
+//            if TARGET_OS_SIMULATOR == 1 {
+//                state.vCard.imageURLs = ImageURL.draff
+//                state.isFormValid = true
+//            }
 
             return .run { send in
                 await send(.storeKit(.fetchProduct))
@@ -184,7 +191,7 @@ public struct GenericPassForm: ReducerProtocol {
             state.isUploadingImage = true
             return .none
 
-            // MARK: - .createAttachment
+        // MARK: - .createAttachment
         case .createAttachment(let attachment):
             guard let id = state.user?.id else {
                 return .none
@@ -300,7 +307,7 @@ public struct GenericPassForm: ReducerProtocol {
                 }
             }
 
-            // MARK: - .imagePicker
+        // MARK: - .imagePicker
         case .imagePicker:
             return .none
 
@@ -323,7 +330,7 @@ public struct GenericPassForm: ReducerProtocol {
             }
 
 
-        case .attacmentResponse(.failure(let error)):
+        case .attacmentResponse(.failure(_)):
             return .none
 
         case .imageFor(let type):
@@ -332,6 +339,7 @@ public struct GenericPassForm: ReducerProtocol {
 
         case .recognizeText(let vcard):
 
+            
             //            if let vcard = vcard {
             //
             //                if let indexName = state.passContentState!.fields
@@ -364,6 +372,8 @@ public struct GenericPassForm: ReducerProtocol {
             //            }
 
             return .none
+
+        // MARK: - CreatePass
         case .createPass:
 
             if !state.isAuthorized {
@@ -387,51 +397,11 @@ public struct GenericPassForm: ReducerProtocol {
                 return .none
             }
 
-
-            let primaryFieldName = state.vCard.contact.fullName.replacingOccurrences(of: " ", with: "\n").uppercased()
-            let organizationName = state.vCard.organization == nil ? primaryFieldName : (state.vCard.organization ?? "")
-            let secondaryFieldPosition = state.vCard.position
-
-            var auxiliaryFields: [Field] = []
-            for telephone in state.vCard.telephones {
-                let item = Field.init(
-                    label: telephone.type.rawValue.uppercased(),
-                    key: telephone.type.rawValue.lowercased(),
-                    value: telephone.number
-                )
-                auxiliaryFields.append(item)
-            }
-
-            for email in state.vCard.emails {
-                let item = Field.init(
-                    label: "EMAIL",
-                    key: "email",
-                    value: email.text
-                )
-                auxiliaryFields.append(item)
-            }
-
-            state.pass.organizationName = organizationName
-            state.pass.description = organizationName
-            state.pass.logoText = organizationName
-            state.pass.generic = .init(
-                primaryFields: [
-                    .init(label: "NAME", key: "member", value: primaryFieldName)
-                ],
-                secondaryFields: [
-                    .init(label: "POSITION", key: "position", value: secondaryFieldPosition)
-                ],
-                auxiliaryFields: auxiliaryFields,
-                backFields: [
-                    .init(label: "Spelled out", key: "numberStyle", value: "200")
-                ]
-            )
-
             let walletPass = WalletPass(
                 _id: .init(),
                 ownerId: currentUserID,
-                pass: state.pass,
-                imageURLs: state.vCard.imageURLs
+                vCard: state.vCard,
+                colorPalette: .default
             )
 
             state.walletPass = walletPass
@@ -562,6 +532,20 @@ public struct GenericPassForm: ReducerProtocol {
             return .none
         case .removeAddressSection(by: let uuid):
             state.vCard.addresses.removeAll(where: { $0.id == uuid })
+            return .none
+
+        // MARK: - DigitalCardDesign
+        case .digitalCardDesign(.dismiss):
+            if let colorPalette = state.digitalCardDesign?.selectedColorPalattle {
+                state.colorPalette = colorPalette
+            }
+            return .none
+
+        case .digitalCardDesign:
+            return .none
+
+        case .dcdSheetIsPresentedButtonTapped:
+            state.digitalCardDesign = .init(vCard: state.vCard)
             return .none
         }
     }

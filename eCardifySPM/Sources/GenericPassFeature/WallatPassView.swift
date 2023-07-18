@@ -17,7 +17,6 @@ public struct WallatPassView: View {
             self.wPassLocal = state.wPassLocal
             self.isAuthorized = state.isAuthorized
             self.isLoadinWPL = state.isLoadinWPL
-
         }
     }
 
@@ -90,11 +89,11 @@ public struct WallatPassView: View {
                         state: \.$destination,
                         action: { .destination($0) }
                     ),
-                    state: /WallatPassList.Destination.State.addPass,
-                    action: WallatPassList.Destination.Action.addPass
+                    state: /WallatPassList.Destination.State.digitalCard,
+                    action: WallatPassList.Destination.Action.digitalCard
 
                 ) { store in
-                    AddPassView(store: store)
+                    CardDesignView(store: store)
                 }
                 .navigationDestination(
                     store: self.store.scope(
@@ -129,13 +128,33 @@ public struct WallatPassView: View {
                     .padding(32)
                 }
             }
+            .sheet(
+                store: self.store.scope(
+                    state: \.$destination,
+                    action: { .destination($0) }
+                ),
+                state: /WallatPassList.Destination.State.addPass,
+                action: WallatPassList.Destination.Action.addPass
+
+            ) { store in
+                AddPassView(store: store)
+            }
         }
     }
 }
 
 struct WallatPassView_Previews: PreviewProvider {
+    static public var demoWPassLocal: IdentifiedArrayOf<WallatPassDetails.State> {
+        return .init(
+            uniqueElements: [
+                WallatPassDetails.State(wp: .mock, vCard: .demo),
+                WallatPassDetails.State(wp: .mock1, vCard: .demo)
+            ]
+        )
+    }
+
     static var store = Store(
-        initialState: WallatPassList.State(),
+        initialState: WallatPassList.State(wPassLocal: demoWPassLocal),
         reducer: WallatPassList()
     )
 
@@ -173,16 +192,5 @@ extension String {
         }
 
         return Color(red: red / 255.0, green: green / 255.0, blue: blue / 255.0)
-    }
-}
-
-
-struct PassContentTransitView: View {
-    let content: PassContentTransit
-
-    var body: some View {
-        Section(header: Text("Transit Information")) {
-            Text("Transit Type: \(content.transitType.rawValue)")
-        }
     }
 }

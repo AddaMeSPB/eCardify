@@ -41,17 +41,17 @@ public struct WallatPassList: ReducerProtocol {
 
     public struct State: Equatable {
         public init(
-            pass: Pass = .draff,
             wPass: IdentifiedArrayOf<WallatPassDetails.State> = [],
+            wPassLocal: IdentifiedArrayOf<WallatPassDetails.State> = [],
             isActivityIndicatorVisible: Bool = false
         ) {
-            self.pass = pass
+
             self.wPass = wPass
+            self.wPassLocal = wPassLocal
             self.isActivityIndicatorVisible = isActivityIndicatorVisible
 
         }
 
-        @BindingState public var pass: Pass?
         @PresentationState public var destination: Destination.State?
 
         public var vCard: VCard? = .empty
@@ -162,13 +162,27 @@ public struct WallatPassList: ReducerProtocol {
 
         case .wPass(id: let id, action: let wpaction):
             if wpaction == .addPassToWallet {
-                if let pass = state.wPassLocal.filter({ $0.id == id }).first {
+                if let pass = state.wPassLocal[id: id] {
                     let url =  "https://learnplaygrow.ams3.cdn.digitaloceanspaces.com/ecardify/uploads/pass/\(pass.wp.ownerId.hexString)/\(pass.id).pkpass"
                     return .run { send in
                         await send(.destination(.presented(.add(.buildPKPassFrom(url: url)))))
                     }
                 }
             }
+
+            if wpaction == .viewCardButtonTapped {
+                if let pass = state.wPassLocal[id: id] {
+                    state.destination = .digitalCard(
+                        .init(
+                        colorP: pass.wp.colorPalette,
+                        vCard: pass.wp.vCard,
+                        isRealDataView: true
+                        )
+                    )
+                }
+            }
+
+
             return .none
 
         case .wpResponse(.success(let wp)):
@@ -178,25 +192,25 @@ public struct WallatPassList: ReducerProtocol {
                 // add something onbording video
             }
 
-            let wPassResponse = wp.map { WallatPassDetails.State(wp: $0) }
+            let wPassResponse = wp.map { WallatPassDetails.State(wp: $0, vCard: $0.vCard) }
             state.wPass = .init(uniqueElements: wPassResponse)
             return .none
 
-        case .wpResponse(.failure(let error)):
+        case .wpResponse(.failure(_)):
             return .none
 
         case .wpLocalDataResponse(.success(let wpl)):
 
             let wPassLocalResponse = wpl
                 .filter { $0.isPaid == true }
-                .map { WallatPassDetails.State(wp: $0) }
+                .map { WallatPassDetails.State(wp: $0, vCard: $0.vCard) }
             
             state.wPassLocal = .init(uniqueElements: wPassLocalResponse)
 
             state.isLoadinWPL = false
             return .none
 
-        case .wpLocalDataResponse(.failure(let error)):
+        case .wpLocalDataResponse(.failure(_)):
             state.isLoadinWPL = false
             return .none
 
@@ -227,18 +241,13 @@ public struct WallatPassList: ReducerProtocol {
             }
 
         case .destination(.dismiss):
-            switch state.destination {
-            case .some(.add(let addState)):
+
+            if case let .add(addState) = state.destination {
                 state.vCard = addState.vCard
-                return .none
-            case .some(.addPass):
-                return .none
-            case .some(.settings):
-                return .none
-            case .none:
-                return .none
             }
-       
+
+            return .none
+
         case .destination:
           return .none
 
@@ -264,12 +273,14 @@ public struct WallatPassList: ReducerProtocol {
     public struct Destination: ReducerProtocol {
         public enum State: Equatable {
             case addPass(AddPass.State)
+            case digitalCard(CardDesignReducer.State)
             case add(GenericPassForm.State)
             case settings(Settings.State)
         }
 
         public enum Action: Equatable {
             case addPass(AddPass.Action)
+            case digitalCard(CardDesignReducer.Action)
             case add(GenericPassForm.Action)
             case settings(Settings.Action)
         }
@@ -280,6 +291,10 @@ public struct WallatPassList: ReducerProtocol {
 
             Scope(state: /State.addPass, action: /Action.addPass) {
                 AddPass()
+            }
+
+            Scope(state: /State.digitalCard, action: /Action.digitalCard) {
+                CardDesignReducer()
             }
 
             Scope(state: /State.add, action: /Action.add) {

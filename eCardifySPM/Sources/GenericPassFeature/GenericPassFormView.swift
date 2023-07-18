@@ -56,7 +56,6 @@ public struct GenericPassFormView: View {
                 ScrollViewReader { value in
                     ZStack(alignment: .center) {
                         Form {
-
                             Section {
                                 HStack {
                                     logoImagePicker(viewStore, proxy)
@@ -108,9 +107,48 @@ public struct GenericPassFormView: View {
                                             .padding(.vertical, 10)
                                     }
                                 }
+                                .animation(.easeIn, value: 190)
 
                             }
 
+                            //MARK: Pick card desgin
+                            Section {
+                                Button {
+                                    // tapped func
+                                    viewStore.send(.dcdSheetIsPresentedButtonTapped, animation: .default)
+                                } label: {
+
+                                    HStack {
+                                        Text("Pick ")
+                                            .font(.title)
+                                            .foregroundColor(viewStore.isCustomProduct ? Color.blue :  Color.gray)
+                                            .fontWeight(.heavy)
+                                        Text("Your ")
+                                            .font(.title2)
+                                            .foregroundColor(viewStore.isCustomProduct ? Color.white : Color.gray)
+                                            .fontWeight(.bold)
+                                        Text("Card Design")
+                                            .font(.title)
+                                            .foregroundColor(viewStore.isCustomProduct ? Color.pink : Color.gray)
+                                            .fontWeight(.heavy)
+                                    }
+                                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0)
+                                    .padding(.horizontal, 30)
+
+
+                                    if !viewStore.isCustomProduct {
+                                        Text("To activate this function,")
+                                        Text("Please change your product type up☝️.")
+                                    }
+                                }
+//                                .cornerRadius(20)
+                                .animation(.easeIn, value: 190)
+
+                            }
+                            .disabled(!viewStore.isCustomProduct)
+                            .listRowBackground(viewStore.isCustomProduct ? Color.yellow : Color.gray.opacity(0.3))
+
+                            //MARK: Payment
                             HStack {
 
                                 if let product = viewStore.storeKitState.product {
@@ -170,6 +208,13 @@ public struct GenericPassFormView: View {
                                 action: GenericPassForm.Action.imagePicker
                             ),
                             content: ImagePickerView.init(store:)
+                        )
+                        .sheet(
+                            store: store.scope(
+                                state: \.$digitalCardDesign,
+                                action: GenericPassForm.Action.digitalCardDesign
+                            ),
+                            content: CardDesignListView.init(store:)
                         )
 
                         if viewStore.isActivityIndicatorVisible {
@@ -397,16 +442,19 @@ public struct GenericPassFormView: View {
 
                     Spacer()
 
-                    Button {
-                        viewStore.send(.removeTelephoneSection(by: item.id))
-                    } label: {
-                        Image(systemName: "trash")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                            .tint(Color.red)
+                    if viewStore.vCard.telephones.count > 1 {
+                        Button {
+                            viewStore.send(.removeTelephoneSection(by: item.id))
+                        } label: {
+                            Image(systemName: "trash")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                                .tint(Color.red)
+                        }
+                        .frame(width: 50, height: 50)
+                        .padding(.trailing, -10)
+
                     }
-                    .frame(width: 50, height: 50)
-                    .padding(.trailing, -10)
                 }
             }
 
@@ -472,16 +520,18 @@ public struct GenericPassFormView: View {
                     .fontWeight(.medium)
                     .padding(.vertical, 10)
 
-                    Button {
-                        viewStore.send(.removeEmailSection(by: item.id))
-                    } label: {
-                        Image(systemName: "trash")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                            .tint(Color.red)
+                    if viewStore.$vCard.emails.count > 1 {
+                        Button {
+                            viewStore.send(.removeEmailSection(by: item.id))
+                        } label: {
+                            Image(systemName: "trash")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                                .tint(Color.red)
+                        }
+                        .frame(width: 50, height: 50)
+                        .padding(.trailing, -10)
                     }
-                    .frame(width: 50, height: 50)
-                    .padding(.trailing, -10)
                 }
             }
         } header: {
@@ -627,26 +677,28 @@ public struct GenericPassFormView: View {
                 .fontWeight(.medium)
                 .padding(.vertical, 10)
 
-                HStack {
+                if viewStore.$vCard.addresses.count > 1 {
+                    HStack {
 
-                    Spacer()
+                        Spacer()
 
-                    Text("Remove this address")
-                        .font(.title2)
-                        .fontWeight(.medium)
-                        .padding()
+                        Text("Remove this address")
+                            .font(.title2)
+                            .fontWeight(.medium)
+                            .padding()
 
 
-                    Button {
-                        viewStore.send(.removeAddressSection(by: item.id))
-                    } label: {
-                        Image(systemName: "trash")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                            .tint(Color.red)
+                        Button {
+                            viewStore.send(.removeAddressSection(by: item.id))
+                        } label: {
+                            Image(systemName: "trash")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                                .tint(Color.red)
+                        }
+                        .frame(width: 50, height: 50)
+                        .padding(.trailing, -10)
                     }
-                    .frame(width: 50, height: 50)
-                    .padding(.trailing, -10)
                 }
             }
         } header: {

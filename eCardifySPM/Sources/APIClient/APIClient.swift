@@ -1,14 +1,14 @@
-import Foundation
-import Combine
-import URLRouting
-import InfoPlist
-import FoundationExtension
-import Dependencies
-import AppConfiguration
-import KeychainClient
 import Build
-import ECardifySharedModels
+import Combine
 import LoggerKit
+import InfoPlist
+import Foundation
+import URLRouting
+import Dependencies
+import KeychainClient
+import AppConfiguration
+import FoundationExtension
+import ECardifySharedModels
 
 public typealias APIClient = URLRoutingClient<SiteRoute>
 
@@ -79,12 +79,12 @@ extension APIClient {
                 throw APIError.serviceError(statusCode: statusCode, payload)
 
             default:
-                throw APIError.unknown
                 sharedLogger.log("unknown")
+                throw APIError.unknown
             }
         } else {
-            throw APIError.unknown
             sharedLogger.log("unknown")
+            throw APIError.unknown
         }
     }
 }

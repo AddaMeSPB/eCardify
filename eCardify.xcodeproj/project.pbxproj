@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C38FFE302A3B405B00BB3E8C /* Development.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C38FFE2F2A3B405B00BB3E8C /* Development.xcconfig */; };
+		C399ED832A69A7DB0097D485 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C399ED812A69A50A0097D485 /* StoreKit.framework */; };
 		C3A4523F2A07F4AC009D8F95 /* eCardifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A4523E2A07F4AC009D8F95 /* eCardifyApp.swift */; };
 		C3A452432A07F4AD009D8F95 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3A452422A07F4AD009D8F95 /* Assets.xcassets */; };
 		C3A452472A07F4AD009D8F95 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3A452462A07F4AD009D8F95 /* Preview Assets.xcassets */; };
@@ -20,6 +21,7 @@
 /* Begin PBXFileReference section */
 		C3118F3A2A532CD500D77A10 /* WalletPass.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WalletPass.json; sourceTree = "<group>"; };
 		C38FFE2F2A3B405B00BB3E8C /* Development.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Development.xcconfig; sourceTree = "<group>"; };
+		C399ED812A69A50A0097D485 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		C3A4523B2A07F4AC009D8F95 /* eCardify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = eCardify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3A4523E2A07F4AC009D8F95 /* eCardifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eCardifyApp.swift; sourceTree = "<group>"; };
 		C3A452422A07F4AD009D8F95 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -37,6 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C399ED832A69A7DB0097D485 /* StoreKit.framework in Frameworks */,
 				C3EA55A02A6973330016B522 /* AppFeature in Frameworks */,
 				C3EA55A22A6973490016B522 /* AppView in Frameworks */,
 			);
@@ -98,6 +101,7 @@
 		C3DEA2812A0E962F00EC76C1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C399ED812A69A50A0097D485 /* StoreKit.framework */,
 				C3FDFDB82A4F45B100229340 /* StoreKit.framework */,
 			);
 			name = Frameworks;
@@ -327,12 +331,14 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cardify.addame.com.eCardify;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -368,12 +374,14 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cardify.addame.com.eCardify;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

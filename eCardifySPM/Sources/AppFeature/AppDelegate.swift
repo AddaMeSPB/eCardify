@@ -119,7 +119,7 @@ public struct AppDelegateReducer: ReducerProtocol {
 
     case let .userSettingsLoaded(result):
       state = (try? result.value) ?? state
-        return .fireAndForget { [state] in
+        return .fireAndForget { 
 //            async let setUI: Void =
 //            await self.setUserInterfaceStyle(state.colorScheme.userInterfaceStyle)
 //            _ = await setUI

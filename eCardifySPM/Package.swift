@@ -6,8 +6,7 @@ import PackageDescription
 let package = Package(
     name: "eCardifySPM",
     platforms: [
-       .iOS(.v16),
-       .macOS(.v12)
+        .iOS(.v16)
     ],
     products: [
         .library(name: "AppView", targets: ["AppView"]),
@@ -22,14 +21,14 @@ let package = Package(
         .library(name: "LocalDatabaseClient", targets: ["LocalDatabaseClient"])
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.55.0"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.56.0"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "0.1.0"),
         .package(url: "https://github.com/AddaMeSPB/CommonTCALibraries.git", branch: "main"),
         .package(url: "https://github.com/AddaMeSPB/ECardifySharedModels.git", branch: "main"),
 
-        .package(url: "https://github.com/soto-project/soto.git", from: "5.13.1"),
+        .package(url: "https://github.com/soto-project/soto.git", from: "6.0.0"),
         .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay", from: "0.2.0"),
-        .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.3.1"),
+        .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0"),
     ],
     targets: [
         .target(
@@ -58,9 +57,6 @@ let package = Package(
         .target(
             name: "AppConfiguration",
             dependencies: [
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-                .product(name: "Dependencies", package: "swift-dependencies"),
-                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries")
             ]
         ),
@@ -138,6 +134,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
+                .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 "ImagePicker", "VNRecognizeFeature", "AttachmentS3Client", "APIClient",
                 "LocalDatabaseClient", "SettingsFeature"
             ]
@@ -149,9 +146,9 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "GRDB", package: "GRDB.swift"),
                 .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
-                .product(name: "Dependencies", package: "swift-dependencies"),
-                
+                .product(name: "Dependencies", package: "swift-dependencies")
             ]
         ),
     ]
 )
+

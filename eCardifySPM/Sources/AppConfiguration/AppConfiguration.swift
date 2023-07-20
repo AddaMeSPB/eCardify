@@ -1,4 +1,5 @@
 import Foundation
+import LoggerKit
 
 private let devDomainName = "10.0.1.4:3030" //"172.20.10.10:3030" //"192.168.1.28:3030" //"10.0.1.4:3030"
 
@@ -92,6 +93,7 @@ extension AppConfiguration {
             let apiEnvironmentKey = bundle.object(forInfoDictionaryKey: Keys.apiEnvironment) as? String,
             let apiEnvironment = ApiEnvironment(rawValue: apiEnvironmentKey)
         else {
+            sharedLogger.log(level: .fault,"Couldn't init environment from bundle: \(bundle.infoDictionary ?? [:])")
             fatalError("Couldn't init environment from bundle: \(bundle.infoDictionary ?? [:])")
         }
 

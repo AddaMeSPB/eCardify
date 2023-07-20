@@ -7,14 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C33733CE2A1661B1000A8C62 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = C33733CD2A1661B1000A8C62 /* AppFeature */; };
-		C34526BA2A1664E8000F3599 /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = C34526B92A1664E8000F3599 /* AppView */; };
 		C38FFE302A3B405B00BB3E8C /* Development.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C38FFE2F2A3B405B00BB3E8C /* Development.xcconfig */; };
 		C3A4523F2A07F4AC009D8F95 /* eCardifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A4523E2A07F4AC009D8F95 /* eCardifyApp.swift */; };
 		C3A452432A07F4AD009D8F95 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3A452422A07F4AD009D8F95 /* Assets.xcassets */; };
 		C3A452472A07F4AD009D8F95 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3A452462A07F4AD009D8F95 /* Preview Assets.xcassets */; };
 		C3A452502A07F4D7009D8F95 /* Pass.json in Resources */ = {isa = PBXBuildFile; fileRef = C3A4524F2A07F4D7009D8F95 /* Pass.json */; };
-		C3FDFDB92A4F45B100229340 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FDFDB82A4F45B100229340 /* StoreKit.framework */; };
+		C3EA55A02A6973330016B522 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = C3EA559F2A6973330016B522 /* AppFeature */; };
+		C3EA55A22A6973490016B522 /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = C3EA55A12A6973490016B522 /* AppView */; };
 		C3FDFDBC2A50022F00229340 /* Production.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C3FDFDBB2A50022F00229340 /* Production.xcconfig */; };
 /* End PBXBuildFile section */
 
@@ -38,9 +37,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3FDFDB92A4F45B100229340 /* StoreKit.framework in Frameworks */,
-				C33733CE2A1661B1000A8C62 /* AppFeature in Frameworks */,
-				C34526BA2A1664E8000F3599 /* AppView in Frameworks */,
+				C3EA55A02A6973330016B522 /* AppFeature in Frameworks */,
+				C3EA55A22A6973490016B522 /* AppView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,8 +120,8 @@
 			);
 			name = eCardify;
 			packageProductDependencies = (
-				C33733CD2A1661B1000A8C62 /* AppFeature */,
-				C34526B92A1664E8000F3599 /* AppView */,
+				C3EA559F2A6973330016B522 /* AppFeature */,
+				C3EA55A12A6973490016B522 /* AppView */,
 			);
 			productName = eCardify;
 			productReference = C3A4523B2A07F4AC009D8F95 /* eCardify.app */;
@@ -324,12 +322,12 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cardify.addame.com.eCardify;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -365,12 +363,12 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cardify.addame.com.eCardify;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -406,11 +404,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C33733CD2A1661B1000A8C62 /* AppFeature */ = {
+		C3EA559F2A6973330016B522 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;
 		};
-		C34526B92A1664E8000F3599 /* AppView */ = {
+		C3EA55A12A6973490016B522 /* AppView */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppView;
 		};

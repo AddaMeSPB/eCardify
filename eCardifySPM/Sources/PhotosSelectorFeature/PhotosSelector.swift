@@ -147,7 +147,7 @@ public struct PhotosSelectorReducer: ReducerProtocol {
                     }
                 }
             } catch {
-                print("ImageLoader error:", error)
+                sharedLogger.logError("ImageLoader error: \(error)")
             }
 
             return images

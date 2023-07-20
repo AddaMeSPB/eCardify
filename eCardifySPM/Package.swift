@@ -22,12 +22,11 @@ let package = Package(
         .library(name: "LocalDatabaseClient", targets: ["LocalDatabaseClient"])
     ],
     dependencies: [
-//        https://github.com/pointfreeco/swift-composable-architecture/tree/prerelease/1.0
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.55.0"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "0.1.0"),
         .package(url: "https://github.com/AddaMeSPB/CommonTCALibraries.git", branch: "main"),
-//        .package(url: "https://github.com/AddaMeSPB/ECardifySharedModels.git", branch: "main"),
-        .package(path: "/Users/alif/Developer/Swift/MySideProjects/VertualBusinessCard/ECardifySharedModels"),
+        .package(url: "https://github.com/AddaMeSPB/ECardifySharedModels.git", branch: "main"),
+
         .package(url: "https://github.com/soto-project/soto.git", from: "5.13.1"),
         .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay", from: "0.2.0"),
         .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.3.1"),
@@ -38,6 +37,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
+                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
                 .product(name: "RemoteNotificationsClient", package: "CommonTCALibraries"),
                 "APIClient", "AttachmentS3Client", "GenericPassFeature", "AuthenticationCore",
                 "SettingsFeature"
@@ -50,6 +50,7 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 .product(name: "RemoteNotificationsClient", package: "CommonTCALibraries"),
+                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
                 "AppFeature", "GenericPassFeature", "AuthenticationView", "SettingsFeature"
             ]
         ),
@@ -69,6 +70,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
+                .product(name: "Dependencies", package: "swift-dependencies"),
                 "AppConfiguration"
             ]
         ),
@@ -84,16 +86,10 @@ let package = Package(
         ),
 
         .target(
-            name: "eCardifySPM",
-            dependencies: [
-                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
-            ]
-        ),
-
-        .target(
             name: "ImagePicker",
             dependencies: [
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
             ]
         ),
 
@@ -133,8 +129,7 @@ let package = Package(
             name: "VNRecognizeFeature",
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-                .product(name: "Dependencies", package: "swift-dependencies"),
-                .product(name: "ECardifySharedModels", package: "ECardifySharedModels")
+                .product(name: "Dependencies", package: "swift-dependencies")
             ]
         ),
 
@@ -154,6 +149,8 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "GRDB", package: "GRDB.swift"),
                 .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                
             ]
         ),
     ]

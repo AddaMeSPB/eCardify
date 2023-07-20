@@ -8,6 +8,7 @@ import Build
 import APIClient
 import FoundationExtension
 import SettingsFeature
+import LoggerKit
 
 public enum VerificationCodeCanceable {}
 
@@ -180,7 +181,7 @@ public struct Login: ReducerProtocol {
             case .loninResponse(.failure(let error)):
                 state.isLoginRequestInFlight = false
                 state.isValidationCodeIsSend = false
-                print(#line, self, error.localizedDescription)
+                sharedLogger.logError(error.localizedDescription)
                 return .none
 
             case let .verificationResponse(.success(loginRes)):
@@ -212,7 +213,7 @@ public struct Login: ReducerProtocol {
                                 try await keychainClient.saveCodable(loginRes.user, .user, build.identifier())
                                 try await keychainClient.saveCodable(loginRes.access, .token, build.identifier())
                             } catch {
-                                print(error.localizedDescription)
+                                sharedLogger.logError(error.localizedDescription)
                             }
                         }
                     }

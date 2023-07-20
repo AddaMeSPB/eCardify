@@ -7,7 +7,6 @@ import GenericPassFeature
 import UserDefaultsClient
 import AuthenticationView
 import NotificationHelpers
-import ECardifySharedModels
 import ComposableArchitecture
 
 public struct AppView: View {

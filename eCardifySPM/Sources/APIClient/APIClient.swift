@@ -8,6 +8,7 @@ import AppConfiguration
 import KeychainClient
 import Build
 import ECardifySharedModels
+import LoggerKit
 
 public typealias APIClient = URLRoutingClient<SiteRoute>
 
@@ -63,8 +64,8 @@ extension APIClient {
         let (data, response) = try await URLSession.shared.data(for: request)
 
         #if DEBUG
-            print(String(data: data, encoding: .utf8) .unsafelyUnwrapped)
-            print (String(data: data, encoding: .utf8))
+        sharedLogger.log(String(data: data, encoding: .utf8) .unsafelyUnwrapped)
+        sharedLogger.log(String(data: data, encoding: .utf8) ?? "")
         #endif
 
 
@@ -79,9 +80,11 @@ extension APIClient {
 
             default:
                 throw APIError.unknown
+                sharedLogger.log("unknown")
             }
         } else {
             throw APIError.unknown
+            sharedLogger.log("unknown")
         }
     }
 }

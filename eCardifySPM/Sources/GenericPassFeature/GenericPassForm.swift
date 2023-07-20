@@ -10,6 +10,8 @@ import AttachmentS3Client
 import UserDefaultsClient
 import ComposableStoreKit
 import LocalDatabaseClient
+import FoundationExtension
+import LoggerKit
 
 extension String: Identifiable {
     public typealias ID = Int
@@ -75,11 +77,8 @@ public struct GenericPassForm: ReducerProtocol {
         public var isAuthorized: Bool = true
         public var user: UserOutput? = nil
         public var walletPass: WalletPass? = nil
-        public var bottomID = 9
-
-        public var isCustomProduct: Bool {
-            self.storeKitState.type == .custom
-        }
+        public var bottomID: Int = 9
+        public var isCustomProduct: Bool = false
 
     }
 
@@ -96,7 +95,7 @@ public struct GenericPassForm: ReducerProtocol {
         case imageUploadResponse(TaskResult<String>)
         case attacmentResponse(TaskResult<AttachmentInOutPut>)
         case imageFor(ImageFor)
-        case recognizeText(VCard?)
+        case recognizeText(VNRecognizeResponse)
         case createPass
         case buildPKPassFrom(url: String)
         case passResponse(TaskResult<WalletPassResponse>)
@@ -223,20 +222,20 @@ public struct GenericPassForm: ReducerProtocol {
         case .imageUploadResponse(.success(let imageURL)):
             switch state.imageFor {
             case .logo:
-                print(#line, imageURL)
+                sharedLogger.log(imageURL)
                 state.vCard.imageURLs.append(.init(type: .logo, urlString: imageURL))
                 state.vCard.imageURLs.append(.init(type: .icon, urlString: imageURL))
             case .avatar:
-                print(#line, imageURL)
+                sharedLogger.log(imageURL)
                 state.vCard.imageURLs.append(.init(type: .thumbnail, urlString: imageURL))
             case .card:
-                print(#line, imageURL)
+                sharedLogger.log(imageURL)
             }
 
             return .none
             
         case .imageUploadResponse(.failure(let error)):
-            print(#line, error.localizedDescription)
+            sharedLogger.logError(error.localizedDescription)
             return .none
 
         case let .imagePicker(.presented(.picked(result: image))):
@@ -301,8 +300,8 @@ public struct GenericPassForm: ReducerProtocol {
                 state.cardImage = image
                 return .run { [imageFor = state.imageFor, cardImage = state.cardImage] send in
                     if imageFor == .card {
-                        let text = try await vnRecognizeClient.recognizeTextRequest(cardImage!)
-                        await send(.recognizeText(text))
+                        let vnRecognizeResponse = try await vnRecognizeClient.recognizeTextRequest(cardImage!)
+                        await send(.recognizeText(vnRecognizeResponse))
                     }
                 }
             }
@@ -337,39 +336,16 @@ public struct GenericPassForm: ReducerProtocol {
             state.imageFor = type
             return .none
 
-        case .recognizeText(let vcard):
+        case .recognizeText(let response):
 
-            
-            //            if let vcard = vcard {
-            //
-            //                if let indexName = state.passContentState!.fields
-            //                    .firstIndex(where: {$0.fieldType == .primary && $0.field.key == "member" } )  {
-            //                    state.passContentState!.fields[indexName].field.value = vcard.contact.fullName
-            //                }
-            //
-            //                if let indexPosition = state.passContentState!.fields
-            //                    .firstIndex(where: {$0.fieldType == .secondary && $0.field.key == "position" } )  {
-            //                    state.passContentState!.fields[indexPosition].field.value = vcard.position ?? ""
-            //                }
-            //
-            //            }
-            //
-            //            if let string = vcard?.vCardRepresentation {
-            //
-            //                if let indexMobiles = state.passContentState!.fields
-            //                    .firstIndex(where: {$0.fieldType == .auxiliary && $0.field.key == "mobile" } ),
-            //
-            //                    let indexEmails = state.passContentState!.fields
-            //                    .firstIndex(where: {$0.fieldType == .auxiliary && $0.field.key == "email" } )
-            //                {
-            //                    let emailAddress = extractEmailAddrIn(text: string)
-            //                    if let mobiles = try? string.findContactsNumber() {
-            //                        state.passContentState!.fields[indexMobiles].field.value = mobiles.joined(separator: ", \n")
-            //                    }
-            //                    state.passContentState!.fields[indexEmails].field.value = emailAddress.joined(separator: ",")
-            //                }
-            //
-            //            }
+            switch response.textType {
+            case .plain:
+                let vCard = textToVcard(from: response)
+                state.vCard = vCard
+            case .vcard:
+                let vCard = textToVcard(from: response)
+                state.vCard = vCard
+            }
 
             return .none
 
@@ -446,7 +422,7 @@ public struct GenericPassForm: ReducerProtocol {
                     try await localDatabase.create(wp: wp)
                     await send(.saveToServer)
                 } catch {
-                    print("\(#line) create localdatabase error:- \(error.localizedDescription)")
+                    sharedLogger.logError("create localdatabase error:- \(error.localizedDescription)")
                 }
             }
 
@@ -483,7 +459,7 @@ public struct GenericPassForm: ReducerProtocol {
                 do {
                     try await localDatabase.update(wp: wp)
                 } catch {
-                    print("\(#line) create localdatabase error:- \(error.localizedDescription)")
+                    sharedLogger.logError("create localdatabase error:- \(error.localizedDescription)")
                 }
 
                 await send(.buildPKPassFrom(url: response.urlString))
@@ -513,6 +489,7 @@ public struct GenericPassForm: ReducerProtocol {
             state.vCard.emails.append(email)
 
             return .none
+
         case .removeEmailSection(by: let uuid):
             state.vCard.emails.removeAll(where: { $0.id == uuid })
             return .none
@@ -548,5 +525,113 @@ public struct GenericPassForm: ReducerProtocol {
             state.digitalCardDesign = .init(vCard: state.vCard)
             return .none
         }
+    }
+
+    func textToVcard(from vnRecognizeResponse: VNRecognizeResponse) -> VCard {
+        var vCard = VCard(
+            contact: VCard.Contact.empty,
+            formattedName: "",
+            organization: nil,
+            position: "",
+            website: "",
+            socialMedia: .empty
+        )
+        var vCardAddress = VCard.Address(
+            type: .work,
+            postOfficeAddress: "nil",
+            extendedAddress: nil,
+            street: "",
+            locality: "",
+            region: nil,
+            postalCode: "",
+            country: ""
+        )
+
+        switch vnRecognizeResponse.textType {
+
+        case .plain:
+
+            if let stringValue = vnRecognizeResponse.string {
+
+
+                let detector = NSDataDetector(types: .all)
+
+                detector.enumerateMatches(in: stringValue) { result, matchingFlags, bool  in
+
+                    switch result?.type {
+                    case let .url(url):
+
+                        if !vCard.urls.contains(url) {
+                            vCard.urls.append(url)
+                            vCard.website = url.absoluteString
+                        }
+
+                        vCard.website = url.absoluteString
+
+
+                    case let .email(email: emails, url: url):
+
+                        let components = emails.split(separator: ":", maxSplits: 1)
+
+                        if components.count == 1 {
+                            let propertyValue = String(components[0]).trimmingCharacters(in: .whitespacesAndNewlines)
+                            vCard.emails.append(.init(text: propertyValue))
+
+                        } else {
+                            _ = emails.components(separatedBy: " ").map {
+                                vCard.emails.append(.init(text: $0))
+                            }
+                        }
+
+
+                    case let .phoneNumber(number):
+
+                        let cleanedNumber = number.replacingOccurrences(of: " ", with: "")
+                            .replacingOccurrences(of: "(", with: "")
+                            .replacingOccurrences(of: ")", with: "")
+
+
+                        vCard.telephones.append(.init(type: .work, number: cleanedNumber))
+                    case let .address(components: addressComponents):
+
+                        if let street = addressComponents[.street] {
+                            vCardAddress.street = street
+                        }
+
+                        if let postalCode = addressComponents[.zip] {
+                            vCardAddress.postalCode = postalCode
+                        }
+
+                        if let state = addressComponents[.state] {
+                            vCardAddress.region = state
+                        }
+
+                        if let city = addressComponents[.city] {
+                            vCardAddress.locality = city
+                        }
+
+                        if let country = addressComponents[.country] {
+                            vCardAddress.country = country
+                        }
+
+                        vCard.addresses.append(vCardAddress)
+
+                    case let .date(date):
+                        print(date)
+                    case .none:
+                        sharedLogger.log("NONE")
+                    }
+                }
+            }
+        case .vcard:
+            if let stringValue = vnRecognizeResponse.string,
+               let vCardRes = VCard.create(from: stringValue)
+            {
+                vCard = vCardRes
+
+            }
+        }
+
+        return vCard
     }
 }

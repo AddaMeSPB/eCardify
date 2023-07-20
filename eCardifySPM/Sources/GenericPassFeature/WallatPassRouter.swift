@@ -8,6 +8,7 @@ import ECardifySharedModels
 import ComposableArchitecture
 import VNRecognizeFeature
 import UserDefaultsClient
+import LoggerKit
 
 public extension Bundle {
     @Sendable func decode<T: Decodable>(
@@ -117,6 +118,7 @@ public struct WallatPassList: ReducerProtocol {
 
         case .onAppear:
 
+            sharedLogger.log("Hello i am here!")
             state.isAuthorized = userDefaults.boolForKey(UserDefaultKey.isAuthorized.rawValue)
 
             do {
@@ -134,7 +136,7 @@ public struct WallatPassList: ReducerProtocol {
                     await send(.wpLocalDataResponse(.success(wpl)))
                 } catch {
                     await send(.wpLocalDataResponse(.failure(error)))
-                    print("\(#line) cant find any data error:- \(error.localizedDescription)")
+                    sharedLogger.logError("\(#line) cant find any data error:- \(error.localizedDescription)")
                 }
             }
 
@@ -324,7 +326,7 @@ func extractEmailAddrIn(text: String) -> [String] {
             results.append(nsText.substring(with: matchRange))
         }
     } catch (let error) {
-        print(error)
+        sharedLogger.logError(error)
     }
 
     return results

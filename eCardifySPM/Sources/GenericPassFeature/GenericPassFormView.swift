@@ -12,6 +12,8 @@ public struct GenericPassFormView: View {
     struct ViewState: Equatable {
 
         @BindingViewState var vCard: VCard
+        @BindingViewState var storeKitState: StoreKitReducer.State
+
         var avartarImage: UIImage?
         var cardImage: UIImage?
         var logoImage: UIImage?
@@ -19,11 +21,13 @@ public struct GenericPassFormView: View {
         var isImagePickerPresented: Bool
         var isAuthorized: Bool
         var isActivityIndicatorVisible: Bool
-        var storeKitState: StoreKitReducer.State
+        var isCustomProduct: Bool
+        var bottomID: Int
 
         init(state: BindingViewStore<GenericPassForm.State>) {
 
             _vCard = state.$vCard
+            _storeKitState = state.$storeKitState
 
             self.logoImage = state.logoImage
             self.avartarImage = state.avartarImage
@@ -34,7 +38,8 @@ public struct GenericPassFormView: View {
 
             self.isAuthorized = state.isAuthorized
             self.isActivityIndicatorVisible = state.isActivityIndicatorVisible
-            self.storeKitState = state.storeKitState
+            self.isCustomProduct = state.storeKitState.type == .custom
+            self.bottomID = state.bottomID
 
         }
 
@@ -51,7 +56,7 @@ public struct GenericPassFormView: View {
 
     // MARK: - BODY
     public var body: some View {
-        WithViewStore(self.store) { viewStore in
+        WithViewStore(self.store, observe: ViewState.init) { viewStore in
             GeometryReader { proxy in
                 ScrollViewReader { value in
                     ZStack(alignment: .center) {
@@ -79,8 +84,7 @@ public struct GenericPassFormView: View {
                                     .foregroundColor(Color.gray)
 
                                 HStack {
-                                    cardImagePicker(viewStore, proxy)
-
+                                    cardImagePicker(viewStore, proxy, value)
                                     avatarImagePicker(viewStore, proxy)
                                 }
 
@@ -90,13 +94,20 @@ public struct GenericPassFormView: View {
                                     .fontWeight(.medium)
                             }
 
+                            // MARK: ContactSectionView Body
                             contactSectionView(viewStore)
 
-                            telephonesSectionView(viewStore, value)
+                            // MARK: TelephonesSectionView Body
+                            telephoneSectionView(viewStore, value)
 
+                            // MARK: EmailsSectionView Body
                             emailsSectionView(viewStore, value)
 
+                            // MARK: - AddressesSectionView Body
                             addressesSectionView(viewStore, value)
+
+                            //MARK: WebSite
+                            webSiteSectionView(viewStore)
 
                             Group {
                                 Picker("Choice Product Type 👉🏼", selection: viewStore.$storeKitState.type) {
@@ -119,7 +130,7 @@ public struct GenericPassFormView: View {
                                 } label: {
 
                                     HStack {
-                                        Text("Pick ")
+                                        Text("Pick or Preview")
                                             .font(.title)
                                             .foregroundColor(viewStore.isCustomProduct ? Color.blue :  Color.gray)
                                             .fontWeight(.heavy)
@@ -133,7 +144,7 @@ public struct GenericPassFormView: View {
                                             .fontWeight(.heavy)
                                     }
                                     .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0)
-                                    .padding(.horizontal, 30)
+                                    .padding(.horizontal, 10)
 
 
                                     if !viewStore.isCustomProduct {
@@ -149,6 +160,7 @@ public struct GenericPassFormView: View {
                             .listRowBackground(viewStore.isCustomProduct ? Color.yellow : Color.gray.opacity(0.3))
 
                             //MARK: Payment
+                            
                             HStack {
 
                                 if let product = viewStore.storeKitState.product {
@@ -236,8 +248,8 @@ public struct GenericPassFormView: View {
         }
     }
 
-    // MARK: - logoImagePicker
-    fileprivate func logoImagePicker(_ viewStore: ViewStore<GenericPassForm.State, GenericPassForm.Action>, _ proxy: GeometryProxy) -> some View {
+    // MARK: - logoImagePicker func
+    fileprivate func logoImagePicker(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>, _ proxy: GeometryProxy) -> some View {
         Button {
             viewStore.send(.isImagePicker(isPresented: true))
             viewStore.send(.imageFor(.logo))
@@ -260,60 +272,122 @@ public struct GenericPassFormView: View {
 
             }
         }
+        .buttonStyle(BorderlessButtonStyle())
     }
 
-    // MARK: - cardImagePicker
+    // MARK: - cardImagePicker func
     @ViewBuilder
-    fileprivate func cardImagePicker(_ viewStore: ViewStore<GenericPassForm.State, GenericPassForm.Action>, _ proxy: GeometryProxy ) -> some View {
-        if viewStore.cardImage == nil {
-            VStack {
+    fileprivate func cardImagePicker(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>, _ proxy: GeometryProxy, _ value: ScrollViewProxy) -> some View {
+
+        if viewStore.isCustomProduct {
+            if let uiImage = viewStore.cardImage {
                 Button {
                     viewStore.send(.isImagePicker(isPresented: true))
                     viewStore.send(.imageFor(.card))
                 } label: {
-                    Image(systemName: "arrow.up.doc.fill")
+                    Image(uiImage: uiImage)
                         .resizable()
-                        .frame(width: 60, height: 60)
-                        .padding()
+                        .cornerRadius(15)
+                        .overlay(alignment: .bottomTrailing) {
+                            Button {
+                                viewStore.send(.isImagePicker(isPresented: true))
+                                viewStore.send(.imageFor(.card))
+                            } label: {
 
-                    Text("Upload visiting old card.")
-                        .font(.body)
-                        .fontWeight(.medium)
-                        .padding(.horizontal, 15)
+                                Image(systemName: "rectangle.badge.checkmark")
+                                    .resizable()
+                                    .frame(width: 60, height: 60)
+                                    .padding()
+                            }
+                            .frame(width: proxy.size.width / 2.3,   height: 200)
+                        }
+                        .frame(width: proxy.size.width / 2.3,   height: 200)
                 }
-                .foregroundColor(.gray)
+                .buttonStyle(BorderlessButtonStyle())
+
+            } else {
+                VStack {
+                    Button {
+                        viewStore.send(.isImagePicker(isPresented: true))
+                        viewStore.send(.imageFor(.card))
+                    } label: {
+                        VStack {
+                            Image(systemName: "arrow.up.doc.fill")
+                                .resizable()
+                                .frame(width: 60, height: 60)
+                                .padding()
+
+                            Text("Upload visiting old card.")
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 15)
+                        }
+                    }
+
+                    .foregroundColor(.gray)
+                    .frame(width: proxy.size.width / 2.3,   height: 200)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
+                            .padding(5)
+                    )
+                    .buttonStyle(BorderlessButtonStyle())
+                }
                 .frame(width: proxy.size.width / 2.3,   height: 200)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 15)
-                        .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
-                        .padding(5)
-                )
-
             }
-            .frame(width: proxy.size.width / 2.3,   height: 200)
-
         } else {
-
-            Button {
-                viewStore.send(.isImagePicker(isPresented: true))
-                viewStore.send(.imageFor(.card))
+            Menu {
+                Text("To activate this function,")
+                Text("Please change your product type below.")
+                Button {
+                    withAnimation(.easeInOut(duration: 90)) {
+                        value.scrollTo(viewStore.bottomID, anchor: .bottom)
+                    }
+                } label: {
+                    Text("click here to change your product type 👇🏼")
+                }
             } label: {
 
-                Image(systemName: "rectangle.badge.checkmark")
-                    .resizable()
-                    .frame(width: 60, height: 60)
-                    .padding()
-            }
-            .frame(width: proxy.size.width / 2.3,   height: 200)
-        }
+                VStack {
+                    Button {
+                        viewStore.send(.isImagePicker(isPresented: true))
+                        viewStore.send(.imageFor(.card))
+                    } label: {
+                        VStack {
+                            Image(systemName: "arrow.up.doc.fill")
+                                .resizable()
+                                .frame(width: 60, height: 60)
+                                .padding()
 
+                            Text("Upload visiting old card.")
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 15)
+                        }
+                    }
+                    .disabled(!viewStore.isCustomProduct)
+                    .foregroundColor(viewStore.isCustomProduct ? Color.blue : Color.gray)
+                    .frame(width: proxy.size.width / 2.3,   height: 200)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
+                            .padding(5)
+                    )
+                    .buttonStyle(BorderlessButtonStyle())
+                }
+                .frame(width: proxy.size.width / 2.3,   height: 200)
+
+
+
+            }
+        }
     }
 
-    // MARK: - avatarImagePicker
+    // MARK: - avatarImagePicker func
     @ViewBuilder
-    fileprivate func avatarImagePicker(_ viewStore: ViewStore<GenericPassForm.State, GenericPassForm.Action>, _ proxy: GeometryProxy) -> some View {
-        if let uiimage = viewStore.avartarImage {
-            Image(uiImage: uiimage)
+    fileprivate func avatarImagePicker(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>, _ proxy: GeometryProxy) -> some View {
+        if let uiImage = viewStore.avartarImage {
+            Image(uiImage: uiImage)
                 .resizable()
                 .cornerRadius(15)
                 .overlay(alignment: .bottomTrailing) {
@@ -328,6 +402,7 @@ public struct GenericPassFormView: View {
                             .padding(15)
 
                     }
+                    .buttonStyle(BorderlessButtonStyle())
                 }
                 .frame(width: proxy.size.width / 2.3,   height: 200)
 
@@ -336,15 +411,17 @@ public struct GenericPassFormView: View {
                 viewStore.send(.isImagePicker(isPresented: true))
                 viewStore.send(.imageFor(.avatar))
             } label: {
-                Image(systemName: "person.fill.viewfinder")
-                    .resizable()
-                    .frame(width: 60, height: 60)
-                    .padding()
-                    .cornerRadius(15)
+                VStack {
+                    Image(systemName: "person.fill.viewfinder")
+                        .resizable()
+                        .frame(width: 60, height: 60)
+                        .padding()
+                        .cornerRadius(15)
 
-                Text("*Avatar")
-                    .font(.title2)
-                    .fontWeight(.medium)
+                    Text("*Avatar")
+                        .font(.title2)
+                        .fontWeight(.medium)
+                }
             }
             .foregroundColor(.gray)
             .frame(width: proxy.size.width / 2.3,   height: 200)
@@ -353,12 +430,13 @@ public struct GenericPassFormView: View {
                     .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
                     .padding(5)
             )
+            .buttonStyle(BorderlessButtonStyle())
         }
     }
 
-    // MARK: - contactSectionView
+    // MARK: - contactSectionView func
     @MainActor
-    fileprivate func contactSectionView(_ viewStore: ViewStore<GenericPassForm.State, GenericPassForm.Action>) -> some View {
+    fileprivate func contactSectionView(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>) -> some View {
 
         Section {
 
@@ -407,9 +485,9 @@ public struct GenericPassFormView: View {
 
     }
 
-    // MARK: - telephonesSectionView
-    @MainActor
-    fileprivate func telephonesSectionView(_ viewStore: ViewStore<GenericPassForm.State, GenericPassForm.Action>, _ value: ScrollViewProxy) -> some View {
+
+    // MARK: telephoneSectionView func
+    fileprivate func telephoneSectionView(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>, _ value: ScrollViewProxy) -> some View {
         Section {
 
             ForEach(viewStore.$vCard.telephones, id: \.id) { item in
@@ -501,9 +579,8 @@ public struct GenericPassFormView: View {
         }
     }
 
-    // MARK: - emailsSectionView
-    @MainActor
-    fileprivate func emailsSectionView(_ viewStore: ViewStore<GenericPassForm.State, GenericPassForm.Action>, _ value: ScrollViewProxy) -> some View {
+    // MARK: EmailsSectionView func
+    fileprivate func emailsSectionView(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>, _ value: ScrollViewProxy) -> some View {
         Section {
             ForEach(viewStore.$vCard.emails, id: \.id) { item in
                 HStack {
@@ -576,9 +653,37 @@ public struct GenericPassFormView: View {
         }
     }
 
-    // MARK: - addressesSectionView
-    @MainActor
-    fileprivate func addressesSectionView(_ viewStore: ViewStore<GenericPassForm.State, GenericPassForm.Action>, _ value: ScrollViewProxy) -> some View {
+    // MARK: URLsSectionView func
+    fileprivate func webSiteSectionView(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>) -> some View {
+        Section {
+            HStack {
+                TextField(
+                    "",
+                    text: viewStore.$vCard.website.orEmpty,
+                    prompt: Text("WebSite")
+                        .font(.title2)
+                        .fontWeight(.medium)
+                )
+                .keyboardType(.URL)
+                .textContentType(.URL)
+                .disableAutocorrection(true)
+                .font(.title2)
+                .fontWeight(.medium)
+                .padding(.vertical, 10)
+            }
+
+        } header: {
+            HStack {
+                Text("Web site OPTIONAL")
+                    .font(.title2)
+                    .fontWeight(.medium)
+            }
+            .padding(.vertical, 10)
+        }
+    }
+
+    // MARK: AddressesSectionView
+    fileprivate func addressesSectionView(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>, _ value: ScrollViewProxy) -> some View {
         Section {
             ForEach(viewStore.$vCard.addresses, id: \.id) { item in
 
@@ -764,4 +869,3 @@ private func cost(product: StoreKitClient.Product) -> String {
     formatter.locale = product.priceLocale
     return formatter.string(from: product.price) ?? ""
 }
-

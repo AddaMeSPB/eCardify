@@ -3,7 +3,6 @@ import Vision
 import Foundation
 import Dependencies
 import ComposableArchitecture
-import ECardifySharedModels
 
 enum VNRecognizeError: Error {
     case invalid
@@ -11,8 +10,30 @@ enum VNRecognizeError: Error {
     case fatalError(String)
 }
 
+public struct VNRecognizeResponse: Codable, Equatable {
+
+    public enum TextType: String, Codable, Equatable {
+        case plain, vcard
+    }
+
+    public init(
+        string: String? = nil,
+        textType: TextType = .plain
+    ) {
+        self.string = string
+        self.textType = textType
+    }
+
+    public var string: String?
+    public var textType: TextType
+
+    public static var empty: Self = .init()
+    public static var mock: Self = .init(string: "https://addame.com", textType: .vcard)
+    public static var fullQRString: Self = .init(string: "BEGIN:VCARD\nN:Saroar;Khandoker;\nTEL;TYPE=work,VOICE:+351000000000\nTEL;TYPE=home,VOICE:+79218888888\nEMAIL:fake9@gmail.com\nORG:Addame\nTITLE:IOS Developer\nADR;TYPE=WORK,PREF:;;R. Prof. Bento de Jesus Caraça 52;R/C EQS;1600-605;PORTUGAL\nURL:https://addame.com\nEND:VCARD", textType: .vcard)
+}
+
 public struct VNRecognizeClient {
-    public typealias RecognizeTextHandler = @Sendable (UIImage) async throws -> VCard?
+    public typealias RecognizeTextHandler = @Sendable (UIImage) async throws -> VNRecognizeResponse
 
     public let recognizeTextRequest: RecognizeTextHandler
 
@@ -23,108 +44,57 @@ public struct VNRecognizeClient {
 
 extension VNRecognizeClient {
 
-    public static var live: Self = .init { image in
+    public static var live: Self {
 
-        return try await withCheckedThrowingContinuation { continuation in
-            var returnValue: String = ""
-            var isQrCodeDetection = true
+        return Self(recognizeTextRequest: { image in
+            return try await withCheckedThrowingContinuation { continuation in
+                var returnValue: String = ""
 
-            var vnRecognizeTextRequest: VNRecognizeTextRequest {
-                let request = VNRecognizeTextRequest { request, error in
-                    guard let observations = request.results as? [VNRecognizedTextObservation] else {
-                        return continuation.resume(throwing: VNRecognizeError.fatalError("Received invalid observations"))
-                    }
+                let qrCodeDetectionRequest = VNDetectBarcodesRequest { request, error in
+                    guard let observations = request.results as? [VNBarcodeObservation], let qrCode = observations.first else {
+                        // QR code not detected, fallback to text recognition
+                        let vnRecognizeTextRequest = VNRecognizeTextRequest { request, error in
+                            guard let observations = request.results as? [VNRecognizedTextObservation] else {
+                                return continuation.resume(throwing: VNRecognizeError.fatalError("Received invalid observations"))
+                            }
 
-                    let recognizedTexts = observations
-                        .map { $0.topCandidates(1).first }
-                        .compactMap { $0?.string }
+                            let recognizedTexts = observations
+                                .map { $0.topCandidates(1).first }
+                                .compactMap { $0?.string }
 
-                    returnValue = recognizedTexts.joined(separator: " ")
-//                    continuation.resume(
-//                        returning: VirtualCard(vnRecognizeString: returnValue)
-//                    )
-
-                }
-
-                return request
-
-            }
-
-            var qrCodeDetectionRequest : VNDetectBarcodesRequest {
-                let request = VNDetectBarcodesRequest { (request, error) in
-                    if let error = error as NSError? {
-                        continuation.resume(throwing: VNRecognizeError.error(error.localizedDescription))
-                    }
-
-                    guard let observations = request.results as? [VNBarcodeObservation] else {
-                        return continuation.resume(throwing: VNRecognizeError.error("request results empry: []"))
-                    }
-
-                    print("Observations are \(observations)")
-
-                    let qrCodes = observations.map { $0.payloadStringValue }.compactMap { $0 }
-
-                    if qrCodes.count == 0 {
-                        isQrCodeDetection = false
-                        runTextRequest(image: image, continuation, tRequests: [vnRecognizeTextRequest], qrVNDetectBarcodesRequest: nil)
-                    } else {
-                        returnValue = qrCodes.joined(separator: " ")
-                        let vCard = parseVCard(returnValue)
-//                        continuation.resume(
-//                            returning: VCard(vcard: vCard)
-//                        )
-                    }
-                }
-
-                request.revision = VNDetectBarcodesRequestRevision1
-                return request
-            }
-
-            func runTextRequest(
-                image: UIImage,
-                _ continuation: CheckedContinuation<VCard?, Error>,
-                tRequests: [VNRecognizeTextRequest]?,
-                qrVNDetectBarcodesRequest: [VNDetectBarcodesRequest]?
-            ) {
-                DispatchQueue.global(qos: .userInitiated).async {
-                    guard let img = image.cgImage else {
-                        return continuation.resume(throwing: VNRecognizeError.error("Missing image to scan"))
-                    }
-
-                    let handler = VNImageRequestHandler(cgImage: img, options: [:])
-
-                    do {
-                        if tRequests != nil {
-                            try handler.perform(tRequests!)
-                        } else {
-                            try handler.perform(qrVNDetectBarcodesRequest!)
+                            returnValue = recognizedTexts.joined(separator: " ")
+                            let vNRecognizeRes = VNRecognizeResponse(string: returnValue)
+                            continuation.resume(returning: vNRecognizeRes)
                         }
-                    } catch {
-                        continuation.resume(throwing: VNRecognizeError.fatalError(error.localizedDescription))
+
+                        let handler = VNImageRequestHandler(cgImage: image.cgImage!, orientation: .up, options: [:])
+                        try? handler.perform([vnRecognizeTextRequest])
+                        return
                     }
 
+                    // QR code detected, process the payload
+                    returnValue = qrCode.payloadStringValue ?? ""
+                    let vNRecognizeRes = VNRecognizeResponse(string: returnValue, textType: .vcard)
+                    continuation.resume(returning: vNRecognizeRes)
                 }
-            }
 
-            if isQrCodeDetection {
-                let requests = [qrCodeDetectionRequest]
-                runTextRequest(image: image, continuation, tRequests: nil, qrVNDetectBarcodesRequest: requests)
-            } else {
-                let requests = [vnRecognizeTextRequest]
-                runTextRequest(image: image, continuation, tRequests: requests, qrVNDetectBarcodesRequest: nil)
+                let handler = VNImageRequestHandler(cgImage: image.cgImage!, orientation: .up, options: [:])
+                try? handler.perform([qrCodeDetectionRequest])
             }
-        }
+        })
     }
+
+
 }
+
 
 extension VNRecognizeClient {
     public static let empty = Self(
-        recognizeTextRequest: { _ in VCard.empty }
+        recognizeTextRequest: { _ in .empty }
     )
 
     public static let mock = Self(
-        recognizeTextRequest: { _ in VCard.empty
-        }
+        recognizeTextRequest: { _ in .mock }
     )
 }
 
@@ -141,58 +111,4 @@ extension DependencyValues {
         get { self[VNRecognizeClientKey.self] }
         set { self[VNRecognizeClientKey.self] = newValue }
     }
-}
-
-func parseVCard(_ vCardString: String) -> VCard {
-    var fullName = ""
-    var nameComponents = ""
-    var title = ""
-    var cellPhone = ""
-    var workPhone = ""
-    var homePhone = ""
-    var imageUrl = ""
-    var workEmail = ""
-    var website = ""
-    var address = ""
-    var organization = ""
-
-    let lines = vCardString.components(separatedBy: .newlines)
-    for line in lines {
-        let components = line.components(separatedBy: ":;")
-        if components.count >= 2 {
-            let property = components[0]
-            let value = components[1]
-
-            switch property {
-            case "FN":
-                fullName = value
-            case "N":
-                nameComponents = value
-            case "TITLE":
-                title = value
-            case "TEL;CELL":
-                cellPhone = value
-            case "TEL;WORK;VOICE":
-                workPhone = value
-            case "TEL;HOME;VOICE":
-                homePhone = value
-
-                // this have to test
-            case  "PHOTO;VALUE=URL":
-                imageUrl = value
-            case "EMAIL;WORK;INTERNET":
-                workEmail = value
-            case "URL":
-                website = value
-            case "ADR":
-                address = value
-            case "ORG":
-                organization = value
-            default:
-                break
-            }
-        }
-    }
-
-    return .empty
 }

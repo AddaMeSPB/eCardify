@@ -4,7 +4,7 @@ import UIKit
 import APIClient
 import Foundation
 import NotificationHelpers
-import ECardifySharedModels
+import ECSharedModels
 import ComposableArchitecture
 import RemoteNotificationsClient
 import ComposableUserNotifications

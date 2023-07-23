@@ -1,5 +1,5 @@
-import SwiftUI
 import WebKit
+import SwiftUI
 
 public struct TermsAndPrivacyWebRepresentableView: UIViewRepresentable {
   let urlString: String?

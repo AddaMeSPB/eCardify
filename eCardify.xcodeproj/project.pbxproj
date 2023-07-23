@@ -13,10 +13,22 @@
 		C3A452432A07F4AD009D8F95 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3A452422A07F4AD009D8F95 /* Assets.xcassets */; };
 		C3A452472A07F4AD009D8F95 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3A452462A07F4AD009D8F95 /* Preview Assets.xcassets */; };
 		C3A452502A07F4D7009D8F95 /* Pass.json in Resources */ = {isa = PBXBuildFile; fileRef = C3A4524F2A07F4D7009D8F95 /* Pass.json */; };
-		C3EA55A02A6973330016B522 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = C3EA559F2A6973330016B522 /* AppFeature */; };
-		C3EA55A22A6973490016B522 /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = C3EA55A12A6973490016B522 /* AppView */; };
+		C3B189C72A6C549E00EDE004 /* eCardifyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B189C62A6C549E00EDE004 /* eCardifyUITests.swift */; };
+		C3B189C92A6C549E00EDE004 /* eCardifyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B189C82A6C549E00EDE004 /* eCardifyUITestsLaunchTests.swift */; };
 		C3FDFDBC2A50022F00229340 /* Production.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C3FDFDBB2A50022F00229340 /* Production.xcconfig */; };
+		C3FFD1702A6A5E6D003B9A09 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = C3FFD16F2A6A5E6D003B9A09 /* AppFeature */; };
+		C3FFD1722A6A5E77003B9A09 /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = C3FFD1712A6A5E77003B9A09 /* AppView */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C3B189CA2A6C549E00EDE004 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3A452332A07F4AC009D8F95 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3A4523A2A07F4AC009D8F95;
+			remoteInfo = eCardify;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		C3118F3A2A532CD500D77A10 /* WalletPass.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WalletPass.json; sourceTree = "<group>"; };
@@ -28,6 +40,9 @@
 		C3A452442A07F4AD009D8F95 /* eCardify.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = eCardify.entitlements; sourceTree = "<group>"; };
 		C3A452462A07F4AD009D8F95 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C3A4524F2A07F4D7009D8F95 /* Pass.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Pass.json; sourceTree = "<group>"; };
+		C3B189C42A6C549E00EDE004 /* eCardifyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = eCardifyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3B189C62A6C549E00EDE004 /* eCardifyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eCardifyUITests.swift; sourceTree = "<group>"; };
+		C3B189C82A6C549E00EDE004 /* eCardifyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eCardifyUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C3DEA2802A0E962600EC76C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C3FDFDB72A4F28CE00229340 /* Cards.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cards.storekit; sourceTree = "<group>"; };
 		C3FDFDB82A4F45B100229340 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -39,9 +54,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3FFD1722A6A5E77003B9A09 /* AppView in Frameworks */,
 				C399ED832A69A7DB0097D485 /* StoreKit.framework in Frameworks */,
-				C3EA55A02A6973330016B522 /* AppFeature in Frameworks */,
-				C3EA55A22A6973490016B522 /* AppView in Frameworks */,
+				C3FFD1702A6A5E6D003B9A09 /* AppFeature in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C3B189C12A6C549E00EDE004 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +84,7 @@
 			children = (
 				C3FDFDB72A4F28CE00229340 /* Cards.storekit */,
 				C3A4523D2A07F4AC009D8F95 /* eCardify */,
+				C3B189C52A6C549E00EDE004 /* eCardifyUITests */,
 				C3A4523C2A07F4AC009D8F95 /* Products */,
 				C3DEA2812A0E962F00EC76C1 /* Frameworks */,
 			);
@@ -71,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				C3A4523B2A07F4AC009D8F95 /* eCardify.app */,
+				C3B189C42A6C549E00EDE004 /* eCardifyUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -96,6 +120,15 @@
 				C3A452462A07F4AD009D8F95 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		C3B189C52A6C549E00EDE004 /* eCardifyUITests */ = {
+			isa = PBXGroup;
+			children = (
+				C3B189C62A6C549E00EDE004 /* eCardifyUITests.swift */,
+				C3B189C82A6C549E00EDE004 /* eCardifyUITestsLaunchTests.swift */,
+			);
+			path = eCardifyUITests;
 			sourceTree = "<group>";
 		};
 		C3DEA2812A0E962F00EC76C1 /* Frameworks */ = {
@@ -124,12 +157,30 @@
 			);
 			name = eCardify;
 			packageProductDependencies = (
-				C3EA559F2A6973330016B522 /* AppFeature */,
-				C3EA55A12A6973490016B522 /* AppView */,
+				C3FFD16F2A6A5E6D003B9A09 /* AppFeature */,
+				C3FFD1712A6A5E77003B9A09 /* AppView */,
 			);
 			productName = eCardify;
 			productReference = C3A4523B2A07F4AC009D8F95 /* eCardify.app */;
 			productType = "com.apple.product-type.application";
+		};
+		C3B189C32A6C549E00EDE004 /* eCardifyUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C3B189CE2A6C549E00EDE004 /* Build configuration list for PBXNativeTarget "eCardifyUITests" */;
+			buildPhases = (
+				C3B189C02A6C549E00EDE004 /* Sources */,
+				C3B189C12A6C549E00EDE004 /* Frameworks */,
+				C3B189C22A6C549E00EDE004 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C3B189CB2A6C549E00EDE004 /* PBXTargetDependency */,
+			);
+			name = eCardifyUITests;
+			productName = eCardifyUITests;
+			productReference = C3B189C42A6C549E00EDE004 /* eCardifyUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -143,6 +194,10 @@
 				TargetAttributes = {
 					C3A4523A2A07F4AC009D8F95 = {
 						CreatedOnToolsVersion = 14.3;
+					};
+					C3B189C32A6C549E00EDE004 = {
+						CreatedOnToolsVersion = 14.3.1;
+						TestTargetID = C3A4523A2A07F4AC009D8F95;
 					};
 				};
 			};
@@ -160,6 +215,7 @@
 			projectRoot = "";
 			targets = (
 				C3A4523A2A07F4AC009D8F95 /* eCardify */,
+				C3B189C32A6C549E00EDE004 /* eCardifyUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -177,6 +233,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C3B189C22A6C549E00EDE004 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -188,7 +251,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C3B189C02A6C549E00EDE004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3B189C92A6C549E00EDE004 /* eCardifyUITestsLaunchTests.swift in Sources */,
+				C3B189C72A6C549E00EDE004 /* eCardifyUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C3B189CB2A6C549E00EDE004 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3A4523A2A07F4AC009D8F95 /* eCardify */;
+			targetProxy = C3B189CA2A6C549E00EDE004 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		C3A452482A07F4AD009D8F95 /* Debug */ = {
@@ -310,7 +390,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = eCardify/eCardify.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"eCardify/Preview Content\"";
 				DEVELOPMENT_TEAM = 6989658CU5;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -353,7 +433,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = eCardify/eCardify.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"eCardify/Preview Content\"";
 				DEVELOPMENT_TEAM = 6989658CU5;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -388,6 +468,45 @@
 			};
 			name = Release;
 		};
+		C3B189CC2A6C549E00EDE004 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6989658CU5;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cardify.addame.com.eCardifyUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = eCardify;
+			};
+			name = Debug;
+		};
+		C3B189CD2A6C549E00EDE004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6989658CU5;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cardify.addame.com.eCardifyUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = eCardify;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -409,14 +528,23 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		C3B189CE2A6C549E00EDE004 /* Build configuration list for PBXNativeTarget "eCardifyUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3B189CC2A6C549E00EDE004 /* Debug */,
+				C3B189CD2A6C549E00EDE004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C3EA559F2A6973330016B522 /* AppFeature */ = {
+		C3FFD16F2A6A5E6D003B9A09 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;
 		};
-		C3EA55A12A6973490016B522 /* AppView */ = {
+		C3FFD1712A6A5E77003B9A09 /* AppView */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppView;
 		};

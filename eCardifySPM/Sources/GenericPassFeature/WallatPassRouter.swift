@@ -1,14 +1,14 @@
 import BSON
 import PassKit
 import SwiftUI
-import APIClient
+import LoggerKit
+//import APIClient
 import Foundation
 import SettingsFeature
-import ECardifySharedModels
-import ComposableArchitecture
 import VNRecognizeFeature
 import UserDefaultsClient
-import LoggerKit
+import ECSharedModels
+import ComposableArchitecture
 
 public extension Bundle {
     @Sendable func decode<T: Decodable>(
@@ -154,7 +154,7 @@ public struct WallatPassList: ReducerProtocol {
                     }
                 )
             }
-
+            
         case .openSheetLogin:
             return .none
 

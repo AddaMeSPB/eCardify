@@ -1,9 +1,9 @@
 
-/// you can do that by select Reducer then click Command + Option + e
-import Foundation
-import ComposableArchitecture
-import ComposableStoreKit
+
 import StoreKit
+import Foundation
+import ComposableStoreKit
+import ComposableArchitecture
 
 public struct StoreKitReducer: ReducerProtocol {
     public struct State: Equatable {

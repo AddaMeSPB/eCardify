@@ -1,7 +1,7 @@
-import SwiftUI
-import ComposableArchitecture
-import SwiftUIExtension
 import WebKit
+import SwiftUI
+import SwiftUIExtension
+import ComposableArchitecture
 
 public class WebViewModel: ObservableObject {
     @Published public var link: String

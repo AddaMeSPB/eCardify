@@ -14,7 +14,6 @@ extension Image {
     }
 
     public var cgImage: CGImage? {
-
         guard let uiImage = self.uiImage() else { return nil }
         return uiImage.cgImage
     }

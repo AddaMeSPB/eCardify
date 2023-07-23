@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Foundation
-import ECardifySharedModels
+import ECSharedModels
 import ComposableArchitecture
 
 extension CardDesignListReducer.State {

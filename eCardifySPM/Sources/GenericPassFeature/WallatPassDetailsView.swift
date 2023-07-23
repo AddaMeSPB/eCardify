@@ -1,16 +1,8 @@
-//
-//  SwiftUIView.swift
-//  
-//
-//  Created by Saroar Khandoker on 03.07.2023.
-//
-
+import PassKit
 import SwiftUI
 import Foundation
+import ECSharedModels
 import ComposableArchitecture
-import ECardifySharedModels
-import Foundation
-import PassKit
 
 public struct WallatPassDetails: ReducerProtocol {
 

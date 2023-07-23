@@ -1,6 +1,6 @@
+import Foundation
 import Dependencies
 
-import Foundation
 extension URLResponse {
     func isResponseOK() -> Bool {
         if let httpResponse = self as? HTTPURLResponse {

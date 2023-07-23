@@ -1,7 +1,7 @@
-import Foundation
-import ECardifySharedModels
-import FoundationExtension
 import LoggerKit
+import Foundation
+import ECSharedModels
+import FoundationExtension
 
 extension VCard {
 

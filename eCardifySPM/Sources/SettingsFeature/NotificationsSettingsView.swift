@@ -1,6 +1,6 @@
-import ComposableArchitecture
 import SwiftUI
 import FoundationExtension
+import ComposableArchitecture
 
 struct NotificationsSettingsView: View {
   let store: StoreOf<Settings>

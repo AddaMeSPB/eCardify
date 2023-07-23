@@ -1,5 +1,4 @@
 import Build
-import Combine
 import LoggerKit
 import InfoPlist
 import Foundation
@@ -8,7 +7,7 @@ import Dependencies
 import KeychainClient
 import AppConfiguration
 import FoundationExtension
-import ECardifySharedModels
+import ECSharedModels
 
 public typealias APIClient = URLRoutingClient<SiteRoute>
 

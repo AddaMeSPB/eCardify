@@ -24,11 +24,13 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.56.0"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "0.1.0"),
         .package(url: "https://github.com/AddaMeSPB/CommonTCALibraries.git", branch: "main"),
-        .package(url: "https://github.com/AddaMeSPB/ECardifySharedModels.git", branch: "main"),
+        .package(url: "https://github.com/AddaMeSPB/ECSharedModels.git", from: "1.1.1"),
+//      .package(path: "/Users/alif/Developer/Swift/MySideProjects/VertualBusinessCard/ECSharedModels"),
 
         .package(url: "https://github.com/soto-project/soto.git", from: "6.0.0"),
         .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay", from: "0.2.0"),
-        .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0"),
+        .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0")
+        
     ],
     targets: [
         .target(
@@ -36,10 +38,9 @@ let package = Package(
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
-                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
-                .product(name: "RemoteNotificationsClient", package: "CommonTCALibraries"),
-                "APIClient", "AttachmentS3Client", "GenericPassFeature", "AuthenticationCore",
-                "SettingsFeature"
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
+                "APIClient", "AttachmentS3Client", "GenericPassFeature",
+                "AuthenticationCore", "SettingsFeature"
             ]
         ),
 
@@ -48,8 +49,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
-                .product(name: "RemoteNotificationsClient", package: "CommonTCALibraries"),
-                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
                 "AppFeature", "GenericPassFeature", "AuthenticationView", "SettingsFeature"
             ]
         ),
@@ -64,9 +64,9 @@ let package = Package(
         .target(
             name: "APIClient",
             dependencies: [
-                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
-                .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 .product(name: "Dependencies", package: "swift-dependencies"),
+                .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
                 "AppConfiguration"
             ]
         ),
@@ -76,7 +76,7 @@ let package = Package(
             dependencies: [
                 .product(name: "SotoS3", package: "soto"),
                 .product(name: "Dependencies", package: "swift-dependencies"),
-                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries")
             ]
         ),
@@ -93,7 +93,7 @@ let package = Package(
             name: "AuthenticationCore",
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 "APIClient", "SettingsFeature"
             ]
@@ -103,7 +103,7 @@ let package = Package(
             name: "AuthenticationView",
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 "AuthenticationCore"
             ],
@@ -116,7 +116,7 @@ let package = Package(
             name: "SettingsFeature",
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries")
             ]
         ),
@@ -132,23 +132,25 @@ let package = Package(
         .target(
             name: "GenericPassFeature",
             dependencies: [
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 "ImagePicker", "VNRecognizeFeature", "AttachmentS3Client", "APIClient",
                 "LocalDatabaseClient", "SettingsFeature"
             ]
         ),
+        .testTarget(name: "GenericPassFormTests", dependencies: ["GenericPassFeature"]),
+        .testTarget(name: "GenericPassFormUITests", dependencies: ["GenericPassFeature"]),
 
         .target(
             name: "LocalDatabaseClient",
             dependencies: [
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "GRDB", package: "GRDB.swift"),
-                .product(name: "ECardifySharedModels", package: "ECardifySharedModels"),
-                .product(name: "Dependencies", package: "swift-dependencies")
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ]
-        ),
+        )
     ]
 )
 

@@ -1,5 +1,5 @@
 import GRDB
-import ECardifySharedModels
+import ECSharedModels
 
 extension WalletPass: FetchableRecord {
     public static let databaseTableName = collectionName

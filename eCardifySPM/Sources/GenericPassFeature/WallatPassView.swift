@@ -1,8 +1,8 @@
 import SwiftUI
-import ECardifySharedModels
-import ComposableArchitecture
 import ImagePicker
 import SettingsFeature
+import ECSharedModels
+import ComposableArchitecture
 
 public struct WallatPassView: View {
 
@@ -126,6 +126,7 @@ public struct WallatPassView: View {
                             .frame(width: 40, height: 40)
                     }
                     .padding(32)
+                    .accessibility(identifier: "plus.square.fill")
                 }
             }
             .sheet(

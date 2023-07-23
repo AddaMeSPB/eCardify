@@ -1,8 +1,8 @@
-import SwiftUI
-import ComposableArchitecture
-import ECardifySharedModels
 import Build
+import SwiftUI
 import SwiftUIExtension
+import ECSharedModels
+import ComposableArchitecture
 
 public struct SettingsView: View {
 

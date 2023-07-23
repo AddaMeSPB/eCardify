@@ -1,6 +1,6 @@
-import Foundation
 import GRDB
-import ECardifySharedModels
+import Foundation
+import ECSharedModels
 
 /// AppDatabase lets the application access the database.
 ///

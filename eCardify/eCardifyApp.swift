@@ -45,11 +45,25 @@ struct eCardifyApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
-      WindowGroup {
-        AppView(store: self.appDelegate.store)
-      }
-      .onChange(of: self.scenePhase) {
-        self.appDelegate.viewStore.send(.didChangeScenePhase($0))
-      }
+        WindowGroup {
+            if _XCTIsTesting || ProcessInfo.processInfo.environment["UITesting"] == "true" {
+                UITestingView()
+            } else {
+
+                AppView(store: self.appDelegate.store)
+                    .onChange(of: self.scenePhase) {
+                        self.appDelegate.viewStore.send(.didChangeScenePhase($0))
+                    }
+            }
+        }
     }
+}
+
+
+struct UITestingView: View {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
+  var body: some View {
+      AppView(store: self.appDelegate.store)
+  }
 }

@@ -2,9 +2,9 @@ import BSON
 import SwiftUI
 import Foundation
 import ImagePicker
-import ECardifySharedModels
-import ComposableArchitecture
+import ECSharedModels
 import ComposableStoreKit
+import ComposableArchitecture
 
 public struct GenericPassFormView: View {
     let store: StoreOf<GenericPassForm>
@@ -34,7 +34,7 @@ public struct GenericPassFormView: View {
             self.cardImage = state.cardImage
 
             self.isImagePickerPresented = state.imagePicker != nil
-            self.isFormValid = state.vCard.imageURLs.count >= 3
+            self.isFormValid = state.vCard.isVCardValid
 
             self.isAuthorized = state.isAuthorized
             self.isActivityIndicatorVisible = state.isActivityIndicatorVisible
@@ -79,14 +79,29 @@ public struct GenericPassFormView: View {
                                     .padding(.vertical, 10)
                                 }
                                 .frame(height: 60)
+
                                 Text("***Organization/company/self employee(put your name)")
                                     .font(.body)
                                     .foregroundColor(Color.gray)
+
+                                TextField(
+                                    "",
+                                    text: viewStore.$vCard.position,
+                                    prompt: Text("*Job titile")
+                                        .font(.body)
+                                        .fontWeight(.medium)
+                                )
+                                .disableAutocorrection(true)
+                                .font(.title2)
+                                .fontWeight(.medium)
+                                .padding(.vertical, 10)
 
                                 HStack {
                                     cardImagePicker(viewStore, proxy, value)
                                     avatarImagePicker(viewStore, proxy)
                                 }
+
+
 
                             } header: {
                                 Text("Uplod Images")
@@ -508,7 +523,7 @@ public struct GenericPassFormView: View {
                     TextField(
                         "",
                         text: item.number,
-                        prompt: Text("*Telephone Number")
+                        prompt: Text("*Telephone Number (+70000000000)")
                             .font(.title2)
                             .fontWeight(.medium)
                     )
@@ -517,6 +532,7 @@ public struct GenericPassFormView: View {
                     .font(.title2)
                     .fontWeight(.medium)
                     .padding(.vertical, 10)
+                    .accessibility(identifier: "telephone_number")
 
                     Spacer()
 
@@ -674,7 +690,7 @@ public struct GenericPassFormView: View {
 
         } header: {
             HStack {
-                Text("Web site OPTIONAL")
+                Text("Web site ?OPTIONAL")
                     .font(.title2)
                     .fontWeight(.medium)
             }
@@ -698,8 +714,8 @@ public struct GenericPassFormView: View {
 
                 TextField(
                     "",
-                    text: item.postOfficeAddress,
-                    prompt: Text("*PostOffice")
+                    text: item.postOfficeAddress.orEmpty,
+                    prompt: Text("PostOffice")
                         .font(.title2)
                         .fontWeight(.medium)
                 )
@@ -748,7 +764,7 @@ public struct GenericPassFormView: View {
                 TextField(
                     "",
                     text: item.region.orEmpty,
-                    prompt: Text("*Region/State")
+                    prompt: Text("Region/State")
                         .font(.title2)
                         .fontWeight(.medium)
                 )

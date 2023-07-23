@@ -7,7 +7,7 @@ import UserDefaultsClient
 import GenericPassFeature
 import AuthenticationCore
 import NotificationHelpers
-import ECardifySharedModels
+import ECSharedModels
 import ComposableArchitecture
 
 public struct AppReducer: ReducerProtocol {

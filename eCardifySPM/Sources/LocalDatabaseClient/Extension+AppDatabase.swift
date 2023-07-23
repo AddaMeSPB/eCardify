@@ -1,6 +1,6 @@
+import GRDB
 import Foundation
 import Dependencies
-import GRDB
 
 // MARK: - Player Database Requests
 

@@ -1,6 +1,6 @@
-import GRDB
-import ECardifySharedModels
 import BSON
+import GRDB
+import ECSharedModels
 
 extension WalletPass : MutablePersistableRecord {
     /// The values persisted in the database

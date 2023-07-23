@@ -1,7 +1,7 @@
+import UIKit
 import Foundation
 import Dependencies
-import UIKit
-import ECardifySharedModels
+import ECSharedModels
 
 extension URLRequest {
 

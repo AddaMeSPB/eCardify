@@ -1,7 +1,7 @@
 import SwiftUI
 import SettingsFeature
 import AuthenticationCore
-import ECardifySharedModels
+import ECSharedModels
 import ComposableArchitecture
 
 extension AuthenticationView {

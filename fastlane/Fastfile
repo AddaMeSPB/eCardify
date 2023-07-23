@@ -22,9 +22,12 @@ platform :ios do
   end
 
   lane :beta do
-    build_app(scheme: "eCardify",
-              workspace: "eCardify.xcworkspace",
-              include_bitcode: true)
+    build_app(
+	scheme: "eCardify",
+	workspace: "eCardify.xcworkspace",
+        include_bitcode: true
+    )
+    upload_to_testflight
   end
 
 end

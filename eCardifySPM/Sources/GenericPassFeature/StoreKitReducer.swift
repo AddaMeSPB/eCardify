@@ -2,6 +2,7 @@
 
 import StoreKit
 import Foundation
+import AppConfiguration
 import ComposableStoreKit
 import ComposableArchitecture
 
@@ -57,6 +58,7 @@ public struct StoreKitReducer: ReducerProtocol {
     public init() {}
 
     @Dependency(\.storeKit) var storeKit
+    @Dependency(\.appConfiguration) var appConfiguration
 
     public var body: some ReducerProtocol<State, Action> {
 
@@ -66,6 +68,9 @@ public struct StoreKitReducer: ReducerProtocol {
     func core(state: inout State, action: Action) -> EffectTask<Action> {
         switch action {
         case .fetchProduct:
+
+            let productIds = appConfiguration.productIds.components(separatedBy: " ")
+            let productIdsSET = Set(productIds)
 
             return .run {  send in
               await withThrowingTaskGroup(of: Void.self) { group in
@@ -78,7 +83,7 @@ public struct StoreKitReducer: ReducerProtocol {
                 group.addTask {
                   await send(.productsResponse(
                     TaskResult {
-                        try await self.storeKit.fetchProducts(["BasicCard_eCardify_testing", "FlexiCards_eCardify_testing"])
+                        try await self.storeKit.fetchProducts(productIdsSET)
                     }
                   ), animation: .default)
                 }

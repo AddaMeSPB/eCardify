@@ -129,6 +129,7 @@ public struct WallatPassList: ReducerProtocol {
             }
 
             state.isLoadinWPL = true
+
             return .run { send in
                 await send(.getWP)
                 do {

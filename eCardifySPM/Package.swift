@@ -136,7 +136,7 @@ let package = Package(
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 "ImagePicker", "VNRecognizeFeature", "AttachmentS3Client", "APIClient",
-                "LocalDatabaseClient", "SettingsFeature"
+                "LocalDatabaseClient", "SettingsFeature", "AppConfiguration"
             ]
         ),
         .testTarget(name: "GenericPassFormTests", dependencies: ["GenericPassFeature"]),

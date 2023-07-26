@@ -5,7 +5,7 @@
   ],
   "products" : [
     {
-      "displayPrice" : "18",
+      "displayPrice" : "14.99",
       "familyShareable" : false,
       "internalID" : "70B4530F",
       "localizations" : [
@@ -15,12 +15,12 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "BasicCard_eCardify_testing",
+      "productID" : "cardify.addame.com.eCardify.BasicCard.testing",
       "referenceName" : "BasicCard",
       "type" : "NonConsumable"
     },
     {
-      "displayPrice" : "36",
+      "displayPrice" : "24.99",
       "familyShareable" : false,
       "internalID" : "E70B3B6E",
       "localizations" : [
@@ -30,8 +30,8 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "FlexiCards_eCardify_testing",
-      "referenceName" : "FlexiCards",
+      "productID" : "cardify.addame.com.eCardify.FlexiCard.testing",
+      "referenceName" : "FlexiCard",
       "type" : "NonConsumable"
     }
   ],

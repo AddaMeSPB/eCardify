@@ -71,10 +71,8 @@ public struct AppReducer: ReducerProtocol {
     func core(state: inout State, action: Action) -> EffectTask<Action> {
         switch action {
         case .onAppear:
+//            state.authState = .init()
             return .none
-
-        case let .appDelegate(.userNotifications(.didReceiveResponse(_, completionHandler))):
-          return .fireAndForget { completionHandler() }
 
         case .appDelegate:
             return .none

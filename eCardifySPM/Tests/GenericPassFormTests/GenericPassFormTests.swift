@@ -29,6 +29,11 @@ final class GenericPassFormTests: XCTestCase {
             $0.attachmentS3Client = .happyPath
         }
 
+        let telephoneID = UUID()
+        let emailID = UUID()
+        let addressID = UUID()
+
+        // You must use .send(.set(\.$vCard, …))
         await store.send(.set(\.$vCard.position, "CEO & IOS Developer")) {
             $0.vCard.position = "CEO & IOS Developer"
         }
@@ -41,20 +46,20 @@ final class GenericPassFormTests: XCTestCase {
             $0.vCard.contact.lastName = "Don"
         }
 
-        let telephoneID = UUID()
+
         await store.send(.set(\.$vCard.telephones, [.init(id: telephoneID,type: .work, number: "+79210000000")])) {
             $0.vCard.telephones[0].id = telephoneID
             $0.vCard.telephones[0].type = .work
             $0.vCard.telephones[0].number = "+79210000000"
         }
 
-        let emailID = UUID()
+
         await store.send(.set(\.$vCard.emails, [.init(id: emailID, text: "real@mail.com")])) {
             $0.vCard.emails[0].id = emailID
             $0.vCard.emails[0].text = "real@mail.com"
         }
 
-        let addressID = UUID()
+
         await store.send(
             .set(
                 \.$vCard.addresses,

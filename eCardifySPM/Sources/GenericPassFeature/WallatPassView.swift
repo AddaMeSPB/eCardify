@@ -60,11 +60,11 @@ public struct WallatPassView: View {
                                     )
                             }
                             .padding(20)
+                            .accessibility(identifier: "add_card_button")
                         }
                     }
                 }
                 .redacted(reason: viewStore.isLoadinWPL ? .placeholder : .init())
-                .background(Color(red: 243/255, green: 243/255, blue: 243/255))
                 .navigationBarTitle("Digital Cards")
                 .navigationViewStyle(StackNavigationViewStyle())
                 .navigationBarTitleDisplayMode(.automatic)
@@ -78,6 +78,7 @@ public struct WallatPassView: View {
                                     .font(.title2)
                                 //.foregroundColor(colorScheme == .dark ? .white : Color.yellow)
                             }
+                            .accessibility(identifier: "settings_button")
                         }
                     }
                 }
@@ -126,7 +127,7 @@ public struct WallatPassView: View {
                             .frame(width: 40, height: 40)
                     }
                     .padding(32)
-                    .accessibility(identifier: "plus.square.fill")
+                    .accessibility(identifier: "add_card_button")
                 }
             }
             .sheet(

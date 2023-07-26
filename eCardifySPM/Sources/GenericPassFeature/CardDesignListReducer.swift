@@ -443,12 +443,18 @@ public struct CardDesignView: View {
                             image
                                 .resizable()
                                 .interpolation(.none)
-                                .frame(width: 250, height: 250)
+                                .frame(
+                                    width: viewStore.isRealDataView ? 250 : 100,
+                                    height: viewStore.isRealDataView ? 250 : 100
+                                )
                                 .padding(.trailing, -16)
                         } else {
                             Image("qr")
                                 .resizable()
-                                .frame(width: 250, height: 250)
+                                .frame(
+                                    width: viewStore.isRealDataView ? 250 : 100,
+                                    height: viewStore.isRealDataView ? 250 : 100
+                                )
                         }
                         Spacer()
                     }

@@ -13,36 +13,6 @@ public struct AppConfiguration {
             self != .production
         }
 
-        var url: String {
-            switch self {
-            case .development:
-                //return "http://172.16.1.136:8080"
-                //return "http://10.0.0.81:8080"
-                //return "http://172.20.10.4:8080"
-                //return "http://10.0.1.4:8080"
-                //return "http://10.10.18.148:8080"
-                return "http://\(devDomainName)"
-            case .production:
-                return "https://learnplaygrow.baby"
-            }
-        }
-
-
-        var webSocketUrl: String {
-            switch self {
-            case .development:
-                //return "ws://172.16.1.136:8080/v1/chat"
-                //return "ws://10.0.0.81:8080/v1/chat"
-                //return "ws://172.20.10.4:8080/v1/chat"
-                //return "ws://10.0.1.4:8080/v1/chat"
-//                return "ws://10.10.18.148:8080/v1/chat"
-                return "ws://\(devDomainName)/v1/chat"
-            case .production:
-                return  "wss://learnplaygrow.baby/v1/chat"
-            }
-        }
-
-
         var shortDescription: String {
             switch self {
             case .development:
@@ -51,17 +21,20 @@ public struct AppConfiguration {
                 return "Prod"
             }
         }
-
     }
 
     private enum Keys {
         static let appName = "eCardify_IOS_APP_NAME"
         static let apiEnvironment = "eCardify_IOS_ENVIRONMENT"
+        static let productIds = "Product_IDS"
+        static let apiURL = "ROOT_URL"
+        static let webSocketUrl = "WEB_SOCKET_URL"
     }
 
     public let appName: String
     public let apiURL: String
     public let webSocketUrl: String
+    public let productIds: String
     public let apiEnvironment: ApiEnvironment
     public let completeAppVersion: String?
 
@@ -69,12 +42,14 @@ public struct AppConfiguration {
         appName: String,
         apiURL: String,
         webSocketUrl: String,
+        productIds: String,
         apiEnvironment: ApiEnvironment,
         completeAppVersion: String?
     ) {
         self.appName = appName
         self.apiURL = apiURL
         self.webSocketUrl = webSocketUrl
+        self.productIds = productIds
         self.apiEnvironment = apiEnvironment
         self.completeAppVersion = completeAppVersion
     }
@@ -90,6 +65,9 @@ extension AppConfiguration {
     public init(bundle: Bundle) {
         guard
             let appName = bundle.object(forInfoDictionaryKey: Keys.appName) as? String,
+            let productIds = bundle.object(forInfoDictionaryKey: Keys.productIds) as? String,
+            let apiURL = bundle.object(forInfoDictionaryKey: Keys.apiURL) as? String,
+            let webSocketURL = bundle.object(forInfoDictionaryKey: Keys.webSocketUrl) as? String,
             let apiEnvironmentKey = bundle.object(forInfoDictionaryKey: Keys.apiEnvironment) as? String,
             let apiEnvironment = ApiEnvironment(rawValue: apiEnvironmentKey)
         else {
@@ -98,7 +76,8 @@ extension AppConfiguration {
         }
 
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
-           let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+           let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
+        {
             let appVersionString = "\(version) (\(buildNumber))"
             completeAppVersion = apiEnvironment.isTestEnvironment
             ? appVersionString + " (\(apiEnvironment.shortDescription))"
@@ -108,9 +87,10 @@ extension AppConfiguration {
         }
 
         self.appName = appName
-        self.apiURL = apiEnvironment.url
-        self.webSocketUrl = apiEnvironment.webSocketUrl
+        self.apiURL = apiURL
+        self.webSocketUrl = webSocketURL
         self.apiEnvironment = apiEnvironment
+        self.productIds = productIds
     }
 
 }
@@ -122,6 +102,7 @@ extension AppConfiguration {
             appName: "eCardify",
             apiURL: "http://10.0.1.4:3030",
             webSocketUrl: "ws://10.10.18.148:3030/v1/chat",
+            productIds: "BasicCard_eCardify_testing FlexiCards_eCardify_testing",
             apiEnvironment: .development,
             completeAppVersion: "0.0.1 (1)"
         )

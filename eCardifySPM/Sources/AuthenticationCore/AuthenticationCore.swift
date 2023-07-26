@@ -103,7 +103,7 @@ public struct Login: ReducerProtocol {
                 return .none
 
             case .niceNameTextChanged(let name):
-                state.niceName = name
+                state.niceName = name.capitalized
 
                 return .none
 

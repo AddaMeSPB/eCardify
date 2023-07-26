@@ -39,6 +39,7 @@ final class GenericPassFormUITests: XCTestCase {
     override func setUpWithError() throws {
       self.continueAfterFailure = false
       self.app = XCUIApplication()
+      setupSnapshot(app)
       app.launchEnvironment = [
         "UITesting": "true"
       ]

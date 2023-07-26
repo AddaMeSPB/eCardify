@@ -164,10 +164,9 @@ public struct GenericPassForm: ReducerProtocol {
                 state.user = try self.keychainClient.readCodable(.user, self.build.identifier(), UserOutput.self)
             } catch { }
 
-//            if TARGET_OS_SIMULATOR == 1 {
-//                state.vCard.imageURLs = ImageURL.draff
-//                state.isFormValid = true
-//            }
+            if TARGET_OS_SIMULATOR == 1 {
+                state.vCard.imageURLs = ImageURL.draff
+            }
 
             return .run { send in
                 await send(.storeKit(.fetchProduct))

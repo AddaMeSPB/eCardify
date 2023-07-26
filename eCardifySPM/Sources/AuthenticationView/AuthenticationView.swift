@@ -13,6 +13,12 @@ import AuthenticationCore
 import ECSharedModels
 import ComposableArchitecture
 
+public enum UILoginAccessibility: String {
+    case codeChangedTF
+    case niceNameTF
+    case emailTF
+    case sendEmailButtonTapped
+}
 
 public struct AuthenticationView: View {
 
@@ -68,6 +74,7 @@ public struct AuthenticationView: View {
                             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 60)
                             .keyboardType(.phonePad)
                             .padding(.leading)
+                            .accessibilityIdentifier(UILoginAccessibility.codeChangedTF.rawValue)
 
                         }.cornerRadius(25)
                             .overlay(
@@ -105,6 +112,7 @@ public struct AuthenticationView: View {
                             .contentShape(Rectangle())
                         }
                     )
+                    .accessibilityIdentifier(UILoginAccessibility.sendEmailButtonTapped.rawValue)
 
                     .frame(minWidth: 0, maxWidth: .infinity, minHeight: 60, maxHeight: 60)
 
@@ -180,6 +188,7 @@ public struct AuthenticationView: View {
             .padding(.bottom, -10)
             .disabled(viewStore.isLoginRequestInFlight)
             .ignoresSafeArea(.keyboard, edges: .bottom)
+            .accessibilityIdentifier(UILoginAccessibility.niceNameTF.rawValue)
 
             Divider()
 
@@ -196,6 +205,7 @@ public struct AuthenticationView: View {
             .padding(.top, -10)
             .disabled(viewStore.isLoginRequestInFlight && viewStore.isEmailValidated)
             .ignoresSafeArea(.keyboard, edges: .bottom)
+            .accessibilityIdentifier(UILoginAccessibility.emailTF.rawValue)
 
         }
         .overlay(
@@ -231,6 +241,7 @@ public struct AuthenticationView: View {
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 60)
                 .keyboardType(.phonePad)
                 .padding(.leading)
+                .accessibilityIdentifier(UILoginAccessibility.codeChangedTF.rawValue)
 
             }.cornerRadius(25)
                 .overlay(

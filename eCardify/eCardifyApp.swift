@@ -23,20 +23,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     self.viewStore.send(.appDelegate(.didFinishLaunching))
     return true
   }
-
-  func application(
-    _ application: UIApplication,
-    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
-  ) {
-      self.viewStore.send(.appDelegate(.didRegisterForRemoteNotifications(.success(deviceToken))))
-  }
-
-  func application(
-    _ application: UIApplication,
-    didFailToRegisterForRemoteNotificationsWithError error: Error
-  ) {
-      self.viewStore.send(.appDelegate(.didRegisterForRemoteNotifications(.failure(error))))
-  }
 }
 
 @main

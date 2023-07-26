@@ -6,6 +6,22 @@ import ECSharedModels
 import ComposableStoreKit
 import ComposableArchitecture
 
+public enum UITestGPFAccessibilityIdentifier: String {
+    case orgText
+    case jobTitleText
+    case firstNameTextFields
+    case middleNameTextFields
+    case lastNameTextFields
+    case telephoneNumberTextFields
+    case emailTextFields
+    case postOfficeTextFields
+    case streetTextFields
+    case cityTextFields
+    case regionTextFields
+    case postTextFields
+    case countryTextFields
+}
+
 public struct GenericPassFormView: View {
     let store: StoreOf<GenericPassForm>
 
@@ -63,6 +79,7 @@ public struct GenericPassFormView: View {
                         Form {
                             Section {
                                 HStack {
+
                                     logoImagePicker(viewStore, proxy)
 
                                     TextField(
@@ -77,6 +94,7 @@ public struct GenericPassFormView: View {
                                     .font(.title2)
                                     .fontWeight(.medium)
                                     .padding(.vertical, 10)
+                                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.orgText.rawValue)
                                 }
                                 .frame(height: 60)
 
@@ -87,7 +105,7 @@ public struct GenericPassFormView: View {
                                 TextField(
                                     "",
                                     text: viewStore.$vCard.position,
-                                    prompt: Text("*Job titile")
+                                    prompt: Text("*Job title")
                                         .font(.body)
                                         .fontWeight(.medium)
                                 )
@@ -95,13 +113,18 @@ public struct GenericPassFormView: View {
                                 .font(.title2)
                                 .fontWeight(.medium)
                                 .padding(.vertical, 10)
+                                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.jobTitleText.rawValue)
 
                                 HStack {
                                     cardImagePicker(viewStore, proxy, value)
                                     avatarImagePicker(viewStore, proxy)
                                 }
 
-
+                                Text("By incorporating your photo into a digital business card, your avatar will be displayed on Apple Wallet Pass, enabling others to instantly recognize you.")
+                                .font(.title2)
+                                .fontWeight(.medium)
+                                .foregroundColor(Color.gray)
+                                .padding(.vertical, 5)
 
                             } header: {
                                 Text("Uplod Images")
@@ -167,7 +190,6 @@ public struct GenericPassFormView: View {
                                         Text("Please change your product type up☝️.")
                                     }
                                 }
-//                                .cornerRadius(20)
                                 .animation(.easeIn, value: 190)
 
                             }
@@ -205,6 +227,8 @@ public struct GenericPassFormView: View {
                                     .foregroundColor(viewStore.isFormValid ? Color.white : Color.white.opacity(0.3))
                                     .disabled(!viewStore.isFormValid)
                                     .cornerRadius(9)
+                                    .buttonStyle(BorderlessButtonStyle())
+                                    .accessibility(identifier: "pay_button")
 
                                 } else {
                                     ProgressView()
@@ -375,7 +399,7 @@ public struct GenericPassFormView: View {
                                 .padding()
 
                             Text("Upload visiting old card.")
-                                .font(.body)
+                                .font(.title2)
                                 .fontWeight(.medium)
                                 .padding(.horizontal, 15)
                         }
@@ -466,6 +490,8 @@ public struct GenericPassFormView: View {
             .font(.title2)
             .fontWeight(.medium)
             .padding(.vertical, 10)
+            .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.firstNameTextFields.rawValue)
+
 
 
             TextField(
@@ -479,6 +505,7 @@ public struct GenericPassFormView: View {
             .font(.title2)
             .fontWeight(.medium)
             .padding(.vertical, 10)
+            .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.middleNameTextFields.rawValue)
 
             TextField(
                 "",
@@ -491,6 +518,7 @@ public struct GenericPassFormView: View {
             .font(.title2)
             .fontWeight(.medium)
             .padding(.vertical, 10)
+            .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.lastNameTextFields.rawValue)
 
         } header: {
             Text("Contact")
@@ -532,7 +560,8 @@ public struct GenericPassFormView: View {
                     .font(.title2)
                     .fontWeight(.medium)
                     .padding(.vertical, 10)
-                    .accessibility(identifier: "telephone_number")
+                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.telephoneNumberTextFields.rawValue)
+
 
                     Spacer()
 
@@ -612,6 +641,7 @@ public struct GenericPassFormView: View {
                     .font(.title2)
                     .fontWeight(.medium)
                     .padding(.vertical, 10)
+                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.emailTextFields.rawValue)
 
                     if viewStore.$vCard.emails.count > 1 {
                         Button {
@@ -686,6 +716,7 @@ public struct GenericPassFormView: View {
                 .font(.title2)
                 .fontWeight(.medium)
                 .padding(.vertical, 10)
+
             }
 
         } header: {
@@ -723,6 +754,8 @@ public struct GenericPassFormView: View {
                 .font(.title2)
                 .fontWeight(.medium)
                 .padding(.vertical, 10)
+                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.postOfficeTextFields.rawValue)
+
 
                 TextField(
                     "",
@@ -747,6 +780,8 @@ public struct GenericPassFormView: View {
                 .font(.title2)
                 .fontWeight(.medium)
                 .padding(.vertical, 10)
+                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.streetTextFields.rawValue)
+
 
                 TextField(
                     "",
@@ -759,6 +794,8 @@ public struct GenericPassFormView: View {
                 .font(.title2)
                 .fontWeight(.medium)
                 .padding(.vertical, 10)
+                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.cityTextFields.rawValue)
+
 
 
                 TextField(
@@ -772,6 +809,8 @@ public struct GenericPassFormView: View {
                 .font(.title2)
                 .fontWeight(.medium)
                 .padding(.vertical, 10)
+                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.regionTextFields.rawValue)
+
 
                 TextField(
                     "",
@@ -785,6 +824,8 @@ public struct GenericPassFormView: View {
                 .font(.title2)
                 .fontWeight(.medium)
                 .padding(.vertical, 10)
+                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.postTextFields.rawValue)
+
 
                 TextField(
                     "",
@@ -797,6 +838,8 @@ public struct GenericPassFormView: View {
                 .font(.title2)
                 .fontWeight(.medium)
                 .padding(.vertical, 10)
+                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.countryTextFields.rawValue)
+
 
                 if viewStore.$vCard.addresses.count > 1 {
                     HStack {

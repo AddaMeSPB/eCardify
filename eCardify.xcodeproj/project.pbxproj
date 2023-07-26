@@ -7,14 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C3265A792A7032C7008A8420 /* eCardifyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B189C62A6C549E00EDE004 /* eCardifyUITests.swift */; };
+		C38E320F2A6FCB82009D9DE1 /* GenericPassFeature in Frameworks */ = {isa = PBXBuildFile; productRef = C38E320E2A6FCB82009D9DE1 /* GenericPassFeature */; };
+		C38E32132A6FF1AB009D9DE1 /* AuthenticationView in Frameworks */ = {isa = PBXBuildFile; productRef = C38E32122A6FF1AB009D9DE1 /* AuthenticationView */; };
 		C38FFE302A3B405B00BB3E8C /* Development.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C38FFE2F2A3B405B00BB3E8C /* Development.xcconfig */; };
 		C399ED832A69A7DB0097D485 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C399ED812A69A50A0097D485 /* StoreKit.framework */; };
 		C3A4523F2A07F4AC009D8F95 /* eCardifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A4523E2A07F4AC009D8F95 /* eCardifyApp.swift */; };
 		C3A452432A07F4AD009D8F95 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3A452422A07F4AD009D8F95 /* Assets.xcassets */; };
 		C3A452472A07F4AD009D8F95 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3A452462A07F4AD009D8F95 /* Preview Assets.xcassets */; };
 		C3A452502A07F4D7009D8F95 /* Pass.json in Resources */ = {isa = PBXBuildFile; fileRef = C3A4524F2A07F4D7009D8F95 /* Pass.json */; };
-		C3B189C72A6C549E00EDE004 /* eCardifyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B189C62A6C549E00EDE004 /* eCardifyUITests.swift */; };
 		C3B189C92A6C549E00EDE004 /* eCardifyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B189C82A6C549E00EDE004 /* eCardifyUITestsLaunchTests.swift */; };
+		C3B189D02A6E6F4A00EDE004 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B189CF2A6E6F4A00EDE004 /* SnapshotHelper.swift */; };
 		C3FDFDBC2A50022F00229340 /* Production.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C3FDFDBB2A50022F00229340 /* Production.xcconfig */; };
 		C3FFD1702A6A5E6D003B9A09 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = C3FFD16F2A6A5E6D003B9A09 /* AppFeature */; };
 		C3FFD1722A6A5E77003B9A09 /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = C3FFD1712A6A5E77003B9A09 /* AppView */; };
@@ -43,6 +46,7 @@
 		C3B189C42A6C549E00EDE004 /* eCardifyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = eCardifyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3B189C62A6C549E00EDE004 /* eCardifyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eCardifyUITests.swift; sourceTree = "<group>"; };
 		C3B189C82A6C549E00EDE004 /* eCardifyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eCardifyUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		C3B189CF2A6E6F4A00EDE004 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		C3DEA2802A0E962600EC76C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C3FDFDB72A4F28CE00229340 /* Cards.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cards.storekit; sourceTree = "<group>"; };
 		C3FDFDB82A4F45B100229340 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -64,6 +68,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C38E320F2A6FCB82009D9DE1 /* GenericPassFeature in Frameworks */,
+				C38E32132A6FF1AB009D9DE1 /* AuthenticationView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +131,7 @@
 		C3B189C52A6C549E00EDE004 /* eCardifyUITests */ = {
 			isa = PBXGroup;
 			children = (
+				C3B189CF2A6E6F4A00EDE004 /* SnapshotHelper.swift */,
 				C3B189C62A6C549E00EDE004 /* eCardifyUITests.swift */,
 				C3B189C82A6C549E00EDE004 /* eCardifyUITestsLaunchTests.swift */,
 			);
@@ -178,6 +185,10 @@
 				C3B189CB2A6C549E00EDE004 /* PBXTargetDependency */,
 			);
 			name = eCardifyUITests;
+			packageProductDependencies = (
+				C38E320E2A6FCB82009D9DE1 /* GenericPassFeature */,
+				C38E32122A6FF1AB009D9DE1 /* AuthenticationView */,
+			);
 			productName = eCardifyUITests;
 			productReference = C3B189C42A6C549E00EDE004 /* eCardifyUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -256,7 +267,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3B189C92A6C549E00EDE004 /* eCardifyUITestsLaunchTests.swift in Sources */,
-				C3B189C72A6C549E00EDE004 /* eCardifyUITests.swift in Sources */,
+				C3B189D02A6E6F4A00EDE004 /* SnapshotHelper.swift in Sources */,
+				C3265A792A7032C7008A8420 /* eCardifyUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,7 +402,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = eCardify/eCardify.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"eCardify/Preview Content\"";
 				DEVELOPMENT_TEAM = 6989658CU5;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -433,7 +445,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = eCardify/eCardify.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"eCardify/Preview Content\"";
 				DEVELOPMENT_TEAM = 6989658CU5;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -540,6 +552,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C38E320E2A6FCB82009D9DE1 /* GenericPassFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GenericPassFeature;
+		};
+		C38E32122A6FF1AB009D9DE1 /* AuthenticationView */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AuthenticationView;
+		};
 		C3FFD16F2A6A5E6D003B9A09 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;

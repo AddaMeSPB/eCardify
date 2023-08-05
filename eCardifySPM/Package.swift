@@ -18,7 +18,8 @@ let package = Package(
         .library(name: "AttachmentS3Client", targets: ["AttachmentS3Client"]),
         .library(name: "GenericPassFeature", targets: ["GenericPassFeature"]),
         .library(name: "VNRecognizeFeature", targets: ["VNRecognizeFeature"]),
-        .library(name: "LocalDatabaseClient", targets: ["LocalDatabaseClient"])
+        .library(name: "LocalDatabaseClient", targets: ["LocalDatabaseClient"]),
+        .library(name: "SettingsFeature", targets: ["SettingsFeature"])
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.56.0"),
@@ -117,7 +118,8 @@ let package = Package(
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
-                .product(name: "CommonTCALibraries", package: "CommonTCALibraries")
+                .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
+                "AppConfiguration"
             ]
         ),
 

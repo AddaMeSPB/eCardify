@@ -39,6 +39,7 @@ public struct AppView: View {
             )
 
         } destination: { state in
+
             switch state {
             case .genericForm:
                 CaseLet(

@@ -5,6 +5,7 @@ import ImagePicker
 import ECSharedModels
 import ComposableStoreKit
 import ComposableArchitecture
+import SettingsFeature
 
 public enum UITestGPFAccessibilityIdentifier: String {
     case orgText
@@ -41,7 +42,6 @@ public struct GenericPassFormView: View {
         var bottomID: Int
 
         init(state: BindingViewStore<GenericPassForm.State>) {
-
             _vCard = state.$vCard
             _storeKitState = state.$storeKitState
 
@@ -56,9 +56,7 @@ public struct GenericPassFormView: View {
             self.isActivityIndicatorVisible = state.isActivityIndicatorVisible
             self.isCustomProduct = state.storeKitState.type == .custom
             self.bottomID = state.bottomID
-
         }
-
     }
 
     public init(store: StoreOf<GenericPassForm>) {
@@ -918,9 +916,6 @@ struct GenericPassFormView_Previews: PreviewProvider {
     }
 }
 #endif
-
-
-import ComposableStoreKit
 
 private func cost(product: StoreKitClient.Product) -> String {
     let formatter = NumberFormatter()

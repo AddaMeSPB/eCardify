@@ -15,10 +15,10 @@ final class eCardifySPMTests: XCTestCase {
       app.launchEnvironment = [
         "UITesting": "true"
       ]
-
     }
 
     func testFillUpFormContact() async throws {
+      
         app.launch()
 
         snapshot("List")

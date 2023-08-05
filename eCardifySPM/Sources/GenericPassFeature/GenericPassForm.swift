@@ -12,6 +12,7 @@ import ComposableStoreKit
 import LocalDatabaseClient
 import FoundationExtension
 import ComposableArchitecture
+import SettingsFeature
 
 extension String: Identifiable {
     public typealias ID = Int

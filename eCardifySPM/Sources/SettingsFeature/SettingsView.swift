@@ -9,7 +9,6 @@ public struct SettingsView: View {
     @Environment(\.colorScheme) var colorScheme
     @State var isSharePresented = false
     let store: StoreOf<Settings>
-    @ObservedObject var viewStore: ViewStore<ViewState, Settings.Action>
 
     struct ViewState: Equatable {
         let buildNumber: Build.Number?
@@ -21,16 +20,19 @@ public struct SettingsView: View {
       }
     }
 
+    private var items: [GridItem] {
+      Array(repeating: .init(.adaptive(minimum: 250)), count: 2)
+    }
+
     public init(store: StoreOf<Settings>) {
       self.store = store
-      self.viewStore = ViewStore(self.store.scope(state: ViewState.init))
     }
 
   public var body: some View {
-      
+    WithViewStore(self.store, observe: { $0 }) { viewStore in
       VStack {
           VStack {
-              Text("Hello, \(self.viewStore.currentUser.fullName ?? "")")
+              Text("Hello, \(viewStore.currentUser.fullName ?? "")")
                   .frame( maxWidth: .infinity, alignment: .leading)
                   .font(Font.system(size: 30, weight: .heavy, design: .rounded))
                   .padding(.vertical, 5)
@@ -43,74 +45,97 @@ public struct SettingsView: View {
           .padding(.horizontal)
           .padding(.bottom, 10)
 
-          ScrollView(.horizontal, showsIndicators: false) {
-              HStack {
-                  VStack {
-                      Button(action: {
-                          self.viewStore.send(.leaveUsAReviewButtonTapped)
-                      }) {
-                          VStack {
-                              Image(systemName: "hand.thumbsup")
-                                  .resizable()
-                                  .frame(width: 100, height: 100)
-                                  .scaledToFit()
-                                  .padding(.top, 20)
-                                  .padding(.vertical)
-
-                              Text("Leave us review")
-                                  .font(.title3)
-                                  .bold()
-                                  .frame(maxWidth: .infinity, alignment: .center)
-                                  .padding()
-
-                          }
-                      }
-                      .background(colorScheme == .dark ? Color.gray : Color.blue)
-                      .cornerRadius(20)
-                      .shadow(radius: 10)
-                      .frame(width: 230)
-
-                  }
+        LazyVGrid(columns: items, spacing: 10) {
+          Button(action: {
+            viewStore.send(.leaveUsAReviewButtonTapped)
+          }) {
+            VStack(alignment: .center, spacing: 5) {
+              HStack { Spacer() }
+                Image(systemName: "hand.thumbsup")
+                  .resizable()
+                  .scaledToFit()
+                  .frame(width: 65, height: 65)
                   .foregroundColor(.white)
-                  .background(Color.blue)
-                  .cornerRadius(20)
-                  .padding(.horizontal)
 
-                  VStack {
-                      Button(action: { self.isSharePresented.toggle() }) {
-                          VStack {
-                              Image(systemName: "allergens")
-                                  .resizable()
-                                  .frame(width: 100, height: 100)
-                                  .scaledToFit()
-                                  .padding(.top, 20)
-                                  .padding(.vertical)
+              Text("Leave us review")
+                .font(.title3)
+                .bold()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .padding(.vertical, 5)
 
-                              Text("Share with a friend!")
-                                  .font(.title3)
-                                  .bold()
-                                  .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                                  .padding()
-                          }
-                      }
-                      .background(colorScheme == .dark ? Color.gray : Color.blue)
-                      .cornerRadius(20)
-                      .shadow(radius: 10)
-                      .frame(width: 230)
-                  }
-                  .foregroundColor(.white)
-                  .background(Color.blue)
-                  .cornerRadius(20)
-
-              }
+              Spacer()
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding()
           }
+//          .buttonStyle(.plain)
+          .frame(height: 180)
+          .background(Color.red.opacity(0.3))
+          .cornerRadius(20)
+
+          Button(action: {
+            isSharePresented.toggle()
+          }) {
+            VStack(alignment: .center, spacing: 5) {
+              HStack { Spacer() }
+                Image(systemName: "square.and.arrow.up.circle")
+                  .resizable()
+                  .scaledToFit()
+                  .frame(width: 65, height: 65)
+                  .foregroundColor(.blue)
+
+              Text("Share with friends")
+                .font(.title3)
+                .bold()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .padding(.vertical, 5)
+
+              Spacer()
+            }
+            .padding()
+          }
+//          .buttonStyle(.plain)
+          .frame(height: 180)
+          .background(Color.yellow.opacity(0.5))
+          .cornerRadius(20)
+
+
+          Button(action: {
+            viewStore.send(.restoreButtonTapped)
+          }) {
+            VStack(alignment: .center, spacing: 5) {
+              HStack { Spacer() }
+                Image(systemName: "star.circle.fill")
+                  .resizable()
+                  .scaledToFit()
+                  .frame(width: 65, height: 65)
+                  .foregroundColor(.red)
+
+              Text("Restore")
+                .font(.title3)
+                .bold()
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding()
+
+              Spacer()
+            }
+            .padding()
+          }
+//          .buttonStyle(.plain)
+          .frame(height: 180)
+          .background(Color.blue.opacity(0.3))
+          .cornerRadius(20)
+
+
+        }
+        .padding()
 
           Spacer()
 
           HStack {
               Spacer()
 
-              Button(action: { self.viewStore.send(.logOutButtonTapped) }) {
+              Button(action: { viewStore.send(.logOutButtonTapped) }) {
                   Text("Log out!")
                       .font(.title3).fontWeight(.medium)
                       .foregroundColor(.white)
@@ -123,10 +148,10 @@ public struct SettingsView: View {
           .padding(.horizontal)
 
           VStack(spacing: 6) {
-            if let buildNumber = self.viewStore.buildNumber {
+            if let buildNumber = viewStore.buildNumber {
               Text("Build \(buildNumber.rawValue)")
             }
-            Button(action: { self.viewStore.send(.reportABugButtonTapped) }) {
+            Button(action: { viewStore.send(.reportABugButtonTapped) }) {
               Text("Report a bug")
                 .underline()
             }
@@ -137,14 +162,23 @@ public struct SettingsView: View {
       }
       .onAppear { viewStore.send(.onAppear) }
       .navigationTitle("Settings")
-      .alert(self.store.scope(state: \.alert), dismiss: .set(\.$alert, nil))
+      .navigationDestination(
+        store: self.store.scope(
+          state: \.$destination,
+          action: { .destination($0) }
+        ),
+        state: /Settings.Destination.State.restore,
+        action: Settings.Destination.Action.restore
+      ) { store in
+        RestoreNonProductView.init(store: store)
+      }
       .sheet(isPresented: self.$isSharePresented) {
         ActivityView(activityItems: [URL(string: "https://apps.apple.com/ru/app/new-word-learn-word-vocabulary/id1619504857?l=en")!])
           .ignoresSafeArea()
       }
       .padding(.vertical)
       .frame(maxWidth: .infinity)
-
+    }
   }
 
 }

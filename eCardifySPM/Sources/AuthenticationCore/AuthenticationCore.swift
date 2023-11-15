@@ -39,7 +39,7 @@ public struct Login: ReducerProtocol {
       /// Move to SettingFeature
       public var termsAndPrivacy: TermsAndPrivacy.State?
       public var isTermsOrPrivacySheetOpen: TermsOrPrivacy = .nill
-      public  var isSheetTermsAndPrivacyPresented: Bool { self.termsAndPrivacy != nil }
+      public var isSheetTermsAndPrivacyPresented: Bool { self.termsAndPrivacy != nil }
         
     }
 
@@ -122,7 +122,7 @@ public struct Login: ReducerProtocol {
                 state.isLoginRequestInFlight = true
 
                 state.isEmailValidated = true
-                let emailLoginInput = EmailLoginInput(email: state.email.lowercased())
+                let emailLoginInput = EmailLoginInput(name: state.niceName, email: state.email.lowercased())
                 state.emailLoginInput = emailLoginInput
 
                 return .task {
@@ -166,7 +166,6 @@ public struct Login: ReducerProtocol {
                             }
                         )
                     }
-                    .cancellable(id: VerificationCodeCanceable.self)
                 }
 
                 return .none
@@ -192,7 +191,7 @@ public struct Login: ReducerProtocol {
 
                 state.isLoginRequestInFlight = false
 
-                return .run(priority: .background) { _ in
+                return .run { _ in
 
                     await withThrowingTaskGroup(of: Void.self) { group in
 

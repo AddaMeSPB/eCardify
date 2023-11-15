@@ -43,24 +43,45 @@ public struct WallatPassView: View {
                                 WallatPassDetailsView(store: $0)
                             }
                         } else {
-                            Button {
-                                viewStore.send(.createGenericFormButtonTapped)
-                            } label: {
-                                Image(systemName: "plus")
-                                    .resizable()
-                                    .frame(width: 60, height: 60)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 130)
-                                    .buttonBorderShape(.capsule)
-                                    .foregroundColor(.gray)
-                                    .padding()
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 25)
-                                            .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
-                                    )
+
+                            if viewStore.isAuthorized {
+                                Button {
+                                    viewStore.send(.createGenericFormButtonTapped)
+                                } label: {
+                                    Image(systemName: "plus")
+                                        .resizable()
+                                        .frame(width: 60, height: 60)
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 130)
+                                        .buttonBorderShape(.capsule)
+                                        .foregroundColor(.gray)
+                                        .padding()
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 25)
+                                                .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
+                                        )
+                                }
+                                .padding(20)
+                                .accessibility(identifier: "add_card_button")
                             }
-                            .padding(20)
-                            .accessibility(identifier: "add_card_button")
+
+                          if !viewStore.isAuthorized {
+                            Button {
+                              viewStore.send(.openSheetLogin(true))
+                            } label: {
+                              VStack {
+                                Text("If you've used eCardify before, please log in to continue.")
+                                  .font(.title3)
+//                                  .fontWeight(.light)
+
+                                Image(systemName: "iphone.and.arrow.forward")
+                                  .resizable()
+                                  .frame(width: 40, height: 60)
+                              }
+                            }
+                            .padding(32)
+                          }
+
                         }
                     }
                 }
@@ -156,7 +177,7 @@ struct WallatPassView_Previews: PreviewProvider {
     }
 
     static var store = Store(
-        initialState: WallatPassList.State(wPassLocal: demoWPassLocal),
+        initialState: WallatPassList.State(),
         reducer: WallatPassList()
     )
 

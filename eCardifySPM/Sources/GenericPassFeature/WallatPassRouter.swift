@@ -18,11 +18,9 @@ public struct WallatPassList: ReducerProtocol {
             wPassLocal: IdentifiedArrayOf<WallatPassDetails.State> = [],
             isActivityIndicatorVisible: Bool = false
         ) {
-
             self.wPass = wPass
             self.wPassLocal = wPassLocal
             self.isActivityIndicatorVisible = isActivityIndicatorVisible
-
         }
 
         @PresentationState public var destination: Destination.State?
@@ -38,10 +36,6 @@ public struct WallatPassList: ReducerProtocol {
     }
 
     public enum Action: BindableAction, Equatable {
-        public static func == (lhs: WallatPassList.Action, rhs: WallatPassList.Action) -> Bool {
-            return true
-        }
-
         case binding(BindingAction<State>)
         case onAppear
         case wPass(id: WallatPassDetails.State.ID, action: WallatPassDetails.Action)
@@ -90,7 +84,7 @@ public struct WallatPassList: ReducerProtocol {
 
         case .onAppear:
 
-            sharedLogger.log("Hello i am here!")
+            sharedLogger.log("onAppear get success before login")
             state.isAuthorized = userDefaults.boolForKey(UserDefaultKey.isAuthorized.rawValue)
 
             do {
@@ -101,6 +95,7 @@ public struct WallatPassList: ReducerProtocol {
             }
 
             state.isLoadinWPL = true
+            sharedLogger.log("onAppear get success after login")
 
             return .run { send in
                 await send(.getWP)
@@ -149,9 +144,9 @@ public struct WallatPassList: ReducerProtocol {
                 if let pass = state.wPassLocal[id: id] {
                     state.destination = .digitalCard(
                         .init(
-                        colorP: pass.wp.colorPalette,
-                        vCard: pass.wp.vCard,
-                        isRealDataView: true
+                            colorP: pass.wp.colorPalette,
+                            vCard: pass.wp.vCard,
+                            isRealDataView: true
                         )
                     )
                 }
@@ -169,7 +164,9 @@ public struct WallatPassList: ReducerProtocol {
 
             let wPassResponse = wp.map { WallatPassDetails.State(wp: $0, vCard: $0.vCard) }
             state.wPass = .init(uniqueElements: wPassResponse)
-            return .none
+            return .run { send in
+              await send(.wpLocalDataResponse(.success(wp)))
+            }
 
         case .wpResponse(.failure(_)):
             return .none

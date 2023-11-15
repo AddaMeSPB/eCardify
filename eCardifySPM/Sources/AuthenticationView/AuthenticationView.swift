@@ -182,7 +182,7 @@ public struct AuthenticationView: View {
             .keyboardType(.default)
             .autocorrectionDisabled()
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 60, maxHeight: 60)
-            .textCase(.lowercase)
+            .textCase(.uppercase)
             .autocapitalization(.none)
             .padding(.leading, 30)
             .padding(.bottom, -10)

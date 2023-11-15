@@ -1,6 +1,7 @@
 
 
 import StoreKit
+import LoggerKit
 import Foundation
 import AppConfiguration
 import ComposableStoreKit
@@ -132,8 +133,9 @@ public struct StoreKitReducer: ReducerProtocol {
             state.products = response.products
             return .none
 
-        case .productsResponse(.failure):
+        case .productsResponse(.failure(let error)):
             // have to send message for analatices
+            sharedLogger.logError(error)
             return .none
 
         case .restoreButtonTapped:

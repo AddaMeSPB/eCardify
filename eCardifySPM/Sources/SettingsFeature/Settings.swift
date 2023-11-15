@@ -126,23 +126,7 @@ public struct Settings: ReducerProtocol {
                         logger.error("cant get current user from keychainClient ")
                     }
 
-                    return .merge(
-                        .run { send in
-
-                            async let settingsResponse: Void = send(
-                                .userNotificationSettingsResponse(
-                                    self.userNotifications.getNotificationSettings()
-                                ),
-                                animation: .default
-                            )
-
-                            _ = await settingsResponse
-                        },
-
-                        NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
-                            .map { _ in .didBecomeActive }
-                            .eraseToEffect()
-                    )
+                    return .none
 
                 case .openSettingButtonTapped:
                     return .fireAndForget {

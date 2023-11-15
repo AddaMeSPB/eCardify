@@ -25,7 +25,7 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.56.0"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "0.1.0"),
         .package(url: "https://github.com/AddaMeSPB/CommonTCALibraries.git", branch: "main"),
-        .package(url: "https://github.com/AddaMeSPB/ECSharedModels.git", from: "1.1.1"),
+        .package(url: "https://github.com/AddaMeSPB/ECSharedModels.git", branch: "main"),
 //      .package(path: "/Users/alif/Developer/Swift/MySideProjects/VertualBusinessCard/ECSharedModels"),
 
         .package(url: "https://github.com/soto-project/soto.git", from: "6.0.0"),

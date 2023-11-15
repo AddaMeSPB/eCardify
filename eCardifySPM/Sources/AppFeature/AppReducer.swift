@@ -23,7 +23,7 @@ public struct AppReducer: ReducerProtocol {
         }
 
         public var path = StackState<Path.State>()
-        public var walletState = WallatPassList.State()
+        public var walletState: WallatPassList.State
         @PresentationState public var authState: Login.State? = nil
         public var isSheetLoginPresented: Bool { authState != nil }
     }
@@ -45,15 +45,16 @@ public struct AppReducer: ReducerProtocol {
     @Dependency(\.mainRunLoop) var mainRunLoop
     @Dependency(\.keychainClient) var keychainClient
     @Dependency(\.build) var build
+    @Dependency(\.continuousClock) var clock
 
     public init() {}
 
 
     public var body: some ReducerProtocolOf<Self> {
 
-        // Scope(state: \.tabState.settings.userSettings, action: /Action.appDelegate) {
-        //  AppDelegateReducer()
-        // }
+//      Scope(state: \.walletState.$destination.wrappedValue, action: /Action.appDelegate) {
+//          AppDelegateReducer()
+//      }
 
         Scope(state: \.walletState, action: /Action.walletAction) {
             WallatPassList()
@@ -91,6 +92,12 @@ public struct AppReducer: ReducerProtocol {
                 await send(.isSheetLogin(isPresented: bool))
             }
 
+
+        case .walletAction(.openSheetLogin(let bool)):
+            return .run { send in
+                await send(.isSheetLogin(isPresented: bool))
+            }
+
         case .walletAction:
             return .none
 
@@ -98,6 +105,7 @@ public struct AppReducer: ReducerProtocol {
             state.walletState.isAuthorized = true
 
             return .run { send in
+                try await clock.sleep(for: .seconds(1))
                 await send(.walletAction(.destination(.presented(.add(.update(isAuthorized: true))))))
                 await send(.isSheetLogin(isPresented: false))
             }

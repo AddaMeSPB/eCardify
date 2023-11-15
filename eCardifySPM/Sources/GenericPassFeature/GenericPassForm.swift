@@ -58,13 +58,13 @@ public struct GenericPassForm: ReducerProtocol {
             self.email = email
         }
 
-
         @BindingState public var vCard: VCard
         @BindingState public var telephone: VCard.Telephone
         @BindingState public var email: String
         @BindingState public var storeKitState: StoreKitReducer.State
         @PresentationState public var imagePicker: ImagePickerReducer.State?
         @PresentationState public var digitalCardDesign: CardDesignListReducer.State?
+        @PresentationState var alert: AlertState<AlertAction>?
 
         public var pass: Pass = .draff
         public var colorPalette: ColorPalette = .default
@@ -84,6 +84,7 @@ public struct GenericPassForm: ReducerProtocol {
     }
 
     public enum Action: BindableAction, Equatable {
+        case alert(PresentationAction<AlertAction>)
         case binding(BindingAction<State>)
         case imagePicker(PresentationAction<ImagePickerReducer.Action>)
         case digitalCardDesign(PresentationAction<CardDesignListReducer.Action>)
@@ -113,6 +114,8 @@ public struct GenericPassForm: ReducerProtocol {
         case addOneMoreAddressSection
         case removeAddressSection(by: UUID)
     }
+
+    public enum AlertAction: Equatable {}
 
     public init() {}
 
@@ -147,15 +150,19 @@ public struct GenericPassForm: ReducerProtocol {
 
         case .binding(\.$vCard):
 
-            state.isFormValid = state.vCard.isVCardValid &&
-            state.vCard.emails.count ==  state.vCard.emails.filter({ $0.text.isEmailValid == true }).count &&
-            state.vCard.imageURLs.count >= 3
+            let emailValidationCheck = state.vCard.emails.count == state.vCard.emails.filter({ $0.text.isEmailValid == true }).count
+            let imageMoreThenThree = state.vCard.imageURLs.count >= 1
+            state.isFormValid = state.vCard.isVCardValid && emailValidationCheck && imageMoreThenThree
+
+            sharedLogger.logError("isVCardValid: \(state.vCard.isVCardValid) emailValidationCheck:\(emailValidationCheck) imageMoreThenThree:\(imageMoreThenThree)")
 
             return .none
 
         case .binding:
             return .none
 
+        case .alert:
+            return .none
             // MARK: - .onAppear
         case .onAppear:
 
@@ -165,9 +172,9 @@ public struct GenericPassForm: ReducerProtocol {
                 state.user = try self.keychainClient.readCodable(.user, self.build.identifier(), UserOutput.self)
             } catch { }
 
-            if TARGET_OS_SIMULATOR == 1 {
-                state.vCard.imageURLs = ImageURL.draff
-            }
+//            if TARGET_OS_SIMULATOR == 1 {
+//                state.vCard.imageURLs = ImageURL.draff
+//            }
 
             return .run { send in
                 await send(.storeKit(.fetchProduct))
@@ -200,15 +207,15 @@ public struct GenericPassForm: ReducerProtocol {
                     .attacmentResponse(
                         await TaskResult {
 
-                            if TARGET_OS_SIMULATOR == 1 {
-                                if imageFor == .avatar {
-                                    return AttachmentInOutPut.thumbnail
-                                }
-
-                                if imageFor == .logo {
-                                    return AttachmentInOutPut.logo
-                                }
-                            }
+//                            if TARGET_OS_SIMULATOR == 1 {
+//                                if imageFor == .avatar {
+//                                    return AttachmentInOutPut.thumbnail
+//                                }
+//
+//                                if imageFor == .logo {
+//                                    return AttachmentInOutPut.logo
+//                                }
+//                            }
 
                             return try await apiClient.request(
                                 for: .authEngine(.users(.user(id: id, route: .attachments(.create(input: attachment))))),
@@ -222,7 +229,6 @@ public struct GenericPassForm: ReducerProtocol {
         case .imageUploadResponse(.success(let imageURL)):
             switch state.imageFor {
             case .logo:
-                sharedLogger.log(imageURL)
                 state.vCard.imageURLs.append(.init(type: .logo, urlString: imageURL))
                 state.vCard.imageURLs.append(.init(type: .icon, urlString: imageURL))
             case .avatar:
@@ -232,10 +238,13 @@ public struct GenericPassForm: ReducerProtocol {
                 sharedLogger.log(imageURL)
             }
 
+            sharedLogger.log(imageURL)
+
             return .none
             
         case .imageUploadResponse(.failure(let error)):
-            sharedLogger.logError(error.localizedDescription)
+                state.alert = AlertState { TextState("Unable to upload image please try again!") }
+            sharedLogger.logError(error)
             return .none
 
         case let .imagePicker(.presented(.picked(result: image))):
@@ -252,10 +261,10 @@ public struct GenericPassForm: ReducerProtocol {
                 return .task { [serialNumber = state.pass.serialNumber] in
                     await .imageUploadResponse(
                         TaskResult {
-                            if TARGET_OS_SIMULATOR == 1 {
-                                return "https://learnplaygrow.ams3.digitaloceanspaces.com/uploads/images/9155F894-E500-453A-A691-6CDE8F722BDF/CECF3925-180E-4373-A15E-E7876760D18F/logo.png"
-
-                            }
+//                            if TARGET_OS_SIMULATOR == 1 {
+//                                return "https://learnplaygrow.ams3.digitaloceanspaces.com/uploads/images/9155F894-E500-453A-A691-6CDE8F722BDF/CECF3925-180E-4373-A15E-E7876760D18F/logo.png"
+//
+//                            }
 
                             return try await attachmentS3Client.uploadImageToS3(
                                 image, .init(
@@ -273,15 +282,16 @@ public struct GenericPassForm: ReducerProtocol {
             case .avatar:
                 state.avartarImage = image
                 guard let currentUserID = state.user?.id else {
+                    state.alert = AlertState { TextState("Please login 1st!") }
                     return .none
                 }
 
                 return .task { [serialNumber = state.pass.serialNumber] in
                     await .imageUploadResponse(
                         TaskResult {
-                            if TARGET_OS_SIMULATOR == 1 {
-                                return "https://learnplaygrow.ams3.digitaloceanspaces.com/uploads/images/DC6E2827-FF38-4038-A3BB-6F2C40695EC5/CECF3925-180E-4373-A15E-E7876760D18F/thumbnail.png"
-                            }
+//                            if TARGET_OS_SIMULATOR == 1 {
+//                                return "https://learnplaygrow.ams3.digitaloceanspaces.com/uploads/images/DC6E2827-FF38-4038-A3BB-6F2C40695EC5/CECF3925-180E-4373-A15E-E7876760D18F/thumbnail.png"
+//                            }
 
                             return try await attachmentS3Client.uploadImageToS3(
                                 image, .init(
@@ -321,7 +331,7 @@ public struct GenericPassForm: ReducerProtocol {
                 return .none
             case .avatar:
                 if let image = attachmentResponse.imageUrlString {
-                    // state.imageURLs.insert(image, at: 0)
+//                     state.imageURLs.insert(image, at: 0)
                 }
                 return .none
             case .card:
@@ -329,7 +339,8 @@ public struct GenericPassForm: ReducerProtocol {
             }
 
 
-        case .attacmentResponse(.failure(_)):
+        case .attacmentResponse(.failure(let error)):
+            sharedLogger.logError(error)
             return .none
 
         case .imageFor(let type):
@@ -351,6 +362,7 @@ public struct GenericPassForm: ReducerProtocol {
 
         // MARK: - CreatePass
         case .createPass:
+            sharedLogger.log("create pass tapped")
 
             if !state.isAuthorized {
                 return .run { send in
@@ -362,14 +374,17 @@ public struct GenericPassForm: ReducerProtocol {
                 state.user = try self.keychainClient.readCodable(.user, self.build.identifier(), UserOutput.self)
             } catch {
                 //state.alert = .init(title: TextState("Missing you id! please login again!"))
+                sharedLogger.logError("Missing Current user!")
                 return .none
             }
 
             guard let currentUserID = state.user?.id else {
+                sharedLogger.logError("Missing you id! please login again!")
                 return .none
             }
 
             if !state.isFormValid {
+                sharedLogger.log("FormValid is not valid")
                 return .none
             }
 
@@ -377,7 +392,7 @@ public struct GenericPassForm: ReducerProtocol {
                 _id: .init(),
                 ownerId: currentUserID,
                 vCard: state.vCard,
-                colorPalette: .default
+                colorPalette: state.colorPalette
             )
 
             state.walletPass = walletPass
@@ -392,14 +407,12 @@ public struct GenericPassForm: ReducerProtocol {
 
             switch state.storeKitState.type {
             case .basic:
-                guard let basicProduct = state.storeKitState.products.first
-                else {
+                guard let basicProduct = state.storeKitState.products.first else {
                     return .none
                 }
                 product = basicProduct
             case .custom:
-                guard let customProduct = state.storeKitState.products.last
-                else {
+                guard let customProduct = state.storeKitState.products.last else {
                     return .none
                 }
                 product = customProduct
@@ -459,7 +472,7 @@ public struct GenericPassForm: ReducerProtocol {
                 do {
                     try await localDatabase.update(wp: wp)
                 } catch {
-                    sharedLogger.logError("create localdatabase error:- \(error.localizedDescription)")
+                    sharedLogger.logError("create localdatabase error:- \(error)")
                 }
 
                 await send(.buildPKPassFrom(url: response.urlString))
@@ -467,8 +480,9 @@ public struct GenericPassForm: ReducerProtocol {
 
             }
 
-        case .passResponse(.failure):
+        case .passResponse(.failure(let error)):
             state.isActivityIndicatorVisible = false
+                sharedLogger.logError("passResponse error:- \(error)")
             return .none
 
         case .buildPKPassFrom:
@@ -513,9 +527,9 @@ public struct GenericPassForm: ReducerProtocol {
 
         // MARK: - DigitalCardDesign
         case .digitalCardDesign(.dismiss):
-            if let colorPalette = state.digitalCardDesign?.selectedColorPalattle {
-                state.colorPalette = colorPalette
-            }
+
+            state.colorPalette = state.digitalCardDesign?.selectedColorPalattle ?? .default
+
             return .none
 
         case .digitalCardDesign:
@@ -623,6 +637,7 @@ public struct GenericPassForm: ReducerProtocol {
                     }
                 }
             }
+
         case .vcard:
             if let stringValue = vnRecognizeResponse.string,
                let vCardRes = VCard.create(from: stringValue)

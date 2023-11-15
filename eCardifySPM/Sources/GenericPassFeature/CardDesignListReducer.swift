@@ -49,6 +49,7 @@ public struct CardDesignListReducer: ReducerProtocol {
         case dismiss
     }
 
+    @Dependency(\.continuousClock) var clock
     @Dependency(\.dismiss) var dismiss
 
     public init() {}
@@ -89,9 +90,11 @@ public struct CardDesignListReducer: ReducerProtocol {
                 state.cardDesigns[id: uuid]?.isTappedCard = true
                 state.selectedColorPalattle = state.cardDesigns[id: uuid]?.colorP ?? ColorPalette.default
 
+
             }
 
             return .none
+                
         case .dismiss:
             return .fireAndForget {
                 await self.dismiss()

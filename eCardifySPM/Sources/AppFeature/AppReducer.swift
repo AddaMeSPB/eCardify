@@ -10,11 +10,20 @@ import NotificationHelpers
 import ECSharedModels
 import ComposableArchitecture
 
-public struct AppReducer: ReducerProtocol {
+@Reducer
+public struct AppReducer {
+
+    @Reducer(state: .equatable)
+    public enum Path {
+        case genericForm(GenericPassForm)
+        case settings(Settings)
+    }
+
+    @ObservableState
     public struct State: Equatable {
         public init(
-            path: StackState<AppReducer.Path.State> = StackState<Path.State>(),
-            walletState: WallatPassList.State = WallatPassList.State(),
+            path: StackState<Path.State> = StackState<Path.State>(),
+            walletState: WalletPassList.State = WalletPassList.State(),
             authState: Login.State? = nil
         ) {
             self.path = path
@@ -23,21 +32,20 @@ public struct AppReducer: ReducerProtocol {
         }
 
         public var path = StackState<Path.State>()
-        public var walletState: WallatPassList.State
-        @PresentationState public var authState: Login.State? = nil
+        public var walletState: WalletPassList.State
+        @Presents public var authState: Login.State? = nil
         public var isSheetLoginPresented: Bool { authState != nil }
     }
 
     public enum Action {
-        case path(StackAction<Path.State, Path.Action>)
+        case path(StackActionOf<Path>)
         case onAppear
         case appDelegate(AppDelegateReducer.Action)
         case didChangeScenePhase(ScenePhase)
-        case walletAction(WallatPassList.Action)
+        case walletAction(WalletPassList.Action)
         case auth(PresentationAction<Login.Action>)
         case isSheetLogin(isPresented: Bool)
     }
-
 
     @Dependency(\.userDefaults) var userDefaults
     @Dependency(\.userNotifications) var userNotifications
@@ -49,27 +57,24 @@ public struct AppReducer: ReducerProtocol {
 
     public init() {}
 
-
-    public var body: some ReducerProtocolOf<Self> {
+    public var body: some ReducerOf<Self> {
 
 //      Scope(state: \.walletState.$destination.wrappedValue, action: /Action.appDelegate) {
 //          AppDelegateReducer()
 //      }
 
         Scope(state: \.walletState, action: /Action.walletAction) {
-            WallatPassList()
+            WalletPassList()
         }
 
         Reduce(self.core)
-            .forEach(\.path, action: /Action.path) {
-                Path()
-            }
+            .forEach(\.path, action: \.path) 
             .ifLet(\.$authState, action: /AppReducer.Action.auth) {
                 Login()
             }
     }
 
-    func core(state: inout State, action: Action) -> EffectTask<Action> {
+    func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
         case .onAppear:
 //            state.authState = .init()
@@ -123,28 +128,4 @@ public struct AppReducer: ReducerProtocol {
         }
     }
 
-    public struct Path: ReducerProtocol {
-
-        public enum State: Equatable {
-            case genericForm(GenericPassForm.State)
-            case settings(Settings.State)
-        }
-
-        public enum Action: Equatable {
-            case genericForm(GenericPassForm.Action)
-            case settings(Settings.Action)
-        }
-
-        public init() {}
-
-        public var body: some ReducerProtocolOf<Self> {
-            Scope(state: /State.genericForm, action: /Action.genericForm) {
-                GenericPassForm()
-            }
-
-            Scope(state: /State.settings, action: /Action.settings) {
-                Settings()
-            }
-        }
-    }
 }

@@ -10,12 +10,14 @@ import UserDefaultsClient
 import ECSharedModels
 import ComposableArchitecture
 
-public struct WallatPassList: ReducerProtocol {
+@Reducer
+public struct WalletPassList {
 
+    @ObservableState
     public struct State: Equatable {
         public init(
-            wPass: IdentifiedArrayOf<WallatPassDetails.State> = [],
-            wPassLocal: IdentifiedArrayOf<WallatPassDetails.State> = [],
+            wPass: IdentifiedArrayOf<WalletPassDetails.State> = [],
+            wPassLocal: IdentifiedArrayOf<WalletPassDetails.State> = [],
             isActivityIndicatorVisible: Bool = false
         ) {
             self.wPass = wPass
@@ -23,22 +25,24 @@ public struct WallatPassList: ReducerProtocol {
             self.isActivityIndicatorVisible = isActivityIndicatorVisible
         }
 
-        @PresentationState public var destination: Destination.State?
+        @Presents public var destination: Destination.State?
 
         public var vCard: VCard? = .empty
-        public var wPass: IdentifiedArrayOf<WallatPassDetails.State> = []
-        public var wPassLocal: IdentifiedArrayOf<WallatPassDetails.State> = []
+        public var wPass: IdentifiedArrayOf<WalletPassDetails.State> = []
+        public var wPassLocal: IdentifiedArrayOf<WalletPassDetails.State> = []
         public var isActivityIndicatorVisible = false
-        public var isLoadinWPL: Bool = false
+        public var isLoadingWPL: Bool = false
         public var isAuthorized: Bool = true
         public var user: UserOutput? = nil
         
     }
 
+
+    @CasePathable
     public enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
         case onAppear
-        case wPass(id: WallatPassDetails.State.ID, action: WallatPassDetails.Action)
+        case wPass(id: WalletPassDetails.State.ID, action: WalletPassDetails.Action)
         case wpResponse(TaskResult<[WalletPass]>)
         case wpLocalDataResponse(TaskResult<[WalletPass]>)
         case getWP
@@ -63,7 +67,7 @@ public struct WallatPassList: ReducerProtocol {
     @Dependency(\.vnRecognizeClient) var vnRecognizeClient
     @Dependency(\.attachmentS3Client) var attachmentS3Client
 
-    public var body: some ReducerProtocol<State, Action> {
+    public var body: some Reducer<State, Action> {
 
         BindingReducer()
 
@@ -72,11 +76,11 @@ public struct WallatPassList: ReducerProtocol {
                 Destination()
             }
             .forEach(\.wPassLocal, action: /Action.wPass(id:action:)) {
-                WallatPassDetails()
+                WalletPassDetails()
             }
     }
 
-    func core(state: inout State, action: Action) -> EffectTask<Action> {
+    func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
 
         case .binding:
@@ -94,7 +98,7 @@ public struct WallatPassList: ReducerProtocol {
                 return .none
             }
 
-            state.isLoadinWPL = true
+            state.isLoadingWPL = true
             sharedLogger.log("onAppear get success after login")
 
             return .run { send in
@@ -111,8 +115,8 @@ public struct WallatPassList: ReducerProtocol {
 
         case .getWP:
 
-            return .task {
-                .wpResponse(
+            return .run { send in
+               await send(.wpResponse(
                     await TaskResult {
                         try await apiClient.request(
                             for: .walletPasses(.list),
@@ -120,7 +124,7 @@ public struct WallatPassList: ReducerProtocol {
                             decoder: .iso8601
                         )
                     }
-                )
+                ))
             }
             
         case .openSheetLogin:
@@ -162,7 +166,7 @@ public struct WallatPassList: ReducerProtocol {
                 // add something onbording video
             }
 
-            let wPassResponse = wp.map { WallatPassDetails.State(wp: $0, vCard: $0.vCard) }
+            let wPassResponse = wp.map { WalletPassDetails.State(wp: $0, vCard: $0.vCard) }
             state.wPass = .init(uniqueElements: wPassResponse)
             return .run { send in
               await send(.wpLocalDataResponse(.success(wp)))
@@ -175,15 +179,15 @@ public struct WallatPassList: ReducerProtocol {
 
             let wPassLocalResponse = wpl
                 .filter { $0.isPaid == true }
-                .map { WallatPassDetails.State(wp: $0, vCard: $0.vCard) }
+                .map { WalletPassDetails.State(wp: $0, vCard: $0.vCard) }
             
             state.wPassLocal = .init(uniqueElements: wPassLocalResponse)
 
-            state.isLoadinWPL = false
+            state.isLoadingWPL = false
             return .none
 
         case .wpLocalDataResponse(.failure(_)):
-            state.isLoadinWPL = false
+            state.isLoadingWPL = false
             return .none
 
         case .passResponse(_):
@@ -242,7 +246,9 @@ public struct WallatPassList: ReducerProtocol {
         }
     }
 
-    public struct Destination: ReducerProtocol {
+    @Reducer
+    public struct Destination {
+
         public enum State: Equatable {
             case addPass(AddPass.State)
             case digitalCard(CardDesignReducer.State)
@@ -250,6 +256,7 @@ public struct WallatPassList: ReducerProtocol {
             case settings(Settings.State)
         }
 
+        @CasePathable
         public enum Action: Equatable {
             case addPass(AddPass.Action)
             case digitalCard(CardDesignReducer.Action)
@@ -259,7 +266,7 @@ public struct WallatPassList: ReducerProtocol {
 
         public init() {}
 
-        public var body: some ReducerProtocol<State, Action> {
+        public var body: some Reducer<State, Action> {
 
             Scope(state: /State.addPass, action: /Action.addPass) {
                 AddPass()
@@ -303,7 +310,7 @@ func extractEmailAddrIn(text: String) -> [String] {
 
 
 //    // Define the regular expression pattern for email addresses
-//    let emailRegexk = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+//    let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
 //
 //    // Create a regular expression object
 //    guard let regex = try? NSRegularExpression(pattern: emailRegex, options: []) else {
@@ -347,7 +354,7 @@ extension String {
     }
 
     func findContactsNumber() throws -> [String] {
-        let pattern = #"[(]\d{3}[)]\s\d{3}[-]\d{4}"#
+        _ = #"[(]\d{3}[)]\s\d{3}[-]\d{4}"#
         var result: [String] = []
 
         let phoneNumberRegex = try! NSRegularExpression(pattern: "\\+?\\d[\\d -]{8,12}\\d")

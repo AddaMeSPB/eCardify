@@ -5,24 +5,19 @@ import AppFeature
 import ComposableArchitecture
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
-  let store = Store(
-    initialState: AppReducer.State(),
-    reducer: AppReducer()
-        ._printChanges()
-        .transformDependency(\.self) { _ in }
-  )
+    let store = Store(initialState: AppReducer.State()) {
+        AppReducer()._printChanges()
+    }
 
-  var viewStore: ViewStore<Void, AppReducer.Action> {
-    ViewStore(self.store.stateless)
-  }
 
   func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
-    self.viewStore.send(.appDelegate(.didFinishLaunching))
+    self.store.send(.appDelegate(.didFinishLaunching))
     return true
   }
+
 }
 
 @main
@@ -38,7 +33,7 @@ struct eCardifyApp: App {
 
                 AppView(store: self.appDelegate.store)
                     .onChange(of: self.scenePhase) {
-                        self.appDelegate.viewStore.send(.didChangeScenePhase($0))
+                        self.appDelegate.store.send(.didChangeScenePhase($0))
                     }
             }
         }

@@ -13,7 +13,7 @@ public struct AppView: View {
 
 //    @Environment(\.scenePhase) private var scenePhase
 
-    public let store: StoreOf<AppReducer>
+    @Perception.Bindable  public var store: StoreOf<AppReducer>
 
     public init(store: StoreOf<AppReducer>) {
         self.store = store
@@ -21,38 +21,28 @@ public struct AppView: View {
 
     public var body: some View {
 
-        NavigationStackStore(
-            self.store.scope(
-                state: \.path,
-                action: { .path($0) }
-            )
-        ) {
-            WallatPassView(
-                store: self.store.scope(state: \.walletState, action: { .walletAction($0) })
-            )
-            .onAppear {
-                ViewStore(store.stateless).send(.onAppear)
-            }
-            .fullScreenCover(
-                store: self.store.scope(state: \.$authState, action: { .auth($0) }),
-                content: AuthenticationView.init(store:)
-            )
-
-        } destination: { state in
-
-            switch state {
-            case .genericForm:
-                CaseLet(
-                    state: /AppReducer.Path.State.genericForm,
-                    action: AppReducer.Path.Action.genericForm,
-                    then: GenericPassFormView.init(store:)
+        WithPerceptionTracking {
+            NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
+                WalletPassView(
+                    store: self.store.scope(state: \.walletState, action: \.walletAction )
                 )
-            case .settings:
-                CaseLet(
-                    state: /AppReducer.Path.State.settings,
-                    action: AppReducer.Path.Action.settings,
-                    then: SettingsView.init(store:)
+                .onAppear {
+                    store.send(.onAppear)
+                }
+                .fullScreenCover(
+                    store: self.store.scope(state: \.$authState, action: \.auth ),
+                    content: AuthenticationView.init(store:)
                 )
+                
+            } destination: { store in
+                
+                switch store.case {
+                    case let .genericForm(gstore):
+                        GenericPassFormView.init(store: gstore)
+                    case let .settings(sstore):
+                        SettingsView.init(store: sstore)
+                }
+                
             }
         }
 

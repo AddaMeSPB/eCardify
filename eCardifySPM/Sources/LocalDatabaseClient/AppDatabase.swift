@@ -134,13 +134,13 @@ extension AppDatabase {
 
 
 protocol AppDatabaseClient {
-    @Sendable func create(wp: WalletPass) async throws -> Void
-    @Sendable func update(wp: WalletPass) async throws -> Void
-    @Sendable func find() async throws -> [WalletPass]
-    @Sendable func findBy(id: WalletPass.ID) async throws -> WalletPass?
-    @Sendable func deleteBy(id: WalletPass.ID) async throws -> Void
-    @Sendable func deleteAll() async throws -> Int
-    @Sendable func findAllThenUpdareAll() async throws -> Void
+    func create(wp: WalletPass) async throws -> Void
+    func update(wp: WalletPass) async throws -> Void
+    func find() async throws -> [WalletPass]
+    func findBy(id: WalletPass.ID) async throws -> WalletPass?
+    func deleteBy(id: WalletPass.ID) async throws -> Void
+    func deleteAll() async throws -> Int
+    func findAllThenUpdateAll() async throws -> Void
 }
 
 // MARK: - Database Access: Writes
@@ -188,7 +188,7 @@ extension AppDatabase: AppDatabaseClient {
         }
     }
 
-    func findAllThenUpdareAll() async throws {
+    func findAllThenUpdateAll() async throws {
 
     }
 

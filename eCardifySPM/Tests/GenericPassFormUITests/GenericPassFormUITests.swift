@@ -17,15 +17,15 @@ final class GenericPassFormUITests: XCTestCase {
     }
 
     func testFillUpFormContact() async {
-        app.launch()
+        await app.launch()
 
-        let collectionViews = app.collectionViews
-        let firstNameTextField = collectionViews.textFields["*First Name"]
-        let lastNameTextField = collectionViews.textFields["*Last Name"]
+        let collectionViews = await app.collectionViews
+        let firstNameTextField = await collectionViews.textFields["*First Name"]
+        let lastNameTextField = await collectionViews.textFields["*Last Name"]
 
-        firstNameTextField.typeText("Jhon")
+        await firstNameTextField.typeText("Jhon")
 
-        lastNameTextField.tap()
-        lastNameTextField.typeText("Blob")
+        await lastNameTextField.tap()
+        await lastNameTextField.typeText("Blob")
     }
 }

@@ -3,29 +3,26 @@ import FoundationExtension
 import ComposableArchitecture
 
 struct NotificationsSettingsView: View {
-  let store: StoreOf<Settings>
-  @ObservedObject var viewStore: ViewStoreOf<Settings>
 
-  init(store: StoreOf<Settings>) {
-    self.store = store
-    self.viewStore = ViewStore(self.store)
-  }
+  @Perception.Bindable var store: StoreOf<Settings>
 
-  var body: some View {
-    SettingsForm {
-      SettingsRow {
-        Toggle(
-          "Enable notifications", isOn: self.viewStore.binding(\.$enableNotifications).animation()
-        )
-        .font(.system(size: 16, design: .rounded))
-          Text("*** Please dont turn off notification then whole function will be turn off")
-              .font(.system(size: 13, design: .rounded))
-              .foregroundColor(.red)
-              .padding(.top, -20)
-      }
+    var body: some View {
+        WithPerceptionTracking {
+            SettingsForm {
+                SettingsRow {
+                    Toggle(
+                        "Enable notifications", isOn: $store.enableNotifications
+                    )
+                    .font(.system(size: 16, design: .rounded))
+                    Text("*** Please don't turn off notification then whole function will be turn off")
+                        .font(.system(size: 13, design: .rounded))
+                        .foregroundColor(.red)
+                        .padding(.top, -20)
+                }
+            }
+            .navigationTitle("Notifications")
+        }
     }
-    .navigationTitle("Notifications")
-  }
 }
 
 public struct SettingsForm<Content>: View where Content: View {

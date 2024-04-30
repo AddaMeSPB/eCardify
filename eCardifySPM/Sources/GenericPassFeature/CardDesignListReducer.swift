@@ -25,24 +25,25 @@ extension CardDesignListReducer.State {
 
 }
 
-public struct CardDesignListReducer: ReducerProtocol {
+public struct CardDesignListReducer: Reducer {
     public struct State: Equatable {
         public init(
             cardDesigns: IdentifiedArrayOf<CardDesignReducer.State> = .defaultData.cardDesigns,
-            selectedColorPalattle: ColorPalette = .default,
+            selectedColorPalette: ColorPalette = .default,
             vCard: VCard
         ) {
             self.cardDesigns = cardDesigns
-            self.selectedColorPalattle = selectedColorPalattle
+            self.selectedColorPalette = selectedColorPalette
             self.vCard = vCard
         }
 
         public var cardDesigns: IdentifiedArrayOf<CardDesignReducer.State> = []
-        public var selectedColorPalattle: ColorPalette
+        public var selectedColorPalette: ColorPalette
         public var vCard: VCard
 
     }
 
+    @CasePathable
     public enum Action: Equatable {
         case onAppear
         case cardDesigns(id: CardDesignReducer.State.ID, action: CardDesignReducer.Action)
@@ -54,14 +55,14 @@ public struct CardDesignListReducer: ReducerProtocol {
 
     public init() {}
 
-    public var body: some ReducerProtocol<State, Action> {
+    public var body: some Reducer<State, Action> {
         Reduce(self.core)
             .forEach(\.cardDesigns, action: /Action.cardDesigns) {
                 CardDesignReducer()
             }
     }
 
-    func core(state: inout State, action: Action) -> EffectTask<Action> {
+    func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
         case .onAppear:
             return .none
@@ -70,25 +71,25 @@ public struct CardDesignListReducer: ReducerProtocol {
             if case let .selectedDCard(uuid) = action {
 
                 // Unselect the same card
-                if uuid == state.selectedColorPalattle.id {
+                if uuid == state.selectedColorPalette.id {
                     state.cardDesigns[id: uuid]!.isTappedCard = state.cardDesigns[id: uuid]?
                         .isTappedCard == true ? false : true
 
-                    // when unseleted same card have me make default value again
+                    // when unselected same card have me make default value again
                     if state.cardDesigns[id: uuid]?.isTappedCard == false {
-                        state.selectedColorPalattle = ColorPalette.default
+                        state.selectedColorPalette = ColorPalette.default
                     }
                     return .none
                 }
 
                 // Unselect the previous card
-                if let previousID = state.cardDesigns[id: state.selectedColorPalattle.id]?.id {
+                if let previousID = state.cardDesigns[id: state.selectedColorPalette.id]?.id {
                     state.cardDesigns[id: previousID]?.isTappedCard = false
                 }
 
                 // Select the new card
                 state.cardDesigns[id: uuid]?.isTappedCard = true
-                state.selectedColorPalattle = state.cardDesigns[id: uuid]?.colorP ?? ColorPalette.default
+                state.selectedColorPalette = state.cardDesigns[id: uuid]?.colorP ?? ColorPalette.default
 
 
             }
@@ -96,7 +97,7 @@ public struct CardDesignListReducer: ReducerProtocol {
             return .none
                 
         case .dismiss:
-            return .fireAndForget {
+            return .run { _ in
                 await self.dismiss()
             }
         }
@@ -115,7 +116,7 @@ public struct CardDesignListView: View {
 
     public var body: some View {
 
-        WithViewStore(store) { viewStore in
+        WithPerceptionTracking {
             ZStack(alignment: .bottomLeading) {
 
 
@@ -129,7 +130,7 @@ public struct CardDesignListView: View {
                         Spacer()
 
                         Button {
-                            viewStore.send(.dismiss)
+                            store.send(.dismiss)
                         } label: {
                             Text("Close")
                                 .font(.title)
@@ -144,7 +145,8 @@ public struct CardDesignListView: View {
                         ForEachStore(
                             self.store.scope(
                                 state: \.cardDesigns,
-                                action: CardDesignListReducer.Action.cardDesigns(id:action:))
+                                action: \.cardDesigns
+                            )
                         ) {
                             CardDesignView(store: $0)
                         }
@@ -153,7 +155,7 @@ public struct CardDesignListView: View {
                     .tabViewStyle(.page)
 
                     .onAppear {
-                        viewStore.send(.onAppear)
+                        store.send(.onAppear)
                     }
                     .navigationTitle("Select card design")
 
@@ -173,15 +175,18 @@ struct CardDesignListView_Previews: PreviewProvider {
     static var previews: some View {
         CardDesignListView(
             store: .init(
-                initialState: CardDesignListReducer.State.defaultData,
-                reducer: CardDesignListReducer()
-            )
+                initialState: CardDesignListReducer.State.defaultData
+            ) {
+                CardDesignListReducer()
+            }
         )
     }
 }
 
-public struct CardDesignReducer: ReducerProtocol {
+@Reducer
+public struct CardDesignReducer {
 
+    @ObservableState
     public struct State: Equatable, Identifiable {
         public init(
             colorP: ColorPalette,
@@ -205,6 +210,7 @@ public struct CardDesignReducer: ReducerProtocol {
         public var isRealDataView: Bool
     }
 
+    @CasePathable
     public enum Action: Equatable {
         case onAppear
         case qrCode(Image)
@@ -216,11 +222,11 @@ public struct CardDesignReducer: ReducerProtocol {
 
     public init() {}
 
-    public var body: some ReducerProtocol<State, Action> {
+    public var body: some Reducer<State, Action> {
         Reduce(self.core)
     }
 
-    func core(state: inout State, action: Action) -> EffectTask<Action> {
+    func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
         case .onAppear:
 
@@ -241,7 +247,7 @@ public struct CardDesignReducer: ReducerProtocol {
             return .none
 
         case .dismiss:
-            return .fireAndForget {
+            return .run { _ in
                 await self.dismiss()
             }
         }
@@ -298,33 +304,17 @@ public struct CardDesignView: View {
     public let store: StoreOf<CardDesignReducer>
     @State var isShareViewPresented = false
 
-    struct ViewState: Equatable {
-        var colorP: ColorPalette
-        var vCard: VCard
-        var qrCodeImage: Image?
-        var isTappedCard: Bool
-        var isRealDataView: Bool
-
-        init(state: CardDesignReducer.State) {
-            self.colorP = state.colorP
-            self.vCard = state.vCard
-            self.qrCodeImage = state.qrCodeImage
-            self.isTappedCard = state.isTappedCard
-            self.isRealDataView = state.isRealDataView
-        }
-    }
-
     public init(store: StoreOf<CardDesignReducer>) {
         self.store = store
     }
 
     public var body: some View {
-        WithViewStore(store) { viewStore in
+        WithPerceptionTracking {
             ScrollView {
                 VStack(alignment: .leading) {
                     HStack {
 
-                        if let imageUrl = viewStore.vCard.imageURLs.first(where: { $0.type == .icon }) {
+                        if let imageUrl = store.vCard.imageURLs.first(where: { $0.type == .icon }) {
                             AsyncImage(url: URL(string: imageUrl.urlString)) { phase in
                                 if let image = phase.image {
                                     image.resizable()
@@ -342,10 +332,10 @@ public struct CardDesignView: View {
                                 .frame(width: 30, height: 30)
                         }
 
-                        Text(viewStore.vCard.organization ?? viewStore.vCard.contact.fullName)
+                        Text(store.vCard.organization ?? store.vCard.contact.fullName)
                             .font(.title)
                             .fontWeight(.bold)
-                            .foregroundColor(Color(rgbString: viewStore.colorP.foregroundColor))
+                            .foregroundColor(Color(rgbString: store.colorP.foregroundColor))
 
                         Spacer()
 
@@ -356,18 +346,18 @@ public struct CardDesignView: View {
                             Text("NAME")
                                 .font(.title2)
                                 .fontWeight(.medium)
-                                .foregroundColor(Color(rgbString: viewStore.colorP.labelColor))
+                                .foregroundColor(Color(rgbString: store.colorP.labelColor))
 
-                            Text(viewStore.vCard.contact.fullName.replacingOccurrences(of: " ", with: "\n").uppercased())
+                            Text(store.vCard.contact.fullName.replacingOccurrences(of: " ", with: "\n").uppercased())
                                 .font(.title)
                                 .fontWeight(.bold)
-                                .foregroundColor(Color(rgbString: viewStore.colorP.foregroundColor))
+                                .foregroundColor(Color(rgbString: store.colorP.foregroundColor))
 
                         }
 
                         Spacer()
 
-                        if let imageUrl = viewStore.vCard.imageURLs.first(where: { $0.type == .thumbnail }) {
+                        if let imageUrl = store.vCard.imageURLs.first(where: { $0.type == .thumbnail }) {
                             AsyncImage(url: URL(string: imageUrl.urlString)) { phase in
                                 if let image = phase.image {
                                     image.resizable()
@@ -392,12 +382,12 @@ public struct CardDesignView: View {
                         Text("POSITION")
                             .font(.title2)
                             .fontWeight(.medium)
-                            .foregroundColor(Color(rgbString: viewStore.colorP.labelColor))
+                            .foregroundColor(Color(rgbString: store.colorP.labelColor))
 
-                        Text(viewStore.vCard.position)
+                        Text(store.vCard.position)
                             .font(.title2)
                             .fontWeight(.light)
-                            .foregroundColor(Color(rgbString: viewStore.colorP.foregroundColor))
+                            .foregroundColor(Color(rgbString: store.colorP.foregroundColor))
                     }
                     .padding(.top, 0)
 
@@ -407,15 +397,15 @@ public struct CardDesignView: View {
                             Text("EMAIL")
                                 .font(.title2)
                                 .fontWeight(.medium)
-                                .foregroundColor(Color(rgbString: viewStore.colorP.labelColor))
+                                .foregroundColor(Color(rgbString: store.colorP.labelColor))
 
-                            Text(viewStore.vCard.emails.first?.text ?? "demo@mail.com")
+                            Text(store.vCard.emails.first?.text ?? "demo@mail.com")
                                 .minimumScaleFactor(0.4)
                                 .lineLimit(1)
                                 .layoutPriority(1)
                                 .font(.title2)
                                 .fontWeight(.light)
-                                .accentColor(Color(rgbString: viewStore.colorP.foregroundColor))
+                                .accentColor(Color(rgbString: store.colorP.foregroundColor))
                             Spacer()
                         }
 
@@ -425,40 +415,42 @@ public struct CardDesignView: View {
                             Text("MOBILE")
                                 .font(.title2)
                                 .fontWeight(.medium)
-                                .foregroundColor(Color(rgbString: viewStore.colorP.labelColor))
+                                .foregroundColor(Color(rgbString: store.colorP.labelColor))
 
-                            Text(viewStore.vCard.telephones.first?.number ?? "+7921000000")
+                            Text(store.vCard.telephones.first?.number ?? "+7921000000")
                                 .minimumScaleFactor(0.4)
                                 .lineLimit(1)
                                 .font(.title2)
                                 .fontWeight(.light)
-                                .foregroundColor(Color(rgbString: viewStore.colorP.foregroundColor))
+                                .foregroundColor(Color(rgbString: store.colorP.foregroundColor))
                             Spacer()
                         }
 
                     }
-                    .padding(.top, 10)
+                    .padding(.top, 6)
 
 
                     HStack(alignment: .bottom) {
                         Spacer()
-                        if let image = viewStore.qrCodeImage {
+                        if let image = store.qrCodeImage {
                             image
                                 .resizable()
                                 .interpolation(.none)
                                 .frame(
-                                    width: viewStore.isRealDataView ? 250 : 100,
-                                    height: viewStore.isRealDataView ? 250 : 100
+                                    width: store.isRealDataView ? 250 : 100,
+                                    height: store.isRealDataView ? 250 : 100
                                 )
                                 .padding(.trailing, -16)
                         } else {
                             Image("qr")
                                 .resizable()
+                                .interpolation(.none)
                                 .frame(
-                                    width: viewStore.isRealDataView ? 250 : 100,
-                                    height: viewStore.isRealDataView ? 250 : 100
+                                    width: store.isRealDataView ? 250 : 100,
+                                    height: store.isRealDataView ? 250 : 100
                                 )
                         }
+
                         Spacer()
                     }
                     
@@ -469,49 +461,51 @@ public struct CardDesignView: View {
                         } label: {
                             Image(systemName: "square.and.arrow.up")
                                 .resizable()
-                                .frame(width: 40, height: 40)
+                                .scaledToFit()
+                                .frame(width: 30)
                         }
-                        .foregroundColor(viewStore.isRealDataView ? Color(rgbString: viewStore.colorP.foregroundColor) : Color.gray)
-                        .allowsHitTesting(viewStore.isRealDataView)
+                        .foregroundColor(store.isRealDataView ? Color(rgbString: store.colorP.foregroundColor) : Color.gray)
+                        .allowsHitTesting(store.isRealDataView)
 
                         Spacer()
 
-                        if !viewStore.isRealDataView {
+                        if !store.isRealDataView {
                             Button {
-                                viewStore.send(.selectedDCard(by: viewStore.id), animation: .easeIn(duration: 1))
+                                store.send(.selectedDCard(by: store.id), animation: .easeIn(duration: 1))
                             } label: {
                                 Image(
-                                    systemName: viewStore.isTappedCard == true
+                                    systemName: store.isTappedCard == true
                                     ? "heart.circle"
                                     : "circle"
                                 )
                                 .resizable()
-                                .foregroundColor(viewStore.isTappedCard == true ? Color(rgbString: viewStore.colorP.foregroundColor) : Color.gray)
-                                .frame(width: 40, height: 40)
+                                .scaledToFit()
+                                .foregroundColor(store.isTappedCard == true ? Color(rgbString: store.colorP.foregroundColor) : Color.gray)
+                                .frame(width: 30)
                             }
                         } else {
                             Button {
-                                viewStore.send(.dismiss)
+                                store.send(.dismiss)
                             } label: {
                                 Text("Close")
                                     .font(.title2)
                                     .fontWeight(.bold)
                             }
-                            .foregroundColor(Color(rgbString: viewStore.colorP.foregroundColor))
+                            .foregroundColor(Color(rgbString: store.colorP.foregroundColor))
                         }
 
                     }
-                    .padding([.top, .bottom], 10)
+                    .padding([.top, .bottom], 5)
 
                 }
                 .onAppear {
-                    viewStore.send(.onAppear)
+                    store.send(.onAppear)
                 }
                 .padding(25)
-                .background(Color(rgbString: viewStore.colorP.backgroundColor))
+                .background(Color(rgbString: store.colorP.backgroundColor))
                 .cornerRadius(30)
                 .sheet(isPresented: self.$isShareViewPresented) {
-                  ActivityView(activityItems: [URL(string: "https://apps.apple.com/ru/app/new-word-learn-word-vocabulary/id1619504857?l=en")!])
+                  ActivityView(activityItems: [URL(string: "https://apps.apple.com/pt/app/ecardify/id6452084315?l=en-GB")!])
                     .ignoresSafeArea()
                 }
 
@@ -528,9 +522,10 @@ struct CardDesignView_Previews: PreviewProvider {
                 initialState: .init(
                     colorP: ColorPalette.colorPalettes[14],
                     vCard: .demo
-                ),
-                reducer: CardDesignReducer()
-            )
+                )
+            ) {
+                CardDesignReducer()
+            }
         )
     }
 }

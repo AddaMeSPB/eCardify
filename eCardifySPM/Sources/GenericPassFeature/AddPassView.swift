@@ -3,6 +3,7 @@ import UIKit
 import SwiftUI
 import PassKit
 import Foundation
+import ComposableArchitecture
 
 public struct AddPassRepresentableView: UIViewControllerRepresentable {
 
@@ -10,11 +11,13 @@ public struct AddPassRepresentableView: UIViewControllerRepresentable {
 
     @Environment(\.presentationMode) var presentationMode
 
-    @Binding var pass: PKPass?
+    @Binding var pass: PKPass
 
     public func makeUIViewController(context: Context) -> PKAddPassesViewController {
-        let passVC = PKAddPassesViewController(pass: self.pass!)
-        return passVC!
+        guard let passVC = PKAddPassesViewController(pass: self.pass) else {
+            fatalError("Failed to initialize PKAddPassesViewController with the provided pass")
+        }
+        return passVC
     }
 
     public func updateUIViewController(_ uiViewController: PKAddPassesViewController, context: Context) {
@@ -22,26 +25,33 @@ public struct AddPassRepresentableView: UIViewControllerRepresentable {
     }
 }
 
-import ComposableArchitecture
 
-public struct AddPass: ReducerProtocol {
+@Reducer
+public struct AddPass {
+
+    @ObservableState
     public struct State: Equatable {
-        var pass: PKPass?
+        var pass: PKPass
     }
 
-    public enum Action: Equatable {
-        case pass(PKPass?)
+
+    @CasePathable
+    public enum Action: BindableAction, Equatable {
+        case binding(BindingAction<State>)
+        case pass(PKPass)
     }
 
     public init() {}
 
-    public var body: some ReducerProtocol<State, Action> {
+    public var body: some Reducer<State, Action> {
         Reduce(self.core)
     }
 
-    func core(state: inout State, action: Action) -> EffectTask<Action> {
+    func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
         case .pass(_):
+            return .none
+        case .binding(_):
             return .none
         }
     }
@@ -49,15 +59,15 @@ public struct AddPass: ReducerProtocol {
 
 
 public struct AddPassView: View {
-    public let store: StoreOf<AddPass>
+    @Perception.Bindable public var store: StoreOf<AddPass>
 
     public init(store: StoreOf<AddPass>) {
         self.store = store
     }
 
     public var body: some View {
-        WithViewStore(self.store) { viewStore in
-            AddPassRepresentableView(pass: viewStore.binding(get: \.pass, send: AddPass.Action.pass))
+        WithPerceptionTracking {
+            AddPassRepresentableView(pass: $store.pass)
         }
     }
 }
@@ -65,10 +75,10 @@ public struct AddPassView: View {
 #if DEBUG
 struct AddPassView_Previews: PreviewProvider {
     static var previews: some View {
-        AddPassView(store: StoreOf<AddPass>(
-            initialState: AddPass.State(),
-            reducer: AddPass()
-        ))
+        AddPassView(store: .init(initialState: AddPass.State(pass: .init())) {
+                AddPass()
+            }
+        )
     }
 }
 #endif

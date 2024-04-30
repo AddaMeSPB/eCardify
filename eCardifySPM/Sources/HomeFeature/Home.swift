@@ -2,7 +2,7 @@
 import Foundation
 import ComposableArchitecture
 
-public struct Home: ReducerProtocol {
+public struct Home: Reducer {
     public struct State: Equatable {
         public var wpass: WallatPassList.State?
     }
@@ -12,12 +12,12 @@ public struct Home: ReducerProtocol {
 
     public init() {}
 
-    public var body: some ReducerProtocol<State, Action> {
+    public var body: some Reducer<State, Action> {
 
         Reduce(self.core)
     }
 
-    func core(state: inout State, action: Action) -> EffectTask<Action> {
+    func core(state: inout State, action: Action) -> Effect<Action> {
         
     }
 }

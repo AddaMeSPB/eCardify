@@ -110,12 +110,12 @@ extension VCard {
 
                 let addrType = getType(from: adrKey) ?? "work"
                 let components = adr.split(separator: ";").filter { !$0.isEmpty }
-                let addressFinel = components.joined(separator: ", ")
+                let addressFinal = components.joined(separator: ", ")
 
                 let type = VCard.Address.AType(rawValue: addrType) ?? .work
-                sharedLogger.log(addressFinel)
+                sharedLogger.log(addressFinal)
 
-                let addressAfterParse = VCard.Address.create(from: addressFinel, type: type)
+                let addressAfterParse = VCard.Address.create(from: addressFinal, type: type)
                 if let addressNonOptional = addressAfterParse {
                     vCard.addresses.append(addressNonOptional)
                 }

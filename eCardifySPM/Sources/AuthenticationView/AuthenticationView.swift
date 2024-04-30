@@ -22,162 +22,148 @@ public enum UILoginAccessibility: String {
 
 public struct AuthenticationView: View {
 
-    let store: StoreOf<Login>
-    @ObservedObject var viewStore: ViewStore<ViewState, Login.Action>
+    @Perception.Bindable var store: StoreOf<Login>
 
-    public init(store: Store<Login.State, Login.Action>) {
+    public init(store: StoreOf<Login>) {
         self.store = store
-        self.viewStore = ViewStore(self.store.scope(state: ViewState.init(state:)))
     }
 
     public var body: some View {
 
-        ZStack(alignment: .top) {
+        WithPerceptionTracking {
+            ZStack(alignment: .top) {
 
-            VStack {
+                VStack {
 
-                Text("eCardify")
-                    .font(Font.system(size: 60, weight: .heavy, design: .serif))
-                    .foregroundColor(.red)
-                    .padding(.top, 30)
-
-                if !viewStore.isValidationCodeIsSend {
-                    Text("Register Or Login")
-                        .font(Font.system(size: 33, weight: .heavy, design: .rounded))
-                        .foregroundColor(.green)
-                }
-
-                if viewStore.isValidationCodeIsSend {
-                    Text("Verification Code")
-                        .font(Font.system(size: 33, weight: .heavy, design: .rounded))
-                        .foregroundColor(.blue)
-                }
-
-                ZStack {
-                    if !viewStore.isValidationCodeIsSend {
-                        inputEmailTextView().disabled(viewStore.isLoginRequestInFlight)
-                    }
-
-                    if viewStore.isValidationCodeIsSend {
-                        HStack {
-                            TextField(
-                                "000000",
-                                text: viewStore.binding(
-                                    get: \.code,
-                                    send: Login.Action.codeChanged
-                                )
-                                .removeDuplicates()
-                            )
-                            .keyboardType(.numberPad)
-                            .font(.largeTitle)
-                            .multilineTextAlignment(.center)
-                            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 60)
-                            .keyboardType(.phonePad)
-                            .padding(.leading)
-                            .accessibilityIdentifier(UILoginAccessibility.codeChangedTF.rawValue)
-
-                        }.cornerRadius(25)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 25)
-                                    .stroke(Color.black.opacity(0.2), lineWidth: 0.6)
-                                    .foregroundColor(
-                                        Color(
-                                            #colorLiteral(
-                                                red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 0.06563035103))
-                                    )
-                            )
-                    }
-                }
-                .padding(EdgeInsets(top: 10, leading: 10, bottom: 20, trailing: 10))
-
-                if !viewStore.isValidationCodeIsSend  {
-                    Button(
-                        action: {
-                            viewStore.send(.sendEmailButtonTapped)
-                        },
-                        label: {
-                            HStack {
-                                if !viewStore.isLoginRequestInFlight {
-                                    Image(systemName: "arrow.right")
-                                        .font(.largeTitle)
-                                        .frame(maxWidth:.infinity)
-                                        .padding()
-                                } else {
-                                    ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle(tint: Color.hex(0x5E00CF)))
-                                        .padding()
-                                    // color have to be black
-                                }
-                            }
-                            .contentShape(Rectangle())
-                        }
-                    )
-                    .accessibilityIdentifier(UILoginAccessibility.sendEmailButtonTapped.rawValue)
-
-                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 60, maxHeight: 60)
-
-                    .disabled(
-                        (!viewStore.isEmailValidated
-                        || viewStore.isLoginRequestInFlight)
-                        && self.viewStore.niceName.isEmpty
-                    )
-                    .foregroundColor(
-                        self.viewStore.isEmailValidated
-                        && !self.viewStore.niceName.isEmpty ? Color.red : Color.white
-                    )
-                    .background(
-                        self.viewStore.isEmailValidated
-                        && !self.viewStore.niceName.isEmpty ? Color.yellow : Color.gray
-                    )
-                    .buttonStyle(.plain)
-                    .cornerRadius(10)
-                    .padding(.horizontal, 10)
-
-                }
-
-                if viewStore.isValidationCodeIsSend {
-                    Text("*** Didn't get email? Please check your mail spam folder!")
-                        .lineLimit(2)
-                        .multilineTextAlignment(.center)
-                        .font(Font.system(size: 16, weight: .medium, design: .rounded))
-                        .padding(.horizontal, 20)
+                    Text("eCardify")
+                        .font(Font.system(size: 60, weight: .heavy, design: .serif))
                         .foregroundColor(.red)
-                }
+                        .padding(.top, 30)
 
-                if !viewStore.isValidationCodeIsSend {
-                    termsAndPrivacyView()
-                }
+                    if !store.isValidationCodeIsSend {
+                        Text("Register Or Login")
+                            .font(Font.system(size: 33, weight: .heavy, design: .rounded))
+                            .foregroundColor(.green)
+                    }
 
-                Spacer()
+                    if store.isValidationCodeIsSend {
+                        Text("Verification Code")
+                            .font(Font.system(size: 33, weight: .heavy, design: .rounded))
+                            .foregroundColor(.blue)
+                    }
+
+                    ZStack {
+                        if !store.isValidationCodeIsSend {
+                            inputEmailTextView().disabled(store.isLoginRequestInFlight)
+                        }
+
+                        if store.isValidationCodeIsSend {
+                            HStack {
+                                TextField("000000", text: $store.code)
+                                .keyboardType(.numberPad)
+                                .font(.largeTitle)
+                                .multilineTextAlignment(.center)
+                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 60)
+                                .keyboardType(.phonePad)
+                                .padding(.leading)
+                                .accessibilityIdentifier(UILoginAccessibility.codeChangedTF.rawValue)
+
+                            }.cornerRadius(25)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 25)
+                                        .stroke(Color.black.opacity(0.2), lineWidth: 0.6)
+                                        .foregroundColor(
+                                            Color(
+                                                #colorLiteral(
+                                                    red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 0.06563035103))
+                                        )
+                                )
+                        }
+                    }
+                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 20, trailing: 10))
+
+                    if !store.isValidationCodeIsSend  {
+                        Button(
+                            action: {
+                                store.send(.sendEmailButtonTapped)
+                            },
+                            label: {
+                                HStack {
+                                    if !store.isLoginRequestInFlight {
+                                        Image(systemName: "arrow.right")
+                                            .font(.largeTitle)
+                                            .frame(maxWidth:.infinity)
+                                            .padding()
+                                    } else {
+                                        ProgressView()
+                                            .progressViewStyle(CircularProgressViewStyle(tint: Color.hex(0x5E00CF)))
+                                            .padding()
+                                        // color have to be black
+                                    }
+                                }
+                                .contentShape(Rectangle())
+                            }
+                        )
+                        .accessibilityIdentifier(UILoginAccessibility.sendEmailButtonTapped.rawValue)
+                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 60, maxHeight: 60)
+                        .disabled(
+                            (!store.isEmailValidated
+                             || store.isLoginRequestInFlight)
+                            && self.store.niceName.isEmpty
+                        )
+                        .foregroundColor(
+                            self.store.isEmailValidated
+                            && !self.store.niceName.isEmpty ? Color.red : Color.white
+                        )
+                        .background(
+                            self.store.isEmailValidated
+                            && !self.store.niceName.isEmpty ? Color.yellow : Color.gray
+                        )
+                        .buttonStyle(.plain)
+                        .cornerRadius(10)
+                        .padding(.horizontal, 10)
+
+                    }
+
+                    if store.isValidationCodeIsSend {
+                        Text("*** Didn't get email? Please check your mail spam folder!")
+                            .lineLimit(2)
+                            .multilineTextAlignment(.center)
+                            .font(Font.system(size: 16, weight: .medium, design: .rounded))
+                            .padding(.horizontal, 20)
+                            .foregroundColor(.red)
+                    }
+
+                    if !store.isValidationCodeIsSend {
+                        termsAndPrivacyView()
+                    }
+
+                    Spacer()
+                }
             }
+            .onAppear {
+                store.send(.onAppear)
+            }
+            .onTapGesture {
+                hideKeyboard()
+            }
+            .alert($store.scope(state: \.destination?.alert, action: \.destination.alert))
+            .sheet(
+              store: self.store.scope(
+                state: \.$destination.termsAndPrivacy, action: \.destination.termsAndPrivacy
+              )
+            ) { store in
+                TermsAndPrivacyWebView(store: store)
+            }
+
         }
-        .onAppear {
-            viewStore.send(.onAppear)
-        }
-        .alert(self.store.scope(state: { $0.alert }), dismiss: .alertDismissed)
-        .onTapGesture {
-            hideKeyboard()
-        }
-        /// Move to SettingFeature
-        .sheet(
-            isPresented: viewStore.binding(
-                get: \.isSheetTermsAndPrivacyPresented,
-                send: Login.Action.isSheetTermsAndPrivacy(isPresented:)
-            )
-        ) {
-            IfLetStore(
-                self.store.scope(state: \.termsAndPrivacy, action: Login.Action.termsAndPrivacy),
-                then: TermsAndPrivacyWebView.init(store:)
-            )
-        }
-        
     }
 
     private func inputEmailTextView() -> some View {
         VStack {
             TextField(
                 "* Your nice Name goes here",
-                text: viewStore.binding(get: \.niceName, send: Login.Action.niceNameTextChanged)
+                text: $store.niceName
             )
             .keyboardType(.default)
             .autocorrectionDisabled()
@@ -186,7 +172,7 @@ public struct AuthenticationView: View {
             .autocapitalization(.none)
             .padding(.leading, 30)
             .padding(.bottom, -10)
-            .disabled(viewStore.isLoginRequestInFlight)
+            .disabled(store.isLoginRequestInFlight)
             .ignoresSafeArea(.keyboard, edges: .bottom)
             .accessibilityIdentifier(UILoginAccessibility.niceNameTF.rawValue)
 
@@ -194,7 +180,7 @@ public struct AuthenticationView: View {
 
             TextField(
                 "* Email",
-                text: viewStore.binding(get: \.email, send: Login.Action.emailTextChanged)
+                text: $store.email
             )
             .keyboardType(.emailAddress)
             .autocorrectionDisabled()
@@ -203,7 +189,7 @@ public struct AuthenticationView: View {
             .autocapitalization(.none)
             .padding(.leading, 30)
             .padding(.top, -10)
-            .disabled(viewStore.isLoginRequestInFlight && viewStore.isEmailValidated)
+            .disabled(store.isLoginRequestInFlight && store.isEmailValidated)
             .ignoresSafeArea(.keyboard, edges: .bottom)
             .accessibilityIdentifier(UILoginAccessibility.emailTF.rawValue)
 
@@ -229,11 +215,7 @@ public struct AuthenticationView: View {
             HStack {
                 TextField(
                     "000000",
-                    text: viewStore.binding(
-                        get: \.code,
-                        send: Login.Action.codeChanged
-                    )
-                    .removeDuplicates()
+                    text: $store.code
                 )
                 .keyboardType(.numberPad)
                 .font(.largeTitle)
@@ -277,7 +259,7 @@ public struct AuthenticationView: View {
             HStack {
                 Button(
                     action: {
-                        viewStore.send(.termsPrivacySheet(isPresented: .terms))
+                        store.send(.termsPrivacySheet(isPresented: .terms))
                     },
                     label: {
                         Text("Terms")
@@ -295,7 +277,7 @@ public struct AuthenticationView: View {
 
                 Button(
                     action: {
-                        viewStore.send(.termsPrivacySheet(isPresented: .privacy))
+                        store.send(.termsPrivacySheet(isPresented: .privacy))
                     },
                     label: {
                         Text("Privacy")
@@ -313,9 +295,10 @@ public struct AuthenticationView: View {
 //#if DEBUG
 struct AuthenticationView_Previews: PreviewProvider {
     static var store = Store(
-        initialState: Login.State(),
-        reducer: Login()
-    )
+        initialState: Login.State()
+    ) {
+        Login()
+    }
 
     static var previews: some View {
 //        Preview {

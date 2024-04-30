@@ -4,8 +4,10 @@ import Foundation
 import ECSharedModels
 import ComposableArchitecture
 
-public struct WallatPassDetails: ReducerProtocol {
+@Reducer
+public struct WalletPassDetails {
 
+    @ObservableState
     public struct State: Equatable, Identifiable {
         public var id: String { wp.id }
         public var wp: WalletPass
@@ -13,6 +15,7 @@ public struct WallatPassDetails: ReducerProtocol {
         public var qrCodeImage: Image? = nil
     }
 
+    @CasePathable
     public enum Action: Equatable {
         case onAppear
 //        case sendToEmail
@@ -23,11 +26,11 @@ public struct WallatPassDetails: ReducerProtocol {
 
     public init() {}
 
-    public var body: some ReducerProtocol<State, Action> {
+    public var body: some Reducer<State, Action> {
         Reduce(self.core)
     }
 
-    func core(state: inout State, action: Action) -> EffectTask<Action> {
+    func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
         case .onAppear:
 
@@ -84,17 +87,17 @@ public struct WallatPassDetails: ReducerProtocol {
 
 import SwiftUIExtension
 
-public struct WallatPassDetailsView: View {
+public struct WalletPassDetailsView: View {
 
     @State var isShareViewPresented = false
-    public let store: StoreOf<WallatPassDetails>
+    @Perception.Bindable public var store: StoreOf<WalletPassDetails>
 
-    public init(store: StoreOf<WallatPassDetails>) {
+    public init(store: StoreOf<WalletPassDetails>) {
         self.store = store
     }
 
     public var body: some View {
-        WithViewStore(self.store) { viewStore in
+        WithPerceptionTracking {
             Menu {
 
                 Button {
@@ -105,29 +108,26 @@ public struct WallatPassDetailsView: View {
                 }
 
                 Button {
-                    viewStore.send(.viewCardButtonTapped)
+                    store.send(.viewCardButtonTapped)
                 } label: {
-
                     Text("Show card 🪪")
                         .foregroundColor(Color.black)
                 }
 
                 Button {
-                    viewStore.send(.addPassToWallet)
+                    store.send(.addPassToWallet)
                 } label: {
                     Image("PassbookWallet_logo_Icon")
                     Text("Add to Apple Wallet")
                         .foregroundColor(Color.black)
                 }
 
-
-
             } label: {
 
                 VStack(alignment: .leading) {
                     HStack {
 
-                        if let imageUrl = viewStore.vCard.imageURLs.first(where: { $0.type == .thumbnail }) {
+                        if let imageUrl = store.vCard.imageURLs.first(where: { $0.type == .thumbnail }) {
 
                             AsyncImage(url: URL(string: imageUrl.urlString)) { phase in
                                 if let image = phase.image {
@@ -145,7 +145,7 @@ public struct WallatPassDetailsView: View {
                         HStack {
 
                             VStack(alignment: .leading) {
-                                if let imageUrl = viewStore.vCard.imageURLs.first(where: { $0.type == .icon }) {
+                                if let imageUrl = store.vCard.imageURLs.first(where: { $0.type == .icon }) {
                                     AsyncImage(url: URL(string: imageUrl.urlString)) { phase in
                                         if let image = phase.image {
                                             image.resizable()
@@ -162,9 +162,9 @@ public struct WallatPassDetailsView: View {
                                 Spacer()
 
                                 VStack(alignment: .leading) {
-                                    Text(viewStore.vCard.contact.firstName)
-                                    Text(viewStore.vCard.position)
-                                    Text(viewStore.vCard.organization ?? "")
+                                    Text(store.vCard.contact.firstName)
+                                    Text(store.vCard.position)
+                                    Text(store.vCard.organization ?? "")
                                 }
                                 .lineLimit(1)
                                 .layoutPriority(1)
@@ -173,7 +173,7 @@ public struct WallatPassDetailsView: View {
 
                             Spacer()
 
-                            if let image = viewStore.qrCodeImage {
+                            if let image = store.qrCodeImage {
                                 image
                                     .resizable()
                                     .interpolation(.none)
@@ -190,14 +190,14 @@ public struct WallatPassDetailsView: View {
                 }
                 .frame(height: 130)
                 .onAppear {
-                    viewStore.send(.onAppear)
+                    store.send(.onAppear)
                 }
                 .background(Color.white)
                 .cornerRadius(10)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 16)
                 .sheet(isPresented: self.$isShareViewPresented) {
-                  ActivityView(activityItems: [URL(string: "https://apps.apple.com/ru/app/new-word-learn-word-vocabulary/id1619504857?l=en")!])
+                  ActivityView(activityItems: [URL(string: "https://apps.apple.com/pt/app/ecardify/id6452084315?l=en-GB")!])
                     .ignoresSafeArea()
                 }
             }
@@ -205,13 +205,14 @@ public struct WallatPassDetailsView: View {
     }
 }
 
-struct WallatPassDetailsView_Previews: PreviewProvider {
+struct WalletPassDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        WallatPassDetailsView(
+        WalletPassDetailsView(
             store: .init(
-                initialState: WallatPassDetails.State.init(wp: .mock, vCard: .demo),
-                reducer: WallatPassDetails()
-            )
+                initialState: WalletPassDetails.State.init(wp: .mock, vCard: .demo)
+            ) {
+                WalletPassDetails()
+            }
         )
         .background(Color(red: 243/255, green: 243/255, blue: 243/255))
     }

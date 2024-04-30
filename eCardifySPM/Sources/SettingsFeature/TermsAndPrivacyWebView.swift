@@ -4,10 +4,23 @@ import SwiftUIExtension
 import ComposableArchitecture
 
 public class WebViewModel: ObservableObject {
-    @Published public var link: String
+    @Published public var link: Link
     @Published public var didFinishLoading: Bool = true
 
-    public init (link: String) {
+    public enum Link: String {
+        case terms, privacy
+
+        var urlString: String {
+            switch self {
+                case .terms:
+                    return "https://addame.com/terms"
+                case .privacy:
+                    return "https://addame.com/privacy"
+            }
+        }
+    }
+
+    public init (link: Link) {
         self.link = link
     }
 }
@@ -43,7 +56,7 @@ public struct WebView: UIViewRepresentable {
     public func makeUIView(context: Context) -> UIView {
         self.webView.navigationDelegate = context.coordinator
 
-        if let url = URL(string: self.viewModel.link) {
+        if let url = URL(string: self.viewModel.link.urlString) {
             self.webView.load(URLRequest(url: url))
         }
 
@@ -51,7 +64,7 @@ public struct WebView: UIViewRepresentable {
     }
 }
 
-public struct TermsAndPrivacy: ReducerProtocol {
+public struct TermsAndPrivacy: Reducer {
 
     public struct State: Equatable {
 
@@ -65,20 +78,20 @@ public struct TermsAndPrivacy: ReducerProtocol {
 
     public enum Action: Equatable, BindableAction {
       case binding(BindingAction<State>)
-      case leaveCurentPageButtonClick
+      case leaveCurrentPageButtonClick
       case terms
       case privacy
     }
 
     public init() {}
 
-    public var body: some ReducerProtocol<State, Action> {
+    public var body: some Reducer<State, Action> {
         BindingReducer()
         Reduce { state, action in
             switch action {
             case .binding:
                 return .none
-            case .leaveCurentPageButtonClick:
+            case .leaveCurrentPageButtonClick:
                 return .none
             case .terms, .privacy:
                 return .none
@@ -104,13 +117,13 @@ public struct TermsAndPrivacyWebView: View {
 
 
   public var body: some View {
-    WithViewStore(self.store) { viewStore in
+    WithViewStore(self.store, observe: { $0 }) { viewStore in
 
         WebView(viewModel: viewStore.wbModel)
                 .overlay(
                     Button(
                         action: {
-                            viewStore.send(.leaveCurentPageButtonClick)
+                            viewStore.send(.leaveCurrentPageButtonClick)
                         },
                         label: {
                             Image(systemName: "xmark.circle").font(.title)
@@ -125,8 +138,7 @@ public struct TermsAndPrivacyWebView: View {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle(tint: Color.blue))
                         .font(.largeTitle)
-                        .opacity(viewStore.wbModel.didFinishLoading ? 1 : 0)
-                    ,
+                        .opacity(viewStore.wbModel.didFinishLoading ? 1 : 0),
 
                     alignment: .center
                 )
@@ -134,16 +146,3 @@ public struct TermsAndPrivacyWebView: View {
     }
   }
 }
-
-// struct TermsAndPrivacyWebView_Previews: PreviewProvider {
-//
-//  static let store = Store(
-//    initialState: TermsAndPrivacyState(urlString: "http://10.0.1.3:3030/privacy"),
-//    reducer: termsAndPrivacyReducer, environment: .init()
-//  )
-//
-//  static var previews: some View {
-//    TermsAndPrivacyWebView(store: store)
-//  }
-// }
-

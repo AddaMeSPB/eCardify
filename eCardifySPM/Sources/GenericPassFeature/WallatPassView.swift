@@ -1,26 +1,13 @@
 import SwiftUI
-import ImagePicker
 import SettingsFeature
 import ECSharedModels
 import ComposableArchitecture
 
-public struct WallatPassView: View {
+public struct WalletPassView: View {
 
-    public let store: StoreOf<WallatPassList>
+    public let store: StoreOf<WalletPassList>
 
-    struct ViewState: Equatable {
-        var wPassLocal: IdentifiedArrayOf<WallatPassDetails.State>
-        var isAuthorized: Bool
-        var isLoadinWPL: Bool
-
-        init(state: BindingViewStore<WallatPassList.State>) {
-            self.wPassLocal = state.wPassLocal
-            self.isAuthorized = state.isAuthorized
-            self.isLoadinWPL = state.isLoadinWPL
-        }
-    }
-
-    public init(store: StoreOf<WallatPassList>) {
+    public init(store: StoreOf<WalletPassList>) {
         self.store = store
     }
 
@@ -30,23 +17,24 @@ public struct WallatPassView: View {
     ]
 
     public var body: some View {
-        WithViewStore(store, observe: ViewState.init) { viewStore in
+        WithPerceptionTracking {
             ZStack(alignment: .bottomTrailing) {
                 ScrollView {
                     Group {
-                        if viewStore.wPassLocal.count > 0 {
+                        if store.wPassLocal.count > 0 {
                             ForEachStore(
                                 self.store.scope(
                                     state: \.wPassLocal,
-                                    action: WallatPassList.Action.wPass(id:action:))
+                                    action: \.wPass
+                                )
                             ) {
-                                WallatPassDetailsView(store: $0)
+                                WalletPassDetailsView(store: $0)
                             }
                         } else {
 
-                            if viewStore.isAuthorized {
+                            if store.isAuthorized {
                                 Button {
-                                    viewStore.send(.createGenericFormButtonTapped)
+                                    store.send(.createGenericFormButtonTapped)
                                 } label: {
                                     Image(systemName: "plus")
                                         .resizable()
@@ -65,35 +53,35 @@ public struct WallatPassView: View {
                                 .accessibility(identifier: "add_card_button")
                             }
 
-                          if !viewStore.isAuthorized {
-                            Button {
-                              viewStore.send(.openSheetLogin(true))
-                            } label: {
-                              VStack {
-                                Text("If you've used eCardify before, please log in to continue.")
-                                  .font(.title3)
-//                                  .fontWeight(.light)
+                            if !store.isAuthorized {
+                                Button {
+                                    store.send(.openSheetLogin(true))
+                                } label: {
+                                    VStack {
+                                        Text("If you've used eCardify before, please log in to continue.")
+                                            .font(.title3)
+                                        //                                  .fontWeight(.light)
 
-                                Image(systemName: "iphone.and.arrow.forward")
-                                  .resizable()
-                                  .frame(width: 40, height: 60)
-                              }
+                                        Image(systemName: "iphone.and.arrow.forward")
+                                            .resizable()
+                                            .frame(width: 40, height: 60)
+                                    }
+                                }
+                                .padding(32)
                             }
-                            .padding(32)
-                          }
 
                         }
                     }
                 }
-                .redacted(reason: viewStore.isLoadinWPL ? .placeholder : .init())
+                .redacted(reason: store.isLoadingWPL ? .placeholder : .init())
                 .navigationBarTitle("Digital Cards")
                 .navigationViewStyle(StackNavigationViewStyle())
                 .navigationBarTitleDisplayMode(.automatic)
                 .toolbar {
-                    if viewStore.isAuthorized {
+                    if store.isAuthorized {
                         ToolbarItem(placement: ToolbarItemPlacement.navigationBarTrailing) {
                             Button {
-                                viewStore.send(.navigateSettingsButtonTapped)
+                                store.send(.navigateSettingsButtonTapped)
                             } label: {
                                 Image(systemName: "gear")
                                     .font(.title2)
@@ -104,44 +92,45 @@ public struct WallatPassView: View {
                     }
                 }
                 .onAppear {
-                    viewStore.send(.onAppear)
+                    store.send(.onAppear)
                 }
                 .sheet(
-                    store: self.store.scope(
-                        state: \.$destination,
-                        action: { .destination($0) }
-                    ),
-                    state: /WallatPassList.Destination.State.digitalCard,
-                    action: WallatPassList.Destination.Action.digitalCard
-
+                  store: self.store.scope(
+                    state: \.$destination.digitalCard,
+                    action: \.destination.digitalCard
+                  )
                 ) { store in
                     CardDesignView(store: store)
                 }
                 .navigationDestination(
                     store: self.store.scope(
-                        state: \.$destination,
-                        action: { .destination($0) }
-                    ),
-                    state: /WallatPassList.Destination.State.add,
-                    action: WallatPassList.Destination.Action.add
+                        state: \.$destination.add,
+                        action: \.destination.add
+                    )
                 ) { store in
                     GenericPassFormView(store: store)
                 }
                 .navigationDestination(
                     store: self.store.scope(
-                        state: \.$destination,
-                        action: { .destination($0) }
-                    ),
-                    state: /WallatPassList.Destination.State.settings,
-                    action: WallatPassList.Destination.Action.settings
+                        state: \.$destination.settings,
+                        action: \.destination.settings
+                    )
                 ) { store in
                     SettingsView.init(store: store)
+
+                }
+                .sheet(
+                    store: self.store.scope(
+                        state: \.$destination.addPass,
+                        action: \.destination.addPass
+                    )
+                ) { store in
+                    AddPassView(store: store)
                 }
 
-
-                if viewStore.wPassLocal.count > 0 {
+                if store.wPassLocal.count > 0 {
                     Button {
-                        viewStore.send(.createGenericFormButtonTapped)
+                        store.send(.createGenericFormButtonTapped)
                     } label: {
                         Image(systemName: "plus.square.fill")
                             .resizable()
@@ -151,39 +140,29 @@ public struct WallatPassView: View {
                     .accessibility(identifier: "add_card_button")
                 }
             }
-            .sheet(
-                store: self.store.scope(
-                    state: \.$destination,
-                    action: { .destination($0) }
-                ),
-                state: /WallatPassList.Destination.State.addPass,
-                action: WallatPassList.Destination.Action.addPass
-
-            ) { store in
-                AddPassView(store: store)
-            }
         }
     }
 }
 
-struct WallatPassView_Previews: PreviewProvider {
-    static public var demoWPassLocal: IdentifiedArrayOf<WallatPassDetails.State> {
+struct WalletPassView_Previews: PreviewProvider {
+    static public var demoWPassLocal: IdentifiedArrayOf<WalletPassDetails.State> {
         return .init(
             uniqueElements: [
-                WallatPassDetails.State(wp: .mock, vCard: .demo),
-                WallatPassDetails.State(wp: .mock1, vCard: .demo)
+                WalletPassDetails.State(wp: .mock, vCard: .demo),
+                WalletPassDetails.State(wp: .mock1, vCard: .demo)
             ]
         )
     }
 
     static var store = Store(
-        initialState: WallatPassList.State(),
-        reducer: WallatPassList()
-    )
+        initialState: WalletPassList.State()
+    ) {
+        WalletPassList()
+    }
 
     static var previews: some View {
         NavigationView {
-            WallatPassView(store: store)
+            WalletPassView(store: store)
         }
     }
 }

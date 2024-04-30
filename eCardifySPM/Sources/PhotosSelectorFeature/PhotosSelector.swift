@@ -64,8 +64,10 @@ extension PhotosPickerItem: Identifiable {
     }
 }
 
-public struct PhotosSelectorReducer: ReducerProtocol {
+@Reducer
+public struct PhotosSelectorReducer {
 
+    @ObservableState
     public struct State: Equatable {
         public init(
             imageSelections: [PhotosPickerItem] = [],
@@ -89,6 +91,7 @@ public struct PhotosSelectorReducer: ReducerProtocol {
 
     }
 
+    @CasePathable
     public enum Action: Equatable {
         case imageSelections(items: [PhotosPickerItem])
         case images([SwapFormImage])
@@ -98,11 +101,11 @@ public struct PhotosSelectorReducer: ReducerProtocol {
 
     public init() {}
 
-    public var body: some ReducerProtocol<State, Action> {
+    public var body: some Reducer<State, Action> {
         Reduce(self.core)
     }
 
-    func core(state: inout State, action: Action) -> EffectTask<Action> {
+    func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
 
         case .imageSelections(items: let imageSelections):
@@ -169,14 +172,14 @@ public struct PhotosSelectorReducer: ReducerProtocol {
 
 public struct PhotosSelectorView: View {
 
-    let store: StoreOf<PhotosSelectorReducer>
+    @Perception.Bindable var store: StoreOf<PhotosSelectorReducer>
 
     public init(store: StoreOf<PhotosSelectorReducer>) {
         self.store = store
     }
 
     public var body: some View {
-        WithViewStore(self.store, observe: { $0 }) { viewStore in
+        WithPerceptionTracking {
             PhotosPicker(
                 selection: viewStore.binding(
                     get: \.imageSelections,

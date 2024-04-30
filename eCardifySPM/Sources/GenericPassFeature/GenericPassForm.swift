@@ -4,7 +4,9 @@ import APIClient
 import LoggerKit
 import Foundation
 import ImagePicker
+
 import ECSharedModels
+import SettingsFeature
 import VNRecognizeFeature
 import AttachmentS3Client
 import UserDefaultsClient
@@ -12,7 +14,6 @@ import ComposableStoreKit
 import LocalDatabaseClient
 import FoundationExtension
 import ComposableArchitecture
-import SettingsFeature
 
 extension String: Identifiable {
     public typealias ID = Int
@@ -21,18 +22,21 @@ extension String: Identifiable {
     }
 }
 
-public struct GenericPassForm: ReducerProtocol {
+@Reducer
+public struct GenericPassForm {
+
     public enum ImageFor: String, Equatable {
         case logo, avatar, card
     }
 
+    @ObservableState
     public struct State: Equatable {
         public init(
             isActivityIndicatorVisible: Bool = false,
             storeKitState: StoreKitReducer.State = .init(),
             isUploadingImage: Bool = false,
             logoImage: UIImage? = nil,
-            avartarImage: UIImage? = nil,
+            avatarImage: UIImage? = nil,
             cardImage: UIImage? = nil,
             imageFor: ImageFor = .avatar,
             imageURLS: [ImageURL] = [],
@@ -47,7 +51,7 @@ public struct GenericPassForm: ReducerProtocol {
             self.storeKitState = storeKitState
             self.isUploadingImage = isUploadingImage
             self.logoImage = logoImage
-            self.avartarImage = avartarImage
+            self.avatarImage = avatarImage
             self.cardImage = cardImage
             self.imageFor = imageFor
             self.isFormValid = isFormValid
@@ -58,20 +62,20 @@ public struct GenericPassForm: ReducerProtocol {
             self.email = email
         }
 
-        @BindingState public var vCard: VCard
-        @BindingState public var telephone: VCard.Telephone
-        @BindingState public var email: String
-        @BindingState public var storeKitState: StoreKitReducer.State
-        @PresentationState public var imagePicker: ImagePickerReducer.State?
-        @PresentationState public var digitalCardDesign: CardDesignListReducer.State?
-        @PresentationState var alert: AlertState<AlertAction>?
+        public var vCard: VCard
+        public var telephone: VCard.Telephone
+        public var email: String
+        public var storeKitState: StoreKitReducer.State
+        @Presents public var imagePicker: ImagePickerReducer.State?
+        @Presents public var digitalCardDesign: CardDesignListReducer.State?
+        @Presents var alert: AlertState<AlertAction>?
 
         public var pass: Pass = .draff
         public var colorPalette: ColorPalette = .default
         public var isActivityIndicatorVisible = false
         public var isUploadingImage: Bool = false
         public var logoImage: UIImage?
-        public var avartarImage: UIImage?
+        public var avatarImage: UIImage?
         public var cardImage: UIImage?
         public var imageFor: ImageFor = .avatar
         public var isFormValid: Bool = false
@@ -79,10 +83,13 @@ public struct GenericPassForm: ReducerProtocol {
         public var user: UserOutput? = nil
         public var walletPass: WalletPass? = nil
         public var bottomID: Int = 9
-        public var isCustomProduct: Bool = false
+        public var isCustomProduct: Bool {
+            return storeKitState.type == .basic ? false : true
+        }
 
     }
 
+    @CasePathable
     public enum Action: BindableAction, Equatable {
         case alert(PresentationAction<AlertAction>)
         case binding(BindingAction<State>)
@@ -95,7 +102,7 @@ public struct GenericPassForm: ReducerProtocol {
         case uploadAvatar(_ image: UIImage)
         case createAttachment(_ attachment: AttachmentInOutPut)
         case imageUploadResponse(TaskResult<String>)
-        case attacmentResponse(TaskResult<AttachmentInOutPut>)
+        case attachmentResponse(TaskResult<AttachmentInOutPut>)
         case imageFor(ImageFor)
         case recognizeText(VNRecognizeResponse)
         case createPass
@@ -113,6 +120,7 @@ public struct GenericPassForm: ReducerProtocol {
         case removeTelephoneSection(by: UUID)
         case addOneMoreAddressSection
         case removeAddressSection(by: UUID)
+
     }
 
     public enum AlertAction: Equatable {}
@@ -126,9 +134,9 @@ public struct GenericPassForm: ReducerProtocol {
     @Dependency(\.vnRecognizeClient) var vnRecognizeClient
     @Dependency(\.attachmentS3Client) var attachmentS3Client
     @Dependency(\.localDatabase) var localDatabase
-    @Dependency(\.dismiss) var dismass
+    @Dependency(\.dismiss) var dismiss
 
-    public var body: some ReducerProtocol<State, Action> {
+    public var body: some Reducer<State, Action> {
 
         BindingReducer()
 
@@ -145,10 +153,10 @@ public struct GenericPassForm: ReducerProtocol {
             }
     }
 
-    func core(state: inout State, action: Action) -> EffectTask<Action> {
+    func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
 
-        case .binding(\.$vCard):
+        case .binding(\.vCard):
 
             let emailValidationCheck = state.vCard.emails.count == state.vCard.emails.filter({ $0.text.isEmailValid == true }).count
             let imageMoreThenThree = state.vCard.imageURLs.count >= 1
@@ -203,8 +211,8 @@ public struct GenericPassForm: ReducerProtocol {
                 return .none
             }
 
-            return .task { [imageFor = state.imageFor] in
-                    .attacmentResponse(
+            return .run { [imageFor = state.imageFor] send in
+                    await send(.attachmentResponse(
                         await TaskResult {
 
 //                            if TARGET_OS_SIMULATOR == 1 {
@@ -223,6 +231,7 @@ public struct GenericPassForm: ReducerProtocol {
                                 decoder: .iso8601
                             )
                         }
+                    )
                     )
             }
 
@@ -258,8 +267,8 @@ public struct GenericPassForm: ReducerProtocol {
                     return .none
                 }
 
-                return .task { [serialNumber = state.pass.serialNumber] in
-                    await .imageUploadResponse(
+                return .run { [serialNumber = state.pass.serialNumber] send in
+                    await send(.imageUploadResponse(
                         TaskResult {
 //                            if TARGET_OS_SIMULATOR == 1 {
 //                                return "https://learnplaygrow.ams3.digitaloceanspaces.com/uploads/images/9155F894-E500-453A-A691-6CDE8F722BDF/CECF3925-180E-4373-A15E-E7876760D18F/logo.png"
@@ -276,18 +285,18 @@ public struct GenericPassForm: ReducerProtocol {
                                 )
                             )
                         }
-                    )
+                    ))
                 }
 
             case .avatar:
-                state.avartarImage = image
+                state.avatarImage = image
                 guard let currentUserID = state.user?.id else {
                     state.alert = AlertState { TextState("Please login 1st!") }
                     return .none
                 }
 
-                return .task { [serialNumber = state.pass.serialNumber] in
-                    await .imageUploadResponse(
+                return .run { [serialNumber = state.pass.serialNumber]  send in
+                    await send(.imageUploadResponse(
                         TaskResult {
 //                            if TARGET_OS_SIMULATOR == 1 {
 //                                return "https://learnplaygrow.ams3.digitaloceanspaces.com/uploads/images/DC6E2827-FF38-4038-A3BB-6F2C40695EC5/CECF3925-180E-4373-A15E-E7876760D18F/thumbnail.png"
@@ -303,7 +312,7 @@ public struct GenericPassForm: ReducerProtocol {
                                 )
                             )
                         }
-                    )
+                    ))
                 }
 
             case .card:
@@ -320,26 +329,26 @@ public struct GenericPassForm: ReducerProtocol {
         case .imagePicker:
             return .none
 
-        case .attacmentResponse(.success(let attachmentResponse)):
+        case .attachmentResponse(.success(let attachmentResponse)):
             state.isUploadingImage = false
 
             switch state.imageFor {
             case .logo:
-                if let image = attachmentResponse.imageUrlString {
+                //if let image = attachmentResponse.imageUrlString {
                     // state.imageURLs.insert(image, at: 0)
-                }
+                //}
                 return .none
             case .avatar:
-                if let image = attachmentResponse.imageUrlString {
+                //if let image = attachmentResponse.imageUrlString {
 //                     state.imageURLs.insert(image, at: 0)
-                }
+                //}
                 return .none
             case .card:
                 return .none
             }
 
 
-        case .attacmentResponse(.failure(let error)):
+        case .attachmentResponse(.failure(let error)):
             sharedLogger.logError(error)
             return .none
 
@@ -447,15 +456,15 @@ public struct GenericPassForm: ReducerProtocol {
 
             state.isActivityIndicatorVisible = true
 
-            return .task {
-                .passResponse(
+            return .run { send in
+               await send(.passResponse(
                     await TaskResult {
                         try await apiClient.request(
                             for: .walletPasses(.create(input: wp)),
                             as: WalletPassResponse.self
                         )
                     }
-                )
+                ))
             }
 
         case .passResponse(.success(let response)):
@@ -476,7 +485,7 @@ public struct GenericPassForm: ReducerProtocol {
                 }
 
                 await send(.buildPKPassFrom(url: response.urlString))
-                await self.dismass()
+                await self.dismiss()
 
             }
 
@@ -528,7 +537,7 @@ public struct GenericPassForm: ReducerProtocol {
         // MARK: - DigitalCardDesign
         case .digitalCardDesign(.dismiss):
 
-            state.colorPalette = state.digitalCardDesign?.selectedColorPalattle ?? .default
+            state.colorPalette = state.digitalCardDesign?.selectedColorPalette ?? .default
 
             return .none
 
@@ -538,6 +547,7 @@ public struct GenericPassForm: ReducerProtocol {
         case .dcdSheetIsPresentedButtonTapped:
             state.digitalCardDesign = .init(vCard: state.vCard)
             return .none
+
         }
     }
 
@@ -583,7 +593,7 @@ public struct GenericPassForm: ReducerProtocol {
                         vCard.website = url.absoluteString
 
 
-                    case let .email(email: emails, url: url):
+                    case let .email(email: emails, url: _):
 
                         let components = emails.split(separator: ":", maxSplits: 1)
 

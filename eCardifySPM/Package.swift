@@ -1,4 +1,4 @@
-// swift-tools-version: 5.8
+// swift-tools-version: 5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -22,14 +22,14 @@ let package = Package(
         .library(name: "SettingsFeature", targets: ["SettingsFeature"])
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.56.0"),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "0.1.0"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.10.0"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.2.2"),
         .package(url: "https://github.com/AddaMeSPB/CommonTCALibraries.git", branch: "main"),
         .package(url: "https://github.com/AddaMeSPB/ECSharedModels.git", branch: "main"),
 //      .package(path: "/Users/alif/Developer/Swift/MySideProjects/VertualBusinessCard/ECSharedModels"),
 
         .package(url: "https://github.com/soto-project/soto.git", from: "6.0.0"),
-        .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay", from: "0.2.0"),
+        .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.1.2"),
         .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0")
         
     ],

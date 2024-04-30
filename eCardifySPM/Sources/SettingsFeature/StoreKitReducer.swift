@@ -7,7 +7,10 @@ import AppConfiguration
 import ComposableStoreKit
 import ComposableArchitecture
 
-public struct StoreKitReducer: ReducerProtocol {
+@Reducer
+public struct StoreKitReducer {
+
+    @ObservableState
     public struct State: Equatable {
 
         public enum ProductType: String, Codable, CaseIterable, Identifiable {
@@ -28,16 +31,29 @@ public struct StoreKitReducer: ReducerProtocol {
             self.isRestoring = isRestoring
         }
 
+//        public var product: StoreKitClient.Product? {
+//            switch type {
+//            case .basic:
+//                return products.first
+//            case .custom:
+//                return products.last
+//            }
+//        }
+
         public var product: StoreKitClient.Product? {
+            // Ensure products are sorted by price in ascending order
+            let sortedProducts = products.sorted()
             switch type {
             case .basic:
-                return products.first
+                // Basic type gets the product with the lowest price
+                return sortedProducts.first
             case .custom:
-                return products.last
+                // Custom type gets the product with the highest price
+                return sortedProducts.last
             }
         }
 
-        @PresentationState var alert: AlertState<Action.Alert>?
+        @Presents var alert: AlertState<Action.Alert>?
         public var products: [StoreKitClient.Product] = []
         public var type: ProductType = .basic
 
@@ -49,17 +65,18 @@ public struct StoreKitReducer: ReducerProtocol {
     }
 
     public enum Action: Equatable {
-      case alert(PresentationAction<Alert>)
+        case alert(PresentationAction<Alert>)
         case fetchProduct
         case paymentTransaction(StoreKitClient.PaymentTransactionObserverEvent)
         case productsResponse(TaskResult<StoreKitClient.ProductsResponse>)
         case restoreButtonTapped
         case tappedProduct(StoreKitClient.Product)
         case buySuccess
-
-      public enum Alert: Equatable {
-        case backToParent
-      }
+        
+        @CasePathable
+        public enum Alert: Equatable {
+            case backToParent
+        }
     }
 
     public init() {}
@@ -68,12 +85,13 @@ public struct StoreKitReducer: ReducerProtocol {
     @Dependency(\.storeKit) var storeKit
     @Dependency(\.appConfiguration) var appConfiguration
 
-    public var body: some ReducerProtocol<State, Action> {
+    public var body: some Reducer<State, Action> {
 
         Reduce(self.core)
+            .ifLet(\.$alert, action: \.alert)
     }
 
-    func core(state: inout State, action: Action) -> EffectTask<Action> {
+    func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
         case .fetchProduct:
 
@@ -134,7 +152,7 @@ public struct StoreKitReducer: ReducerProtocol {
             return .none
 
         case .productsResponse(.failure(let error)):
-            // have to send message for analatices
+            // have to send message for analytics
             sharedLogger.logError(error)
             return .none
 
@@ -146,7 +164,7 @@ public struct StoreKitReducer: ReducerProtocol {
 
         case .tappedProduct(let product):
             state.isPurchasing = true
-            return .fireAndForget {
+            return .run { _ in
               let payment = SKMutablePayment()
               payment.productIdentifier = product.productIdentifier
               payment.quantity = 1
@@ -161,8 +179,20 @@ public struct StoreKitReducer: ReducerProtocol {
           case .alert:
             return .none
         }
+        
     }
 }
+
+extension StoreKitClient.Product: Comparable  {
+    public static func < (lhs: StoreKitClient.Product, rhs: StoreKitClient.Product) -> Bool {
+        return lhs.price.compare(rhs.price) == .orderedAscending
+    }
+
+    public static func == (lhs: StoreKitClient.Product, rhs: StoreKitClient.Product) -> Bool {
+        return lhs.productIdentifier == rhs.productIdentifier
+    }
+}
+
 
 // Alert
 extension AlertState where Action == StoreKitReducer.Action.Alert {

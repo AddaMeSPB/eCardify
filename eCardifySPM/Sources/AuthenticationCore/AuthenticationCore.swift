@@ -12,57 +12,83 @@ import ComposableArchitecture
 
 public enum VerificationCodeCanceable {}
 
-public struct Login: ReducerProtocol {
+@Reducer
+public struct Login {
+
+    @Reducer
+    public struct Destination {
+        public enum State: Equatable {
+            case alert(AlertState<Action.Alert>)
+            case termsAndPrivacy(TermsAndPrivacy.State)
+        }
+
+        public enum Action: Equatable {
+
+            case login(Login.Action)
+            case termsAndPrivacy(TermsAndPrivacy.Action)
+
+            case alert(Alert)
+
+            public enum Alert {
+                case confirm
+            }
+        }
+
+        public var body: some Reducer<State, Action> {
+
+            Scope(state: \.termsAndPrivacy, action: \.termsAndPrivacy) {
+                TermsAndPrivacy()
+            }
+        }
+    }
+
+    @ObservableState
     public struct State: Equatable {
 
-      public init() {}
+        public init() {}
 
-      public static func == (lhs: State, rhs: State) -> Bool {
-        return lhs.isAuthorized == rhs.isAuthorized
-      }
+        public static func == (lhs: State, rhs: State) -> Bool {
+            return lhs.isAuthorized == rhs.isAuthorized
+        }
 
-      public var alert: AlertState<Action>?
+        @Presents public var destination: Destination.State?
 
-      public var niceName = ""
-      public var email: String = ""
-      public var code: String = ""
+        public var niceName = ""
+        public var email: String = ""
+        public var code: String = ""
 
-      public var emailLoginInput: EmailLoginInput?
-      public var emailLoginOutput: EmailLoginOutput?
-      public var isValidationCodeIsSend = false
-      public var isLoginRequestInFlight = false
-      public var isAuthorized: Bool = false
-      public var isUserFirstNameEmpty: Bool = true
-      public var deviceCheckData: Data?
-      public var isEmailValidated: Bool = false
+        public var emailLoginInput: EmailLoginInput?
+        public var emailLoginOutput: EmailLoginOutput?
+        public var isValidationCodeIsSend = false
+        public var isLoginRequestInFlight = false
+        public var isAuthorized: Bool = false
+        public var isUserFirstNameEmpty: Bool = true
+        public var deviceCheckData: Data?
+        public var isEmailValidated: Bool = false
 
-      /// Move to SettingFeature
-      public var termsAndPrivacy: TermsAndPrivacy.State?
-      public var isTermsOrPrivacySheetOpen: TermsOrPrivacy = .nill
-      public var isSheetTermsAndPrivacyPresented: Bool { self.termsAndPrivacy != nil }
-        
     }
 
     public enum TermsOrPrivacy {
         case nill, terms, privacy
     }
 
-    public enum Action: Equatable {
-      case onAppear
-      case alertDismissed
-      case termsPrivacySheet(isPresented: TermsOrPrivacy)
-      case sendEmailButtonTapped
-      case niceNameTextChanged(String)
-      case emailTextChanged(String)
-      case codeChanged(String)
-      case loninResponse(TaskResult<EmailLoginOutput>)
-      case verificationResponse(TaskResult<SuccessfulLoginResponse>)
+    @CasePathable
+    public enum Action: BindableAction, Equatable {
+        case destination(PresentationAction<Destination.Action>)
+        case binding(BindingAction<State>)
+        case onAppear
 
-      case termsAndPrivacy(TermsAndPrivacy.Action)
-      case isSheetTermsAndPrivacy(isPresented: Bool)
-      case isSheetRegister(isPresented: Bool)
-      case moveToTableView
+        case sendEmailButtonTapped
+        case loginResponse(TaskResult<EmailLoginOutput>)
+        case verificationResponse(TaskResult<SuccessfulLoginResponse>)
+
+
+        case termsPrivacySheet(isPresented: TermsOrPrivacy)
+
+        case moveToTableView
     }
+
+    public enum AlertAction: Equatable {}
 
     @Dependency(\.mainQueue) var mainQueue
     @Dependency(\.userDefaults) var userDefaults
@@ -72,15 +98,15 @@ public struct Login: ReducerProtocol {
 
     public init() {}
 
-    public var body: some ReducerProtocol<State, Action> {
-        self.core
+    public var body: some Reducer<State, Action> {
+        BindingReducer()
+        Reduce(self.core)
     }
 
-    @ReducerBuilder<State, Action>
-    var core: some ReducerProtocol<State, Action> {
 
-        Reduce { state, action in
-            switch action {
+    func core(state: inout State, action: Action) -> Effect<Action> {
+
+        switch action {
 
             case .onAppear:
                 state.isAuthorized = userDefaults.boolForKey(UserDefaultKey.isAuthorized.rawValue)
@@ -98,19 +124,14 @@ public struct Login: ReducerProtocol {
 
                 return .none
 
-            case .alertDismissed:
-                state.alert = nil
-                return .none
-
-            case .niceNameTextChanged(let name):
-                state.niceName = name.capitalized
+            case .binding(\.niceName):
+                _ = state.niceName.capitalized
 
                 return .none
 
-            case .emailTextChanged(let email):
-                state.email = email
+            case .binding(\.email):
 
-                guard email.isEmailValid else {
+                guard state.email.isEmailValid else {
                     state.isEmailValidated = false
                     return .none
                 }
@@ -125,26 +146,24 @@ public struct Login: ReducerProtocol {
                 let emailLoginInput = EmailLoginInput(name: state.niceName, email: state.email.lowercased())
                 state.emailLoginInput = emailLoginInput
 
-                return .task {
-                    return .loninResponse(
+                return .run { send in
+                    await send(.loginResponse(
                         await TaskResult {
                             try await apiClient.decodedResponse(
                                 for: .authEngine(.authentication(.loginViaEmail(emailLoginInput))),
                                 as: EmailLoginOutput.self
                             ).value
                         }
-                    )
+                    ))
                 }
 
-            case let .codeChanged(code):
+            case .binding(\.code):
 
                 guard let emailLoginOutput = state.emailLoginOutput else {
                     return .none
                 }
 
-                state.code = code
-
-                if code.count == 6 {
+                if state.code.count == 6 {
 
                     state.isLoginRequestInFlight = true
 
@@ -152,11 +171,11 @@ public struct Login: ReducerProtocol {
                         niceName: state.niceName,
                         email: emailLoginOutput.email,
                         attemptId: emailLoginOutput.attemptId,
-                        code: code
+                        code: state.code
                     )
 
-                    return .task {
-                        .verificationResponse(
+                    return .run { send in
+                        await send(.verificationResponse(
                             await TaskResult {
                                 try await apiClient.decodedResponse(
                                     for: .authEngine(.authentication(.verifyEmail(input))),
@@ -164,20 +183,23 @@ public struct Login: ReducerProtocol {
                                     decoder: .iso8601
                                 ).value
                             }
-                        )
+                        ))
                     }
                 }
 
                 return .none
 
-            case let .loninResponse(.success(emailLoginOutput)):
+            case .binding:
+                return .none
+                
+            case let .loginResponse(.success(emailLoginOutput)):
                 state.isLoginRequestInFlight = false
                 state.isValidationCodeIsSend = true
                 state.emailLoginOutput = emailLoginOutput
 
                 return .none
 
-            case .loninResponse(.failure(let error)):
+            case .loginResponse(.failure(let error)):
                 state.isLoginRequestInFlight = false
                 state.isValidationCodeIsSend = false
                 sharedLogger.logError(error.localizedDescription)
@@ -197,8 +219,8 @@ public struct Login: ReducerProtocol {
 
                         group.addTask {
                             await userDefaults.setBool(
-                                 true,
-                                 UserDefaultKey.isAuthorized.rawValue
+                                true,
+                                UserDefaultKey.isAuthorized.rawValue
                             )
 
                             await self.userDefaults.setBool(
@@ -219,51 +241,45 @@ public struct Login: ReducerProtocol {
                 }
 
             case .verificationResponse(.failure(_)):
-                state.alert = .init(title: TextState("Please try again!") )
+                // state.alert = .init(title: TextState("Please try again!") )
                 // send this for logs .init(title: TextState(error.description))
                 state.isLoginRequestInFlight = false
 
                 return .none
 
-            case .termsPrivacySheet(let actiontp):
-                switch actiontp {
-                case .nill:
-                    state.termsAndPrivacy = nil
-                    return .none
 
-                case .terms:
-                    state.termsAndPrivacy = .init(wbModel: .init(link: "https://addame.com/terms"))
-                    return .none
-
-                case .privacy:
-                    state.termsAndPrivacy = .init(wbModel: .init(link: "https://addame.com/privacy"))
-                    return .none
-                }
-
-            case .isSheetTermsAndPrivacy(isPresented: true):
+            case .destination(.presented(.termsAndPrivacy(.privacy))):
+                state.destination = .termsAndPrivacy(.init(wbModel: .init(link: .terms)))
                 return .none
 
-            case .isSheetTermsAndPrivacy(isPresented: false):
-                return .run { send in
-                    await send(.termsPrivacySheet(isPresented: .nill))
-                }
 
-            case .termsAndPrivacy(.leaveCurentPageButtonClick):
-                state.termsAndPrivacy = nil
+            case .destination(.presented(.termsAndPrivacy(.terms))):
+                state.destination = .termsAndPrivacy(.init(wbModel: .init(link: .privacy)))
                 return .none
 
-            case .termsAndPrivacy:
+            case .destination(.presented(.termsAndPrivacy(.leaveCurrentPageButtonClick))):
+                state.destination = nil
                 return .none
 
             case .moveToTableView:
                 return .none
-            case .isSheetRegister(isPresented: let isPresented):
+
+            case .destination:
                 return .none
-            }
+
+            case .termsPrivacySheet(isPresented: let top):
+                switch top {
+                    case .nill:
+                        return .none
+                    case .terms:
+                        state.destination = .termsAndPrivacy(.init(wbModel: .init(link: .terms)))
+                        return .none
+                    case .privacy:
+                        state.destination = .termsAndPrivacy(.init(wbModel: .init(link: .privacy)))
+                        return .none
+                }
+
         }
-        // this part move to SettinsFeature
-        .ifLet(\.termsAndPrivacy, action: /Login.Action.termsAndPrivacy) {
-            TermsAndPrivacy()
-        }
+
     }
 }

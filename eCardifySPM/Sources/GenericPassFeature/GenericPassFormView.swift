@@ -1,7 +1,7 @@
 import BSON
+import ImagePicker
 import SwiftUI
 import Foundation
-import ImagePicker
 import ECSharedModels
 import ComposableStoreKit
 import ComposableArchitecture
@@ -24,40 +24,7 @@ public enum UITestGPFAccessibilityIdentifier: String {
 }
 
 public struct GenericPassFormView: View {
-    let store: StoreOf<GenericPassForm>
-
-    struct ViewState: Equatable {
-
-        @BindingViewState var vCard: VCard
-        @BindingViewState var storeKitState: StoreKitReducer.State
-
-        var avartarImage: UIImage?
-        var cardImage: UIImage?
-        var logoImage: UIImage?
-        var isFormValid: Bool
-        var isImagePickerPresented: Bool
-        var isAuthorized: Bool
-        var isActivityIndicatorVisible: Bool
-        var isCustomProduct: Bool
-        var bottomID: Int
-
-        init(state: BindingViewStore<GenericPassForm.State>) {
-            _vCard = state.$vCard
-            _storeKitState = state.$storeKitState
-
-            self.logoImage = state.logoImage
-            self.avartarImage = state.avartarImage
-            self.cardImage = state.cardImage
-
-            self.isImagePickerPresented = state.imagePicker != nil
-            self.isFormValid = state.isFormValid
-
-            self.isAuthorized = state.isAuthorized
-            self.isActivityIndicatorVisible = state.isActivityIndicatorVisible
-            self.isCustomProduct = state.storeKitState.type == .custom
-            self.bottomID = state.bottomID
-        }
-    }
+    @Perception.Bindable var store: StoreOf<GenericPassForm>
 
     public init(store: StoreOf<GenericPassForm>) {
         self.store = store
@@ -70,216 +37,218 @@ public struct GenericPassFormView: View {
 
     // MARK: - BODY
     public var body: some View {
-        WithViewStore(self.store, observe: ViewState.init) { viewStore in
+        WithPerceptionTracking {
             GeometryReader { proxy in
                 ScrollViewReader { value in
                     ZStack(alignment: .center) {
-                        Form {
-                            Section {
-                                HStack {
-
+                        WithPerceptionTracking {
+                            Form {
+                                Section {
+                                    HStack {
+                                        
+                                        
+                                        TextField(
+                                            "",
+                                            text: $store.vCard.organization.orEmpty,
+                                            prompt: Text("***Org or Company Name")
+                                                .font(.body)
+                                                .fontWeight(.medium)
+                                            
+                                        )
+                                        .disableAutocorrection(true)
+                                        .font(.title2)
+                                        .fontWeight(.medium)
+                                        .padding(.vertical, 10)
+                                        .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.orgText.rawValue)
+                                    }
+                                    .frame(height: 60)
+                                    
+                                    Text("***Organization/Company/self employee(put your name)")
+                                        .foregroundColor(Color.gray)
+                                    
                                     TextField(
                                         "",
-                                        text: viewStore.$vCard.organization.orEmpty,
-                                        prompt: Text("***Org or Company Name")
+                                        text: $store.vCard.position,
+                                        prompt: Text("*Job title")
                                             .font(.body)
                                             .fontWeight(.medium)
-
                                     )
                                     .disableAutocorrection(true)
                                     .font(.title2)
                                     .fontWeight(.medium)
                                     .padding(.vertical, 10)
-                                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.orgText.rawValue)
-                                }
-                                .frame(height: 60)
-
-                                Text("***Organization/company/self employee(put your name)")
-                                    .foregroundColor(Color.gray)
-
-                                TextField(
-                                    "",
-                                    text: viewStore.$vCard.position,
-                                    prompt: Text("*Job title")
-                                        .font(.body)
-                                        .fontWeight(.medium)
-                                )
-                                .disableAutocorrection(true)
-                                .font(.title2)
-                                .fontWeight(.medium)
-                                .padding(.vertical, 10)
-                                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.jobTitleText.rawValue)
-
-                                HStack {
-                                    cardImagePicker(viewStore, proxy, value)
-                                    avatarImagePicker(viewStore, proxy)
-                                }
-
-                                Text("By incorporating your photo into a digital business card, your avatar will be displayed on Apple Wallet Pass, enabling others to instantly recognize you.")
-                                .font(.headline)
-                                .fontWeight(.medium)
-                                .foregroundColor(Color.gray)
-                                .padding(.vertical, 5)
-
-                            } header: {
-                                Text("Uplod Images")
-                                    .font(.title2)
-                                    .fontWeight(.medium)
-                            }
-
-                            // MARK: ContactSectionView Body
-                            contactSectionView(viewStore)
-
-                            // MARK: TelephonesSectionView Body
-                            telephoneSectionView(viewStore, value)
-
-                            // MARK: EmailsSectionView Body
-                            emailsSectionView(viewStore, value)
-
-                            // MARK: - AddressesSectionView Body
-                            addressesSectionView(viewStore, value)
-
-                            //MARK: WebSite
-                            webSiteSectionView(viewStore)
-
-                            Group {
-                                Picker("Choice Product Type 👉🏼", selection: viewStore.$storeKitState.type) {
-                                    ForEach(StoreKitReducer.State.ProductType.allCases) { option in
-                                        Text(option.rawValue.uppercased())
-                                            .font(.title2)
-                                            .fontWeight(.medium)
-                                            .padding(.vertical, 10)
-                                    }
-                                }
-                                .animation(.easeIn, value: 190)
-
-                            }
-
-                            //MARK: Pick card desgin
-                            Section {
-                                Button {
-                                    // tapped func
-                                    viewStore.send(.dcdSheetIsPresentedButtonTapped, animation: .default)
-                                } label: {
-
+                                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.jobTitleText.rawValue)
+                                    
                                     HStack {
-                                        Text("Pick or Preview")
-                                            .font(.title)
-                                            .foregroundColor(viewStore.isCustomProduct ? Color.blue :  Color.gray)
-                                            .fontWeight(.heavy)
-                                        Text("Your ")
-                                            .font(.title2)
-                                            .foregroundColor(viewStore.isCustomProduct ? Color.white : Color.gray)
-                                            .fontWeight(.bold)
-                                        Text("Card Design")
-                                            .font(.title)
-                                            .foregroundColor(viewStore.isCustomProduct ? Color.pink : Color.gray)
-                                            .fontWeight(.heavy)
+                                        cardImagePicker(proxy, value)
+                                        avatarImagePicker(proxy)
                                     }
-                                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0)
-                                    .padding(.horizontal, 10)
-
-
-                                    if !viewStore.isCustomProduct {
-                                        Text("To activate this function,")
-                                        Text("Please change your product type up☝️.")
-                                    }
-                                }
-                                .animation(.easeIn, value: 190)
-
-                            }
-                            .disabled(!viewStore.isCustomProduct)
-                            .listRowBackground(viewStore.isCustomProduct ? Color.yellow : Color.gray.opacity(0.3))
-
-                            //MARK: Payment
-
-                            VStack(alignment: .trailing, spacing: 10)  {
-
-                                if let product = viewStore.storeKitState.product {
-
-                                    Button {
-                                        viewStore.send(.createPass)
-                                    } label: {
-                                        Text(viewStore.storeKitState.isPurchasing ? "     " :"Pay \(cost(product: product)) and Create")
-                                            .font(.title3)
-                                            .fontWeight(.medium)
-                                            .minimumScaleFactor(0.5)
-                                            .padding(10)
-                                            .overlay(
-                                                Group {
-                                                    if viewStore.storeKitState.isPurchasing {
-                                                        ProgressView().tint(Color.white)
-                                                    }
-                                                }
-                                            )
-                                    }
-                                    .background(viewStore.isFormValid ? Color.blue : Color.red)
-                                    .foregroundColor(viewStore.isFormValid ? Color.white : Color.white.opacity(0.3))
-                                    .disabled(!viewStore.isFormValid)
-                                    .cornerRadius(9)
-                                    .buttonStyle(BorderlessButtonStyle())
-                                    .accessibility(identifier: "pay_button")
-
-                                    Text(product.localizedTitle)
+                                    
+                                    Text("By incorporating your photo into a digital business card, your avatar will be displayed on Apple Wallet Pass, enabling others to instantly recognize you.")
+                                        .font(.headline)
+                                        .fontWeight(.medium)
+                                        .foregroundColor(Color.gray)
+                                        .padding(.vertical, 5)
+                                    
+                                } header: {
+                                    Text("Upload Images")
                                         .font(.title2)
                                         .fontWeight(.medium)
+                                }
+                                
+                                // MARK: ContactSectionView Body
+                                contactSectionView()
+                                
+                                // MARK: TelephonesSectionView Body
+                                telephoneSectionView(value)
+                                
+                                // MARK: EmailsSectionView Body
+                                emailsSectionView(value)
+                                
+                                // MARK: - AddressesSectionView Body
+                                addressesSectionView(value)
+                                
+                                //MARK: WebSite
+                                webSiteSectionView()
+                                
+                                Group {
+                                    Picker("Choice Product Type 👉🏼", selection: $store.storeKitState.type) {
+                                        ForEach(StoreKitReducer.State.ProductType.allCases) { option in
 
-                                    Text(product.localizedDescription)
-                                        .font(.body)
-                                        .frame(maxWidth: .infinity, alignment: .trailing)
+                                            Text(option.rawValue.uppercased())
+                                                .font(.title2)
+                                                .fontWeight(.medium)
+                                                .padding(.vertical, 10)
 
-                                } else {
+                                        }
+                                    }
+                                    .animation(.easeIn, value: 190)
+                                    
+                                }
+                                
+                                //MARK: Pick Card Design
+                                Section {
+                                    Button {
+                                        // tapped func
+                                        store.send(.dcdSheetIsPresentedButtonTapped, animation: .default)
+                                    } label: {
+                                        
+                                        HStack {
+                                            Text("Pick or Preview")
+                                                .font(.title)
+                                                .foregroundColor(store.isCustomProduct ? Color.blue :  Color.gray)
+                                                .fontWeight(.heavy)
+                                            Text("Your ")
+                                                .font(.title2)
+                                                .foregroundColor(store.isCustomProduct ? Color.white : Color.gray)
+                                                .fontWeight(.bold)
+                                            Text("Card Design")
+                                                .font(.title)
+                                                .foregroundColor(store.isCustomProduct ? Color.pink : Color.gray)
+                                                .fontWeight(.heavy)
+                                        }
+                                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0)
+                                        .padding(.horizontal, 10)
+                                        
+                                        
+                                        if !store.isCustomProduct {
+                                            Text("To activate this function,")
+                                            Text("Please change your product type up☝️.")
+                                        }
+                                    }
+                                    .animation(.easeIn, value: 190)
+                                    
+                                }
+                                .disabled(!store.isCustomProduct)
+                                .listRowBackground(store.isCustomProduct ? Color.yellow : Color.gray.opacity(0.3))
+                                
+                                //MARK: Payment
+                                
+                                VStack(alignment: .trailing, spacing: 10)  {
+                                    
+                                    if let product = store.storeKitState.product {
+
+                                            Button {
+                                                store.send(.createPass)
+                                            } label: {
+                                                Text(store.storeKitState.isPurchasing 
+                                                     ? "     "
+                                                     : "Pay \(cost(product: product)) and Create")
+                                                    .font(.title3)
+                                                    .fontWeight(.medium)
+                                                    .minimumScaleFactor(0.5)
+                                                    .padding(10)
+                                                    .overlay(
+                                                        Group {
+                                                            if store.storeKitState.isPurchasing {
+                                                                ProgressView().tint(Color.white)
+                                                            }
+                                                        }
+                                                    )
+                                            }
+                                            .background(store.isFormValid ? Color.blue : Color.red)
+                                            .foregroundColor(store.isFormValid ? Color.white : Color.white.opacity(0.3))
+                                            .disabled(!store.isFormValid)
+                                            .cornerRadius(9)
+                                            .buttonStyle(BorderlessButtonStyle())
+                                            .accessibility(identifier: "pay_button")
+                                            
+                                            Text(product.localizedTitle)
+                                                .font(.title2)
+                                                .fontWeight(.medium)
+                                            
+                                            Text(product.localizedDescription)
+                                                .font(.body)
+                                                .frame(maxWidth: .infinity, alignment: .trailing)
+
+                                        
+                                    } else {
+                                        ProgressView()
+                                            .tint(.blue)
+                                            .scaleEffect(3)
+                                            .frame(maxWidth: .infinity, alignment: .center)
+                                            .padding()
+                                    }
+                                    
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 10)
+                                .id(store.bottomID)
+                                
+                            }
+                            .navigationTitle("Create digital card 🪪!")
+                            .redacted(reason: store.isActivityIndicatorVisible ? .placeholder : .init())
+                            .allowsHitTesting(!store.isActivityIndicatorVisible)
+                            .background(
+                                store.isActivityIndicatorVisible == true
+                                ? Color.black.opacity(0.9)
+                                : Color.white
+                            )
+                            .onAppear {
+                                store.send(.onAppear)
+                            }
+                            .alert($store.scope(state: \.alert, action: \.alert))
+                            .sheet(
+                                store: store.scope(state: \.$imagePicker, action: \.imagePicker),
+                                content: ImagePickerView.init(store:)
+                            )
+                            .sheet(
+                                store: store.scope(state: \.$digitalCardDesign, action: \.digitalCardDesign),
+                                content: CardDesignListView.init(store:)
+                            )
+                            
+                            if store.isActivityIndicatorVisible {
+                                VStack {
                                     ProgressView()
                                         .tint(.blue)
-                                        .scaleEffect(3)
-                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .scaleEffect(4)
                                         .padding()
+                                        .foregroundColor(Color.white)
+                                    Text("Generating your Digital card! Please wait")
+                                        .font(.system(size: 23, weight: .bold, design: .rounded))
+                                        .padding()
+                                        .foregroundColor(Color.white)
                                 }
-
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 10)
-                            .id(viewStore.bottomID)
-
-                        }
-                        .navigationTitle("Create digital card 🪪!")
-                        .redacted(reason: viewStore.isActivityIndicatorVisible ? .placeholder : .init())
-                        .allowsHitTesting(!viewStore.isActivityIndicatorVisible)
-                        .background(
-                            viewStore.isActivityIndicatorVisible == true
-                            ? Color.black.opacity(0.9)
-                            : Color.white
-                        )
-                        .onAppear {
-                            viewStore.send(.onAppear)
-                        }
-                        .alert(store: self.store.scope(state: \.$alert, action: { .alert($0) }))
-                        .sheet(
-                            store: store.scope(
-                                state: \.$imagePicker,
-                                action: GenericPassForm.Action.imagePicker
-                            ),
-                            content: ImagePickerView.init(store:)
-                        )
-                        .sheet(
-                            store: store.scope(
-                                state: \.$digitalCardDesign,
-                                action: GenericPassForm.Action.digitalCardDesign
-                            ),
-                            content: CardDesignListView.init(store:)
-                        )
-
-                        if viewStore.isActivityIndicatorVisible {
-                            VStack {
-                                ProgressView()
-                                    .tint(.blue)
-                                    .scaleEffect(4)
-                                    .padding()
-                                    .foregroundColor(Color.white)
-                                Text("Generating your Digital card! Please wait")
-                                    .font(.system(size: 23, weight: .bold, design: .rounded))
-                                    .padding()
-                                    .foregroundColor(Color.white)
                             }
                         }
                     }
@@ -288,51 +257,86 @@ public struct GenericPassFormView: View {
         }
     }
 
-    // MARK: - cardImagePicker func
+    // MARK: - CardImagePicker
     @ViewBuilder
-    fileprivate func cardImagePicker(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>, _ proxy: GeometryProxy, _ value: ScrollViewProxy) -> some View {
-
-        VStack {
-            if viewStore.isCustomProduct {
-                if let uiImage = viewStore.cardImage {
-                    Button {
-                        viewStore.send(.isImagePicker(isPresented: true))
-                        viewStore.send(.imageFor(.card))
-                    } label: {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .cornerRadius(15)
-                            .overlay(alignment: .bottomTrailing) {
-                                Button {
-                                    viewStore.send(.isImagePicker(isPresented: true))
-                                    viewStore.send(.imageFor(.card))
-                                } label: {
-
-                                    Image(systemName: "rectangle.badge.checkmark")
-                                        .resizable()
-                                        .frame(width: 60, height: 60)
-                                        .padding()
-                                }
-                                .frame(width: proxy.size.width / 2.3,   height: 200)
-                            }
-                            .frame(width: proxy.size.width / 2.3,   height: 200)
-                    }
-                    .buttonStyle(BorderlessButtonStyle())
-
-                } else {
-                    VStack {
+    fileprivate func cardImagePicker(_ proxy: GeometryProxy, _ value: ScrollViewProxy) -> some View {
+        WithPerceptionTracking {
+            VStack {
+                if store.isCustomProduct {
+                    if let uiImage = store.cardImage {
                         Button {
-                            viewStore.send(.isImagePicker(isPresented: true))
-                            viewStore.send(.imageFor(.card))
+                            store.send(.isImagePicker(isPresented: true))
+                            store.send(.imageFor(.card))
                         } label: {
-                            VStack {
-                                Text("Upload old card.")
-                                    .font(.body)
-                                    .fontWeight(.medium)
-                                    .padding(.horizontal, 15)
-                            }
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .cornerRadius(15)
+                                .overlay(alignment: .bottomTrailing) {
+                                    Button {
+                                        store.send(.isImagePicker(isPresented: true))
+                                        store.send(.imageFor(.card))
+                                    } label: {
+
+                                        Image(systemName: "rectangle.badge.checkmark")
+                                            .resizable()
+                                            .frame(width: 60, height: 60)
+                                            .padding()
+                                    }
+                                    .frame(width: proxy.size.width / 2.3,   height: 200)
+                                }
                         }
-                        .foregroundColor(.gray)
+                        .frame(width: proxy.size.width / 2.3,   height: 200)
+                        //.buttonStyle(BorderlessButtonStyle())
+
+                    } else {
+                        VStack {
+                            Button {
+                                store.send(.isImagePicker(isPresented: true))
+                                store.send(.imageFor(.card))
+                            } label: {
+                                VStack {
+                                    Text("Upload old card.")
+                                        .font(.body)
+                                        .fontWeight(.medium)
+                                        .padding(.horizontal, 15)
+                                }
+                            }
+                            .foregroundColor(.gray)
+                            .frame(width: proxy.size.width / 2.3,   height: 98)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
+                                    .padding(5)
+                            )
+                            .buttonStyle(BorderlessButtonStyle())
+                        }
+                        .frame(width: proxy.size.width / 2.3,   height: 200)
+                    }
+                    
+                } else {
+                    Menu {
+                        Text("To activate this function,")
+                        Text("Please change your product type below.")
+                        Button {
+                            withAnimation(.easeInOut(duration: 90)) {
+                                value.scrollTo(store.bottomID, anchor: .bottom)
+                            }
+                        } label: {
+                            Text("click here to change your product type 👇🏼")
+                        }
+                    } label: {
+
+                        Button {
+                            store.send(.isImagePicker(isPresented: true))
+                            store.send(.imageFor(.card))
+                        } label: {
+                            Text("Upload old card")
+                                .font(.title3)
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 15)
+                        }
+                        .disabled(!store.isCustomProduct)
+                        .foregroundColor(store.isCustomProduct ? Color.blue : Color.gray)
                         .frame(width: proxy.size.width / 2.3,   height: 98)
                         .overlay(
                             RoundedRectangle(cornerRadius: 15)
@@ -340,201 +344,442 @@ public struct GenericPassFormView: View {
                                 .padding(5)
                         )
                         .buttonStyle(BorderlessButtonStyle())
-                    }
-                    .frame(width: proxy.size.width / 2.3,   height: 200)
-                }
-            } else {
-                Menu {
-                    Text("To activate this function,")
-                    Text("Please change your product type below.")
-                    Button {
-                        withAnimation(.easeInOut(duration: 90)) {
-                            value.scrollTo(viewStore.bottomID, anchor: .bottom)
-                        }
-                    } label: {
-                        Text("click here to change your product type 👇🏼")
-                    }
-                } label: {
 
-                    Button {
-                        viewStore.send(.isImagePicker(isPresented: true))
-                        viewStore.send(.imageFor(.card))
-                    } label: {
-                        Text("Upload old card")
+                    }
+                }
+
+                Button {
+                    store.send(.isImagePicker(isPresented: true))
+                    store.send(.imageFor(.logo))
+                } label: {
+                    if let logoImage = store.logoImage {
+                        Image(uiImage: logoImage)
+                            .resizable()
+                            .resizable()
+                            .cornerRadius(15)
+                            .frame(width: proxy.size.width / 2.3,   height: 96)
+                    } else {
+                        Text("*Upload logo")
                             .font(.title3)
                             .fontWeight(.medium)
                             .padding(.horizontal, 15)
                     }
-                    .disabled(!viewStore.isCustomProduct)
-                    .foregroundColor(viewStore.isCustomProduct ? Color.blue : Color.gray)
-                    .frame(width: proxy.size.width / 2.3,   height: 98)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 15)
-                            .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
-                            .padding(5)
-                    )
-                    .buttonStyle(BorderlessButtonStyle())
-
                 }
-            }
+                .frame(width: proxy.size.width / 2.3,   height: 98)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 15)
+                        .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
+                        .padding(5)
+                )
+                .buttonStyle(BorderlessButtonStyle())
 
-            Button {
-                viewStore.send(.isImagePicker(isPresented: true))
-                viewStore.send(.imageFor(.logo))
-            } label: {
-                if let logoImage = viewStore.logoImage {
-                    Image(uiImage: logoImage)
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                        .padding()
-                } else {
-                    Text("*Upload logo")
-                        .font(.title3)
-                        .fontWeight(.medium)
-                        .padding(.horizontal, 15)
-                }
-            }
-            .frame(width: proxy.size.width / 2.3,   height: 98)
-            .overlay(
-                RoundedRectangle(cornerRadius: 15)
-                    .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
-                    .padding(5)
-            )
-            .buttonStyle(BorderlessButtonStyle())
-            
 
-        }.frame(width: proxy.size.width / 2.3,   height: 200)
+            }.frame(width: proxy.size.width / 2.3,   height: 200)
+        }
     }
 
     // MARK: - avatarImagePicker func
     @ViewBuilder
-    fileprivate func avatarImagePicker(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>, _ proxy: GeometryProxy) -> some View {
-        if let uiImage = viewStore.avartarImage {
-            Image(uiImage: uiImage)
-                .resizable()
-                .cornerRadius(15)
-                .overlay(alignment: .bottomTrailing) {
-                    Button {
-                        viewStore.send(.isImagePicker(isPresented: true))
-                        viewStore.send(.imageFor(.avatar))
-                    } label: {
-                        Image(systemName: "rectangle.2.swap")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 40, height: 40)
-                            .padding(15)
+    fileprivate func avatarImagePicker(_ proxy: GeometryProxy) -> some View {
+        WithPerceptionTracking {
+            if let uiImage = store.avatarImage {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .cornerRadius(15)
+                    .overlay(alignment: .bottomTrailing) {
+                        Button {
+                            store.send(.isImagePicker(isPresented: true))
+                            store.send(.imageFor(.avatar))
+                        } label: {
+                            Image(systemName: "rectangle.2.swap")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 40, height: 40)
+                                .padding(15)
 
+                        }
+                        .buttonStyle(BorderlessButtonStyle())
                     }
-                    .buttonStyle(BorderlessButtonStyle())
+                    .frame(width: proxy.size.width / 2.3,   height: 200)
+
+            } else {
+                Button {
+                    store.send(.isImagePicker(isPresented: true))
+                    store.send(.imageFor(.avatar))
+                } label: {
+                    VStack {
+                        Image(systemName: "person.fill.viewfinder")
+                            .resizable()
+                            .frame(width: 60, height: 60)
+                            .padding()
+                            .cornerRadius(15)
+
+                        Text("*Avatar")
+                            .font(.title2)
+                            .fontWeight(.medium)
+                    }
                 }
                 .frame(width: proxy.size.width / 2.3,   height: 200)
-
-        } else {
-            Button {
-                viewStore.send(.isImagePicker(isPresented: true))
-                viewStore.send(.imageFor(.avatar))
-            } label: {
-                VStack {
-                    Image(systemName: "person.fill.viewfinder")
-                        .resizable()
-                        .frame(width: 60, height: 60)
-                        .padding()
-                        .cornerRadius(15)
-
-                    Text("*Avatar")
-                        .font(.title2)
-                        .fontWeight(.medium)
-                }
+                .overlay(
+                    RoundedRectangle(cornerRadius: 15)
+                        .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
+                        .padding(5)
+                )
+                .buttonStyle(BorderlessButtonStyle())
             }
-            .frame(width: proxy.size.width / 2.3,   height: 200)
-            .overlay(
-                RoundedRectangle(cornerRadius: 15)
-                    .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
-                    .padding(5)
-            )
-            .buttonStyle(BorderlessButtonStyle())
         }
     }
 
     // MARK: - contactSectionView func
     @MainActor
-    fileprivate func contactSectionView(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>) -> some View {
+    fileprivate func contactSectionView() -> some View {
+        WithPerceptionTracking {
+            Section {
 
-        Section {
-
-            TextField(
-                "",
-                text: viewStore.$vCard.contact.firstName,
-                prompt: Text("*First Name")
-                    .font(.title2)
-                    .fontWeight(.medium)
-            )
-            .disableAutocorrection(true)
-            .font(.title2)
-            .fontWeight(.medium)
-            .padding(.vertical, 10)
-            .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.firstNameTextFields.rawValue)
-
-
-
-            TextField(
-                "",
-                text: viewStore.$vCard.contact.additionalName.orEmpty,
-                prompt: Text("Middle Name")
-                    .font(.title2)
-                    .fontWeight(.medium)
-            )
-            .disableAutocorrection(true)
-            .font(.title2)
-            .fontWeight(.medium)
-            .padding(.vertical, 10)
-            .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.middleNameTextFields.rawValue)
-
-            TextField(
-                "",
-                text: viewStore.$vCard.contact.lastName,
-                prompt: Text("*Last Name")
-                    .font(.title2)
-                    .fontWeight(.medium)
-            )
-            .disableAutocorrection(true)
-            .font(.title2)
-            .fontWeight(.medium)
-            .padding(.vertical, 10)
-            .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.lastNameTextFields.rawValue)
-
-        } header: {
-            Text("Contact")
+                TextField(
+                    "",
+                    text: $store.vCard.contact.firstName,
+                    prompt: Text("*First Name")
+                        .font(.title2)
+                        .fontWeight(.medium)
+                )
+                .disableAutocorrection(true)
                 .font(.title2)
                 .fontWeight(.medium)
-        }
+                .padding(.vertical, 10)
+                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.firstNameTextFields.rawValue)
 
+
+
+                TextField(
+                    "",
+                    text: $store.vCard.contact.additionalName.orEmpty,
+                    prompt: Text("Middle Name")
+                        .font(.title2)
+                        .fontWeight(.medium)
+                )
+                .disableAutocorrection(true)
+                .font(.title2)
+                .fontWeight(.medium)
+                .padding(.vertical, 10)
+                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.middleNameTextFields.rawValue)
+
+                TextField(
+                    "",
+                    text: $store.vCard.contact.lastName,
+                    prompt: Text("*Last Name")
+                        .font(.title2)
+                        .fontWeight(.medium)
+                )
+                .disableAutocorrection(true)
+                .font(.title2)
+                .fontWeight(.medium)
+                .padding(.vertical, 10)
+                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.lastNameTextFields.rawValue)
+
+            } header: {
+                Text("Contact")
+                    .font(.title2)
+                    .fontWeight(.medium)
+            }
+
+        }
     }
 
-
     // MARK: telephoneSectionView func
-    fileprivate func telephoneSectionView(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>, _ value: ScrollViewProxy) -> some View {
-        Section {
+    @ViewBuilder
+    fileprivate func telephoneSectionView(_ value: ScrollViewProxy) -> some View {
+        WithPerceptionTracking {
+            Section {
 
-            ForEach(viewStore.$vCard.telephones, id: \.id) { item in
+                ForEach($store.vCard.telephones, id: \.id) { item in
 
-                Picker("Device Type", selection: item.type) {
+                    Picker("Device Type", selection: item.type) {
 
-                    ForEach(VCard.Telephone.TType.allCases) { option in
-                        Text(option.rawValue.uppercased())
-                            .font(.title2)
-                            .fontWeight(.medium)
-                            .padding(.vertical, 10)
+                        ForEach(VCard.Telephone.TType.allCases) { option in
+                            Text(option.rawValue.uppercased())
+                                .font(.title2)
+                                .fontWeight(.medium)
+                                .padding(.vertical, 10)
 
+                        }
+                    }
+
+                    HStack {
+
+                        TextField(
+                            "",
+                            text: item.number,
+                            prompt: Text("*Telephone Number (+70000000000)")
+                                .font(.title2)
+                                .fontWeight(.medium)
+                        )
+                        .keyboardType(.phonePad)
+                        .disableAutocorrection(true)
+                        .font(.title2)
+                        .fontWeight(.medium)
+                        .padding(.vertical, 10)
+                        .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.telephoneNumberTextFields.rawValue)
+
+
+                        Spacer()
+
+                        if store.vCard.telephones.count > 1 {
+                            Button {
+                                store.send(.removeTelephoneSection(by: item.id))
+                            } label: {
+                                Image(systemName: "trash")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                    .tint(Color.red)
+                            }
+                            .frame(width: 50, height: 50)
+                            .padding(.trailing, -10)
+
+                        }
                     }
                 }
 
+            } header: {
                 HStack {
+                    Text("Telephone")
+                        .font(.title2)
+                        .fontWeight(.medium)
+
+                    Spacer()
+
+                    if store.isCustomProduct {
+                        Button {
+                            store.send(.addOneMoreTelephoneSection)
+                        } label: {
+                            Image(systemName: "plus.square.on.square")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                        }
+                    } else {
+                        Menu {
+                            Text("To activate this function,")
+                            Text("Please change your product type below.")
+                            Button {
+                                withAnimation(.easeInOut(duration: 90)) {
+                                    value.scrollTo(store.bottomID, anchor: .bottom)
+                                }
+                            } label: {
+                                Text("click here to change your product type 👇🏼")
+                            }
+                        } label: {
+                            Button {} label: {
+                                Image(systemName: "plus.square.on.square")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                            }
+                            .disabled(!store.isCustomProduct)
+                            .foregroundColor(store.isCustomProduct ? Color.blue : Color.gray)
+                        }
+                    }
+
+                }
+                .padding(.vertical, 10)
+            }
+        }
+    }
+
+    // MARK: EmailsSectionView func
+    @ViewBuilder
+    fileprivate func emailsSectionView(_ value: ScrollViewProxy) -> some View {
+        WithPerceptionTracking {
+            Section {
+                ForEach($store.vCard.emails, id: \.id) { item in
+                    HStack {
+                        TextField(
+                            "",
+                            text: item.text,
+                            prompt: Text("*Email")
+
+                        )
+                        .font(.title2)
+                        .fontWeight(.medium)
+                        .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .padding(.vertical, 10)
+                        .disableAutocorrection(true)
+                        .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.emailTextFields.rawValue)
+
+                        if $store.vCard.emails.count > 1 {
+                            Button {
+                                store.send(.removeEmailSection(by: item.id))
+                            } label: {
+                                Image(systemName: "trash")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                    .tint(Color.red)
+                            }
+                            .frame(width: 50, height: 50)
+                            .padding(.trailing, -10)
+                        }
+                    }
+                }
+            } header: {
+                HStack {
+                    Text("Email")
+                        .font(.title2)
+                        .fontWeight(.medium)
+
+                    Spacer()
+
+                    if store.isCustomProduct {
+                        Button {
+                            store.send(.addOneMoreEmailSection)
+                        } label: {
+                            Image(systemName: "plus.square.on.square")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                        }
+                    } else {
+                        Menu {
+                            Text("To activate this function,")
+                            Text("Please change your product type below.")
+                            Button {
+                                withAnimation(.easeInOut(duration: 90)) {
+                                    value.scrollTo(store.bottomID, anchor: .bottom)
+                                }
+                            } label: {
+                                Text("click here to change your product type 👇🏼")
+                            }
+                        } label: {
+                            Button {} label: {
+                                Image(systemName: "plus.square.on.square")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                            }
+                            .disabled(!store.isCustomProduct)
+                            .foregroundColor(store.isCustomProduct ? Color.blue : Color.gray)
+                        }
+                    }
+                }
+                .padding(.vertical, 10)
+            }
+        }
+    }
+
+    // MARK: URLsSectionView func
+    @ViewBuilder
+    fileprivate func webSiteSectionView() -> some View {
+        WithPerceptionTracking {
+            Section {
+                HStack {
+                    TextField(
+                        "",
+                        text: $store.vCard.website.orEmpty,
+                        prompt: Text("WebSite")
+                            .font(.title2)
+                            .fontWeight(.medium)
+                    )
+                    .keyboardType(.URL)
+                    .textContentType(.URL)
+                    .disableAutocorrection(true)
+                    .font(.title2)
+                    .fontWeight(.medium)
+                    .padding(.vertical, 10)
+
+                }
+
+            } header: {
+                HStack {
+                    Text("Web site ?OPTIONAL")
+                        .font(.title2)
+                        .fontWeight(.medium)
+                }
+                .padding(.vertical, 10)
+            }
+        }
+    }
+
+    // MARK: AddressesSectionView
+    @ViewBuilder
+    fileprivate func addressesSectionView(_ value: ScrollViewProxy) -> some View {
+        WithPerceptionTracking {
+            Section {
+                ForEach($store.vCard.addresses, id: \.id) { $item in
+
+                    Picker("Address Type", selection: $item.type) {
+                        ForEach(VCard.Address.AType.allCases, id: \.self) { option in
+                            Text(option.rawValue.uppercased())
+                                .tag(option)
+                        }
+                    }
 
                     TextField(
                         "",
-                        text: item.number,
-                        prompt: Text("*Telephone Number (+70000000000)")
+                        text: $item.postOfficeAddress.orEmpty,
+                        prompt: Text("PostOffice")
+                            .font(.title2)
+                            .fontWeight(.medium)
+                    )
+                    .disableAutocorrection(true)
+                    .font(.title2)
+                    .fontWeight(.medium)
+                    .padding(.vertical, 10)
+                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.postOfficeTextFields.rawValue)
+
+
+                    TextField(
+                        "",
+                        text: $item.extendedAddress.orEmpty,
+                        prompt: Text("Extended address - OPTIONAL")
+                            .font(.title2)
+                            .fontWeight(.medium)
+                    )
+                    .disableAutocorrection(true)
+                    .font(.title2)
+                    .fontWeight(.medium)
+                    .padding(.vertical, 10)
+
+                    TextField(
+                        "",
+                        text: $item.street,
+                        prompt: Text("*Street")
+                            .font(.title2)
+                            .fontWeight(.medium)
+                    )
+                    .disableAutocorrection(true)
+                    .font(.title2)
+                    .fontWeight(.medium)
+                    .padding(.vertical, 10)
+                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.streetTextFields.rawValue)
+
+
+                    TextField(
+                        "",
+                        text: $item.locality,
+                        prompt: Text("*City")
+                            .font(.title2)
+                            .fontWeight(.medium)
+                    )
+                    .disableAutocorrection(true)
+                    .font(.title2)
+                    .fontWeight(.medium)
+                    .padding(.vertical, 10)
+                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.cityTextFields.rawValue)
+
+                    TextField(
+                        "",
+                        text: $item.region.orEmpty,
+                        prompt: Text("Region/State")
+                            .font(.title2)
+                            .fontWeight(.medium)
+                    )
+                    .disableAutocorrection(true)
+                    .font(.title2)
+                    .fontWeight(.medium)
+                    .padding(.vertical, 10)
+                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.regionTextFields.rawValue)
+
+
+                    TextField(
+                        "",
+                        text: $item.postalCode,
+                        prompt: Text("*Post Code")
                             .font(.title2)
                             .fontWeight(.medium)
                     )
@@ -543,350 +788,87 @@ public struct GenericPassFormView: View {
                     .font(.title2)
                     .fontWeight(.medium)
                     .padding(.vertical, 10)
-                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.telephoneNumberTextFields.rawValue)
+                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.postTextFields.rawValue)
 
+
+                    TextField(
+                        "",
+                        text: $item.country,
+                        prompt: Text("*Country")
+                            .font(.title2)
+                            .fontWeight(.medium)
+                    )
+                    .disableAutocorrection(true)
+                    .font(.title2)
+                    .fontWeight(.medium)
+                    .padding(.vertical, 10)
+                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.countryTextFields.rawValue)
+
+
+                    if store.vCard.addresses.count > 1 {
+                        HStack {
+
+                            Spacer()
+
+                            Text("Remove this address")
+                                .font(.title2)
+                                .fontWeight(.medium)
+                                .padding()
+
+
+                            Button {
+                                store.send(.removeAddressSection(by: item.id))
+                            } label: {
+                                Image(systemName: "trash")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                    .tint(Color.red)
+                            }
+                            .frame(width: 50, height: 50)
+                            .padding(.trailing, -10)
+                        }
+                    }
+                }
+            } header: {
+                HStack {
+                    Text("Address")
+                        .font(.title2)
+                        .fontWeight(.medium)
 
                     Spacer()
 
-                    if viewStore.vCard.telephones.count > 1 {
+                    if store.isCustomProduct {
                         Button {
-                            viewStore.send(.removeTelephoneSection(by: item.id))
+                            store.send(.addOneMoreAddressSection)
                         } label: {
-                            Image(systemName: "trash")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .tint(Color.red)
-                        }
-                        .frame(width: 50, height: 50)
-                        .padding(.trailing, -10)
-
-                    }
-                }
-            }
-
-        } header: {
-            HStack {
-                Text("Telephone")
-                    .font(.title2)
-                    .fontWeight(.medium)
-
-                Spacer()
-
-                if viewStore.isCustomProduct {
-                    Button {
-                        viewStore.send(.addOneMoreTelephoneSection)
-                    } label: {
-                        Image(systemName: "plus.square.on.square")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                    }
-                } else {
-                    Menu {
-                        Text("To activate this function,")
-                        Text("Please change your product type below.")
-                        Button {
-                            withAnimation(.easeInOut(duration: 90)) {
-                                value.scrollTo(viewStore.bottomID, anchor: .bottom)
-                            }
-                        } label: {
-                            Text("click here to change your product type 👇🏼")
-                        }
-                    } label: {
-                        Button {} label: {
                             Image(systemName: "plus.square.on.square")
                                 .resizable()
                                 .frame(width: 30, height: 30)
                         }
-                        .disabled(!viewStore.isCustomProduct)
-                        .foregroundColor(viewStore.isCustomProduct ? Color.blue : Color.gray)
-                    }
-                }
-
-            }
-            .padding(.vertical, 10)
-        }
-    }
-
-    // MARK: EmailsSectionView func
-    fileprivate func emailsSectionView(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>, _ value: ScrollViewProxy) -> some View {
-        Section {
-            ForEach(viewStore.$vCard.emails, id: \.id) { item in
-                HStack {
-                    TextField(
-                        "",
-                        text: item.text,
-                        prompt: Text("*Email")
-
-                    )
-                    .font(.title2)
-                    .fontWeight(.medium)
-                    .keyboardType(.emailAddress)
-                    .textInputAutocapitalization(.never)
-                    .padding(.vertical, 10)
-                    .disableAutocorrection(true)
-                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.emailTextFields.rawValue)
-
-                    if viewStore.$vCard.emails.count > 1 {
-                        Button {
-                            viewStore.send(.removeEmailSection(by: item.id))
-                        } label: {
-                            Image(systemName: "trash")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .tint(Color.red)
-                        }
-                        .frame(width: 50, height: 50)
-                        .padding(.trailing, -10)
-                    }
-                }
-            }
-        } header: {
-            HStack {
-                Text("Email")
-                    .font(.title2)
-                    .fontWeight(.medium)
-
-                Spacer()
-
-                if viewStore.isCustomProduct {
-                    Button {
-                        viewStore.send(.addOneMoreEmailSection)
-                    } label: {
-                        Image(systemName: "plus.square.on.square")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                    }
-                } else {
-                    Menu {
-                        Text("To activate this function,")
-                        Text("Please change your product type below.")
-                        Button {
-                            withAnimation(.easeInOut(duration: 90)) {
-                                value.scrollTo(viewStore.bottomID, anchor: .bottom)
+                    } else {
+                        Menu {
+                            Text("To activate this function,")
+                            Text("Please change your product type below.")
+                            Button {
+                                withAnimation(.easeInOut(duration: 90)) {
+                                    value.scrollTo(store.bottomID, anchor: .bottom)
+                                }
+                            } label: {
+                                Text("click here to change your product type 👇🏼")
                             }
                         } label: {
-                            Text("click here to change your product type 👇🏼")
-                        }
-                    } label: {
-                        Button {} label: {
-                            Image(systemName: "plus.square.on.square")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                        }
-                        .disabled(!viewStore.isCustomProduct)
-                        .foregroundColor(viewStore.isCustomProduct ? Color.blue : Color.gray)
-                    }
-                }
-            }
-            .padding(.vertical, 10)
-        }
-    }
-
-    // MARK: URLsSectionView func
-    fileprivate func webSiteSectionView(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>) -> some View {
-        Section {
-            HStack {
-                TextField(
-                    "",
-                    text: viewStore.$vCard.website.orEmpty,
-                    prompt: Text("WebSite")
-                        .font(.title2)
-                        .fontWeight(.medium)
-                )
-                .keyboardType(.URL)
-                .textContentType(.URL)
-                .disableAutocorrection(true)
-                .font(.title2)
-                .fontWeight(.medium)
-                .padding(.vertical, 10)
-
-            }
-
-        } header: {
-            HStack {
-                Text("Web site ?OPTIONAL")
-                    .font(.title2)
-                    .fontWeight(.medium)
-            }
-            .padding(.vertical, 10)
-        }
-    }
-
-    // MARK: AddressesSectionView
-    fileprivate func addressesSectionView(_ viewStore: ViewStore<ViewState, GenericPassForm.Action>, _ value: ScrollViewProxy) -> some View {
-        Section {
-            ForEach(viewStore.$vCard.addresses, id: \.id) { item in
-
-                Picker("Address Type", selection: item.type) {
-                    ForEach(VCard.Address.AType.allCases) { option in
-                        Text(option.rawValue.uppercased())
-                            .font(.title2)
-                            .fontWeight(.medium)
-                            .padding(.vertical, 10)
-                    }
-                }
-
-                TextField(
-                    "",
-                    text: item.postOfficeAddress.orEmpty,
-                    prompt: Text("PostOffice")
-                        .font(.title2)
-                        .fontWeight(.medium)
-                )
-                .disableAutocorrection(true)
-                .font(.title2)
-                .fontWeight(.medium)
-                .padding(.vertical, 10)
-                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.postOfficeTextFields.rawValue)
-
-
-                TextField(
-                    "",
-                    text: item.extendedAddress.orEmpty,
-                    prompt: Text("Extended address - OPTIONAL")
-                        .font(.title2)
-                        .fontWeight(.medium)
-                )
-                .disableAutocorrection(true)
-                .font(.title2)
-                .fontWeight(.medium)
-                .padding(.vertical, 10)
-
-                TextField(
-                    "",
-                    text: item.street,
-                    prompt: Text("*Street")
-                        .font(.title2)
-                        .fontWeight(.medium)
-                )
-                .disableAutocorrection(true)
-                .font(.title2)
-                .fontWeight(.medium)
-                .padding(.vertical, 10)
-                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.streetTextFields.rawValue)
-
-
-                TextField(
-                    "",
-                    text: item.locality,
-                    prompt: Text("*City")
-                        .font(.title2)
-                        .fontWeight(.medium)
-                )
-                .disableAutocorrection(true)
-                .font(.title2)
-                .fontWeight(.medium)
-                .padding(.vertical, 10)
-                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.cityTextFields.rawValue)
-
-
-
-                TextField(
-                    "",
-                    text: item.region.orEmpty,
-                    prompt: Text("Region/State")
-                        .font(.title2)
-                        .fontWeight(.medium)
-                )
-                .disableAutocorrection(true)
-                .font(.title2)
-                .fontWeight(.medium)
-                .padding(.vertical, 10)
-                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.regionTextFields.rawValue)
-
-
-                TextField(
-                    "",
-                    text: item.postalCode,
-                    prompt: Text("*Post Code")
-                        .font(.title2)
-                        .fontWeight(.medium)
-                )
-                .keyboardType(.phonePad)
-                .disableAutocorrection(true)
-                .font(.title2)
-                .fontWeight(.medium)
-                .padding(.vertical, 10)
-                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.postTextFields.rawValue)
-
-
-                TextField(
-                    "",
-                    text: item.country,
-                    prompt: Text("*Country")
-                        .font(.title2)
-                        .fontWeight(.medium)
-                )
-                .disableAutocorrection(true)
-                .font(.title2)
-                .fontWeight(.medium)
-                .padding(.vertical, 10)
-                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.countryTextFields.rawValue)
-
-
-                if viewStore.$vCard.addresses.count > 1 {
-                    HStack {
-
-                        Spacer()
-
-                        Text("Remove this address")
-                            .font(.title2)
-                            .fontWeight(.medium)
-                            .padding()
-
-
-                        Button {
-                            viewStore.send(.removeAddressSection(by: item.id))
-                        } label: {
-                            Image(systemName: "trash")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .tint(Color.red)
-                        }
-                        .frame(width: 50, height: 50)
-                        .padding(.trailing, -10)
-                    }
-                }
-            }
-        } header: {
-            HStack {
-                Text("Address")
-                    .font(.title2)
-                    .fontWeight(.medium)
-
-                Spacer()
-
-                if viewStore.isCustomProduct {
-                    Button {
-                        viewStore.send(.addOneMoreAddressSection)
-                    } label: {
-                        Image(systemName: "plus.square.on.square")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                    }
-                } else {
-                    Menu {
-                        Text("To activate this function,")
-                        Text("Please change your product type below.")
-                        Button {
-                            withAnimation(.easeInOut(duration: 90)) {
-                                value.scrollTo(viewStore.bottomID, anchor: .bottom)
+                            Button {} label: {
+                                Image(systemName: "plus.square.on.square")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
                             }
-                        } label: {
-                            Text("click here to change your product type 👇🏼")
+                            .disabled(!store.isCustomProduct)
+                            .foregroundColor(store.isCustomProduct ? Color.blue : Color.gray)
                         }
-                    } label: {
-                        Button {} label: {
-                            Image(systemName: "plus.square.on.square")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                        }
-                        .disabled(!viewStore.isCustomProduct)
-                        .foregroundColor(viewStore.isCustomProduct ? Color.blue : Color.gray)
                     }
                 }
+                .padding(.vertical, 10)
             }
-            .padding(.vertical, 10)
         }
     }
 }
@@ -931,7 +913,7 @@ extension StoreKitClient.Product {
     isDownloadable: false,
     localizedDescription: "Basic version of product has fixed design!",
     localizedTitle: "Basic Card!",
-    price: 9,
+    price: 3,
     priceLocale: .init(identifier: "en_US"),
     productIdentifier: "cardify.addame.com.eCardify.BasicCard.testing"
   )
@@ -939,10 +921,30 @@ extension StoreKitClient.Product {
       downloadContentLengths: [],
       downloadContentVersion: "",
       isDownloadable: false,
-      localizedDescription: "Flexibility & Customization can add muti data",
+      localizedDescription: "Flexibility & Customisation can add muti data",
       localizedTitle: "FlexiCard!",
-      price: 9,
+      price: 6,
       priceLocale: .init(identifier: "en_US"),
       productIdentifier: "cardify.addame.com.eCardify.FlexiCard.testing"
     )
 }
+//
+//extension VCard.Address.AType : AccessibilityRotorContent {
+//    
+//    public var accessibilityDescription: String {
+//        switch self {
+//        case .home:
+//            return "Home Address"
+//        case .work:
+//            return "Work Address"
+//        case .postal:
+//            return "Postal Address"
+//        case .dom:
+//            return "Domestic Address"
+//        case .intl:
+//            return "International Address"
+//        case .parcel:
+//            return "Parcel Address"
+//        }
+//    }
+//}

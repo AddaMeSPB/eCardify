@@ -137,7 +137,7 @@ public struct WalletPassList {
         case .wPass(id: let id, action: let wpaction):
             if wpaction == .addPassToWallet {
                 if let pass = state.wPassLocal[id: id] {
-                    let url =  "https://learnplaygrow.ams3.cdn.digitaloceanspaces.com/ecardify/uploads/pass/\(pass.wp.ownerId.hexString)/\(pass.id).pkpass"
+                    let url =  "https://cardify.ams3.cdn.digitaloceanspaces.com/ecardify/uploads/pass/\(pass.wp.ownerId.hexString)/\(pass.id).pkpass"
                     return .run { send in
                         await send(.destination(.presented(.add(.buildPKPassFrom(url: url)))))
                     }
@@ -196,8 +196,7 @@ public struct WalletPassList {
         case .destination(.presented(.add(.buildPKPassFrom(url: let passUrl)))):
 
             return .run { send in
-                guard let url = URL(string: passUrl)
-                else {
+                guard let url = URL(string: passUrl) else {
                     fatalError("Missing URL")
                 }
 

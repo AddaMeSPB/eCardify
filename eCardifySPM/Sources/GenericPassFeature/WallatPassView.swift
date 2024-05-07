@@ -58,7 +58,7 @@ public struct WalletPassView: View {
                                     store.send(.openSheetLogin(true))
                                 } label: {
                                     VStack {
-                                        Text("If you've used eCardify before, please log in to continue.")
+                                        Text("Login or Register.")
                                             .font(.title3)
                                         //                                  .fontWeight(.light)
 

@@ -24,11 +24,13 @@ public struct StoreKitReducer {
         public init(
             products: [StoreKitClient.Product] = [],
             isPurchasing: Bool = false,
-            isRestoring: Bool = false
+            isRestoring: Bool = false,
+            type: ProductType = .basic
         ) {
             self.products = products
             self.isPurchasing = isPurchasing
             self.isRestoring = isRestoring
+            self.type = type
         }
 
 //        public var product: StoreKitClient.Product? {

@@ -124,8 +124,11 @@ public struct CardDesignListView: View {
 
                     HStack {
                         Text("Select card design")
-                            .font(.title)
+                            .font(.title3)
                             .fontWeight(.heavy)
+                            .layoutPriority(1)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
 
                         Spacer()
 
@@ -133,13 +136,14 @@ public struct CardDesignListView: View {
                             store.send(.dismiss)
                         } label: {
                             Text("Close")
-                                .font(.title)
+                                .font(.title3)
                                 .fontWeight(.bold)
                                 .padding()
                         }
                     }
                     .padding([.vertical, .horizontal], 20)
                     .padding(.bottom, -20)
+                    .frame(maxWidth: .infinity)
 
                     TabView {
                         ForEachStore(
@@ -219,6 +223,7 @@ public struct CardDesignReducer {
     }
 
     @Dependency(\.dismiss) var dismiss
+    @Dependency(\.continuousClock) var clock
 
     public init() {}
 
@@ -244,7 +249,10 @@ public struct CardDesignReducer {
             return .none
 
         case .selectedDCard:
-            return .none
+                return .run { send in
+                    try await clock.sleep(for: .seconds(1))
+                    await send(.dismiss)
+                }
 
         case .dismiss:
             return .run { _ in
@@ -257,19 +265,23 @@ public struct CardDesignReducer {
     private func generateQRCode(from string: String) async -> UIImage? {
         return await withCheckedContinuation { continuation in
             Task {
-                let data = string.data(using: .ascii)
+                let data = string.data(using: .utf8) // Change to .utf8
 
                 if let filter = CIFilter(name: "CIQRCodeGenerator") {
                     filter.setValue(data, forKey: "inputMessage")
+                    filter.setValue("H", forKey: "inputCorrectionLevel") // Add this line to set a higher correction level
 
                     guard let outputImage = filter.outputImage else {
                         continuation.resume(returning: nil)
                         return
                     }
 
-                    let context = CIContext()
+                    let scaleX = 10.0 // scale X by 10 times
+                    let scaleY = 10.0 // scale Y by 10 times
+                    let transformedImage = outputImage.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
 
-                    if let cgImage = context.createCGImage(outputImage, from: outputImage.extent) {
+                    let context = CIContext()
+                    if let cgImage = context.createCGImage(transformedImage, from: transformedImage.extent) {
                         continuation.resume(returning: UIImage(cgImage: cgImage))
                     } else {
                         continuation.resume(returning: nil)
@@ -280,6 +292,7 @@ public struct CardDesignReducer {
             }
         }
     }
+
 }
 
 

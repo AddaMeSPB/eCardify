@@ -59,19 +59,23 @@ public struct WalletPassDetails {
     private func generateQRCode(from string: String) async -> UIImage? {
         return await withCheckedContinuation { continuation in
             Task {
-                let data = string.data(using: .ascii)
+                let data = string.data(using: .utf8) // Change to .utf8
 
                 if let filter = CIFilter(name: "CIQRCodeGenerator") {
                     filter.setValue(data, forKey: "inputMessage")
+                    filter.setValue("H", forKey: "inputCorrectionLevel") // Add this line to set a higher correction level
 
                     guard let outputImage = filter.outputImage else {
                         continuation.resume(returning: nil)
                         return
                     }
 
-                    let context = CIContext()
+                    let scaleX = 10.0 // scale X by 10 times
+                    let scaleY = 10.0 // scale Y by 10 times
+                    let transformedImage = outputImage.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
 
-                    if let cgImage = context.createCGImage(outputImage, from: outputImage.extent) {
+                    let context = CIContext()
+                    if let cgImage = context.createCGImage(transformedImage, from: transformedImage.extent) {
                         continuation.resume(returning: UIImage(cgImage: cgImage))
                     } else {
                         continuation.resume(returning: nil)
@@ -82,7 +86,6 @@ public struct WalletPassDetails {
             }
         }
     }
-
 }
 
 import SwiftUIExtension

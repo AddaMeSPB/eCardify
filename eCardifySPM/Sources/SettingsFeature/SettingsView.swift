@@ -10,9 +10,11 @@ public struct SettingsView: View {
     @State var isSharePresented = false
     let store: StoreOf<Settings>
 
-    private var items: [GridItem] {
-        Array(repeating: .init(.adaptive(minimum: 250)), count: 2)
+    private var columns: [GridItem] {
+        Array(repeating: .init(.adaptive(minimum: 100)), count: 1)
     }
+
+    private let rows = [GridItem(.adaptive(minimum: 80, maximum: 150))]
 
     public init(store: StoreOf<Settings>) {
         self.store = store
@@ -20,7 +22,7 @@ public struct SettingsView: View {
 
     public var body: some View {
         WithPerceptionTracking {
-            VStack {
+            ScrollView {
                 VStack {
                     Text("Hello, \(store.currentUser.fullName ?? "")")
                         .frame( maxWidth: .infinity, alignment: .leading)
@@ -35,23 +37,22 @@ public struct SettingsView: View {
                 .padding(.horizontal)
                 .padding(.bottom, 10)
 
-                LazyVGrid(columns: items, spacing: 10) {
+                LazyVGrid(columns: columns, spacing: 10) {
                     Button(action: {
                         store.send(.leaveUsAReviewButtonTapped)
                     }) {
-                        VStack(alignment: .center, spacing: 5) {
+                        VStack(alignment: .center) {
                             HStack { Spacer() }
                             Image(systemName: "hand.thumbsup")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 65, height: 65)
+                                .frame(width: 35, height: 35)
                                 .foregroundColor(.white)
 
-                            Text("Leave us review")
-                                .font(.title3)
+                            Text("Review us")
+                                .font(.caption)
                                 .bold()
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                                .padding(.vertical, 5)
 
                             Spacer()
                         }
@@ -59,33 +60,33 @@ public struct SettingsView: View {
                         .padding()
                     }
                     //          .buttonStyle(.plain)
-                    .frame(height: 180)
+                    .frame(height: 100)
                     .background(Color.red.opacity(0.3))
                     .cornerRadius(20)
 
                     Button(action: {
                         isSharePresented.toggle()
                     }) {
-                        VStack(alignment: .center, spacing: 5) {
+                        VStack(alignment: .center) {
                             HStack { Spacer() }
                             Image(systemName: "square.and.arrow.up.circle")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 65, height: 65)
+                                .frame(width: 35, height: 35)
                                 .foregroundColor(.blue)
 
-                            Text("Share with friends")
-                                .font(.title3)
+                            Text("Share")
+                                .font(.caption)
                                 .bold()
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                                .padding(.vertical, 5)
+
 
                             Spacer()
                         }
                         .padding()
                     }
                     //          .buttonStyle(.plain)
-                    .frame(height: 180)
+                    .frame(height: 100)
                     .background(Color.yellow.opacity(0.5))
                     .cornerRadius(20)
 
@@ -93,32 +94,64 @@ public struct SettingsView: View {
                     Button(action: {
                         store.send(.restoreButtonTapped)
                     }) {
-                        VStack(alignment: .center, spacing: 5) {
+                        VStack(alignment: .center) {
                             HStack { Spacer() }
                             Image(systemName: "star.circle.fill")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 65, height: 65)
+                                .frame(width: 35, height: 35)
                                 .foregroundColor(.red)
 
                             Text("Restore")
-                                .font(.title3)
+                                .font(.caption)
                                 .bold()
                                 .frame(maxWidth: .infinity, alignment: .center)
-                                .padding()
 
                             Spacer()
                         }
                         .padding()
                     }
                     //          .buttonStyle(.plain)
-                    .frame(height: 180)
+                    .frame(height: 100)
                     .background(Color.blue.opacity(0.3))
                     .cornerRadius(20)
 
 
                 }
                 .padding()
+
+                Text("Explore our other apps!")
+                    .frame( maxWidth: .infinity, alignment: .leading)
+                    .font(Font.system(size: 23, weight: .regular, design: .rounded))
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 16)
+
+                ScrollView(.horizontal) {
+
+                    LazyHGrid(rows: rows, spacing: 16) {
+                        ForEach(OurApps.allCases, id: \.self) { app in
+                            Button(action: { store.send(.ourAppLinkButtonTapped(app.urlLink)) }) {
+                                AsyncImage(url: app.logoImageLink) { image in
+                                    image.resizable()
+                                } placeholder: {
+                                    ProgressView()
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                        .tint(Color.blue)
+                                }
+                                .aspectRatio(contentMode: .fill)
+                            }
+                            //          .buttonStyle(.plain)
+                            .frame(height: 100)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10) // Create a rounded rectangle overlay
+                                    .stroke(Color.blue, lineWidth: 1) // Apply a red border with a line width of 2
+                            )
+
+                        }
+                    }
+                }
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 16)
 
                 Spacer()
 
@@ -127,7 +160,7 @@ public struct SettingsView: View {
 
                     Button(action: { store.send(.logOutButtonTapped) }) {
                         Text("Log out!")
-                            .font(.title3).fontWeight(.medium)
+                            .font(.subheadline).fontWeight(.bold)
                             .foregroundColor(.white)
                             .padding(.horizontal)
                     }
@@ -179,5 +212,52 @@ struct SettingsView_Previews: PreviewProvider {
         ) {
             Settings()
         })
+    }
+}
+
+enum OurApps: String, CaseIterable {
+    case addame, iInverview, notifyWords
+
+    var urlLink: String {
+        switch self {
+            case .addame:
+                return "https://apps.apple.com/pt/app/walk-nearby-neighbours-friends/id1538487173?l=en-GB"
+            case .iInverview:
+                return "https://apps.apple.com/pt/app/iintrvwbell/id6457363081?l=en-GB"
+//            case .learnPlaygrow:
+//                return "https://apps.apple.com/pt/app/ecardify/id6452084315?l=en-GB"
+            case .notifyWords:
+                return "https://apps.apple.com/pt/app/new-word-learn-word-vocabulary/id1619504857?l=en-GB"
+        }
+    }
+
+    var logoImageLink: URL {
+        switch self {
+            case .addame:
+                return URL(string: "https://github.com/AddaMeSPB/AddaMeSPB.github.io/assets/8770772/eb00fcf7-65b6-4e64-ab1c-faadfd826944")!
+
+            case .iInverview:
+                return URL(string: "https://github.com/AddaMeSPB/AddaMeSPB.github.io/assets/8770772/f832e748-e9f2-4a10-8961-c3f10589ed0c")!
+
+//            case .ecardify:
+//                return URL(string: "https://github.com/AddaMeSPB/AddaMeSPB.github.io/assets/8770772/2d1c49e4-f6d6-4dda-ab5b-22d4ed0d7a3b")!
+
+            case .notifyWords:
+                return URL(string: "https://github.com/AddaMeSPB/AddaMeSPB.github.io/assets/8770772/85d53768-f9e2-4dbe-aba5-cc9c67ce3258")!
+
+        }
+    }
+
+    var bcolor: Color {
+        switch self {
+            case .addame:
+                return Color.blue.opacity(0.3)
+            case .iInverview:
+                return Color.blue.opacity(0.3)
+//            case .ecardify:
+//                return Color.orange.opacity(0.5)
+            case .notifyWords:
+                return Color.red.opacity(0.5)
+        }
     }
 }

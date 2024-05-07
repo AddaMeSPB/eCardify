@@ -45,9 +45,8 @@ public struct ImageUploadOptions {
 
 public struct AttachmentS3Client {
 
-    public static let bucket = "learnplaygrow"
-    public static var bucketWithEndpoint = "https://learnplaygrow.ams3.digitaloceanspaces.com/"
-    // https://learnplaygrow.ams3.digitaloceanspaces.com
+    public static let bucket = "ecardify"
+    public static var bucketWithEndpoint = "https://ecardify.ams3.digitaloceanspaces.com/"
 
     static public let client = AWSClient(
         credentialProvider: .static(

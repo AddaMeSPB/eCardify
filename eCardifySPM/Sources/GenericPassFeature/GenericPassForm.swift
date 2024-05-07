@@ -86,6 +86,7 @@ public struct GenericPassForm {
         public var isCustomProduct: Bool {
             return storeKitState.type == .basic ? false : true
         }
+        public var isEmailValid: Bool = false
 
     }
 
@@ -158,11 +159,20 @@ public struct GenericPassForm {
 
         case .binding(\.vCard):
 
-            let emailValidationCheck = state.vCard.emails.count == state.vCard.emails.filter({ $0.text.isEmailValid == true }).count
-            let imageMoreThenThree = state.vCard.imageURLs.count >= 1
-            state.isFormValid = state.vCard.isVCardValid && emailValidationCheck && imageMoreThenThree
+                // this is not correct what if we add one more then wanted to add 1st one?
+            if let _ = state.vCard.emails.filter({ $0.text.isEmailValid == true }).last {
+                state.isEmailValid = true
+            } else {
+                state.isEmailValid = false
+            }
 
-            sharedLogger.logError("isVCardValid: \(state.vCard.isVCardValid) emailValidationCheck:\(emailValidationCheck) imageMoreThenThree:\(imageMoreThenThree)")
+            let emailValidationCheck = state.vCard.emails.count == state.vCard.emails
+                    .filter({ $0.text.isEmailValid == true }).count
+
+            let imageCount = state.vCard.imageURLs.count
+            state.isFormValid = state.vCard.isVCardValid && emailValidationCheck
+
+            sharedLogger.logError("isVCardValid: \(state.vCard.isVCardValid) emailValidationCheck:\(emailValidationCheck) imageCount:\(imageCount)")
 
             return .none
 
@@ -215,15 +225,15 @@ public struct GenericPassForm {
                     await send(.attachmentResponse(
                         await TaskResult {
 
-//                            if TARGET_OS_SIMULATOR == 1 {
-//                                if imageFor == .avatar {
-//                                    return AttachmentInOutPut.thumbnail
-//                                }
-//
-//                                if imageFor == .logo {
-//                                    return AttachmentInOutPut.logo
-//                                }
-//                            }
+                            //                  if TARGET_OS_SIMULATOR == 1 {
+                            //                      if imageFor == .avatar {
+                            //                          return AttachmentInOutPut.thumbnail
+                            //                      }
+                            //
+                            //                      if imageFor == .logo {
+                            //                          return AttachmentInOutPut.logo
+                            //                      }
+                            //                  }
 
                             return try await apiClient.request(
                                 for: .authEngine(.users(.user(id: id, route: .attachments(.create(input: attachment))))),
@@ -252,7 +262,7 @@ public struct GenericPassForm {
             return .none
             
         case .imageUploadResponse(.failure(let error)):
-                state.alert = AlertState { TextState("Unable to upload image please try again!") }
+            state.alert = AlertState { TextState("Unable to upload image please try again!") }
             sharedLogger.logError(error)
             return .none
 
@@ -335,12 +345,12 @@ public struct GenericPassForm {
             switch state.imageFor {
             case .logo:
                 //if let image = attachmentResponse.imageUrlString {
-                    // state.imageURLs.insert(image, at: 0)
+                    // state.imageURLs.append(image, at: 0)
                 //}
                 return .none
             case .avatar:
                 //if let image = attachmentResponse.imageUrlString {
-//                     state.imageURLs.insert(image, at: 0)
+//                     state.imageURLs.append(image, at: 0)
                 //}
                 return .none
             case .card:
@@ -395,6 +405,16 @@ public struct GenericPassForm {
             if !state.isFormValid {
                 sharedLogger.log("FormValid is not valid")
                 return .none
+            }
+
+            // if logo or avatar is empty we add this url
+            if state.logoImage == nil {
+                state.vCard.imageURLs.append(.init(type: .logo, urlString: "https://ecardify.ams3.cdn.digitaloceanspaces.com/default/logo_d.png"))
+                state.vCard.imageURLs.append(.init(type: .icon, urlString: "https://ecardify.ams3.cdn.digitaloceanspaces.com/default/logo_d.png"))
+            }
+
+            if state.avatarImage == nil {
+                state.vCard.imageURLs.append(.init(type: .thumbnail, urlString: "https://ecardify.ams3.cdn.digitaloceanspaces.com/default/avatar_d.png"))
             }
 
             let walletPass = WalletPass(
@@ -481,7 +501,7 @@ public struct GenericPassForm {
                 do {
                     try await localDatabase.update(wp: wp)
                 } catch {
-                    sharedLogger.logError("create localdatabase error:- \(error)")
+                    sharedLogger.logError("create local database error:- \(error)")
                 }
 
                 await send(.buildPKPassFrom(url: response.urlString))
@@ -514,7 +534,9 @@ public struct GenericPassForm {
             return .none
 
         case .removeEmailSection(by: let uuid):
-            state.vCard.emails.removeAll(where: { $0.id == uuid })
+
+            guard let index = state.vCard.emails.firstIndex(where: { $0.id == uuid }) else { return .none }
+            state.vCard.emails.remove(at: index)
             return .none
 
         case .addOneMoreTelephoneSection:
@@ -523,7 +545,8 @@ public struct GenericPassForm {
             return .none
             
         case .removeTelephoneSection(by: let uuid):
-            state.vCard.telephones.removeAll(where: { $0.id == uuid })
+            guard let index = state.vCard.telephones.firstIndex(where: { $0.id == uuid }) else { return .none }
+            state.vCard.telephones.remove(at: index)
             return .none
 
         case .addOneMoreAddressSection:
@@ -531,7 +554,8 @@ public struct GenericPassForm {
 
             return .none
         case .removeAddressSection(by: let uuid):
-            state.vCard.addresses.removeAll(where: { $0.id == uuid })
+            guard let index = state.vCard.addresses.firstIndex(where: { $0.id == uuid }) else { return .none }
+            state.vCard.addresses.remove(at: index)
             return .none
 
         // MARK: - DigitalCardDesign

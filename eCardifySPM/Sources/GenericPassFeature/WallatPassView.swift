@@ -60,7 +60,7 @@ public struct WalletPassView: View {
                                     VStack {
                                         Text("Login or Register.")
                                             .font(.title3)
-                                        //                                  .fontWeight(.light)
+                                        //  .fontWeight(.light)
 
                                         Image(systemName: "iphone.and.arrow.forward")
                                             .resizable()
@@ -135,6 +135,7 @@ public struct WalletPassView: View {
                         Image(systemName: "plus.square.fill")
                             .resizable()
                             .frame(width: 40, height: 40)
+                            .foregroundStyle(.white, .blue)
                     }
                     .padding(32)
                     .accessibility(identifier: "add_card_button")
@@ -154,8 +155,10 @@ struct WalletPassView_Previews: PreviewProvider {
         )
     }
 
+    static var state = WalletPassList.State(wPass: demoWPassLocal)
+
     static var store = Store(
-        initialState: WalletPassList.State()
+        initialState: state
     ) {
         WalletPassList()
     }
@@ -167,7 +170,7 @@ struct WalletPassView_Previews: PreviewProvider {
     }
 }
 
-/// Move to TCA helper extention
+/// Move to TCA helper extension
 extension Binding where Value == Optional<String> {
     public var orEmpty: Binding<String> {
         Binding<String> {

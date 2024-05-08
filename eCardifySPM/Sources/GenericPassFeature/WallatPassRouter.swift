@@ -137,7 +137,7 @@ public struct WalletPassList {
         case .wPass(id: let id, action: let wpaction):
             if wpaction == .addPassToWallet {
                 if let pass = state.wPassLocal[id: id] {
-                    let url =  "https://cardify.ams3.cdn.digitaloceanspaces.com/ecardify/uploads/pass/\(pass.wp.ownerId.hexString)/\(pass.id).pkpass"
+                    let url =  "https://ecardify.ams3.cdn.digitaloceanspaces.com/ecardify/uploads/pass/\(pass.wp.ownerId.hexString)/\(pass.id).pkpass"
                     return .run { send in
                         await send(.destination(.presented(.add(.buildPKPassFrom(url: url)))))
                     }

@@ -30,3 +30,4 @@ Package.resolved
 
 .build/
 *.xcconfig
+u2net.mlmodel

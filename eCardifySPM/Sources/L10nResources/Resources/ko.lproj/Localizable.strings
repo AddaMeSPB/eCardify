@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+<!-- AuthenticationView -->
+<key>eCardify</key><string>eCardify</string>
+<key>Register Or Login</key><string>회원가입 또는 로그인</string>
+<key>Verification Code</key><string>인증 코드</string>
+<key>000000</key><string>000000</string>
+<key>Didn't get email? Please check your mail spam folder!</key><string>이메일을 받지 못하셨나요? 스팸 폴더를 확인해 주세요!</string>
+<key>Check our terms and privacy</key><string>이용약관과 개인정보 보호정책을 확인하세요</string>
+<key>Terms</key><string>이용약관</string>
+<key>Privacy</key><string>개인정보</string>
+
+<!-- GenericPassFormView -->
+<key>Org or Company Name</key><string>조직 또는 회사명</string>
+<key>Organization/Company/self employed</key><string>조직/회사/개인사업자</string>
+<key>Job title</key><string>직함</string>
+<key>Photo description</key><string>디지털 명함에 사진을 추가하여 전문적인 인상을 남기세요. 선명하고 고화질의 프로필 사진을 선택하세요.</string>
+<key>Organisation &amp; Upload Images!</key><string>조직 정보 &amp; 이미지 업로드!</string>
+<key>Choice Product Type</key><string>제품 유형 선택</string>
+<key>Pick or Preview</key><string>선택 또는 미리보기</string>
+<key>Your</key><string>나의</string>
+<key>Card Design</key><string>카드 디자인</string>
+<key>To activate this function,</key><string>이 기능을 활성화하려면,</string>
+<key>Please change your product type.</key><string>제품 유형을 변경해 주세요.</string>
+<key>Pay %@ and Create</key><string>%@ 결제 후 생성</string>
+<key>Generating your Digital card! Please wait</key><string>디지털 카드를 생성 중입니다! 잠시만 기다려 주세요</string>
+<key>Create digital card</key><string>디지털 카드 만들기</string>
+
+<!-- AddressesSectionView -->
+<key>PostOffice</key><string>사서함</string>
+<key>Extended address - OPTIONAL</key><string>추가 주소 - 선택사항</string>
+<key>Street</key><string>거리</string>
+<key>City</key><string>도시</string>
+<key>Region/State</key><string>지역/주</string>
+<key>Post Code</key><string>우편번호</string>
+<key>Select Country</key><string>국가 선택</string>
+<key>Remove this address</key><string>이 주소 삭제</string>
+<key>Address Type</key><string>주소 유형</string>
+<key>Address</key><string>주소</string>
+<key>Please change your product type below.</key><string>아래에서 제품 유형을 변경해 주세요.</string>
+<key>click here to change your product type</key><string>여기를 탭하여 제품 유형을 변경하세요</string>
+
+<!-- SettingsView -->
+<key>Hello, %@</key><string>안녕하세요, %@</string>
+<key>Support our app</key><string>앱 지원하기</string>
+<key>Review us</key><string>리뷰 남기기</string>
+<key>Share</key><string>공유</string>
+<key>Restore</key><string>복원</string>
+<key>Explore our other apps!</key><string>다른 앱도 확인해 보세요!</string>
+<key>Log out!</key><string>로그아웃!</string>
+<key>Build %@</key><string>빌드 %@</string>
+<key>Report a bug</key><string>버그 신고</string>
+<key>Settings</key><string>설정</string>
+
+<!-- TelephoneSectionView -->
+<key>Number is invalid!</key><string>번호가 유효하지 않습니다!</string>
+<key>Telephone</key><string>전화</string>
+<key>Device Type</key><string>기기 유형</string>
+
+<!-- OrganizationSectionView -->
+<key>Upload old card.</key><string>기존 명함 업로드.</string>
+<key>Avatar</key><string>아바타</string>
+<key>Upload logo</key><string>로고 업로드</string>
+<key>Upload old card</key><string>기존 명함 업로드</string>
+
+<!-- ContactSectionView -->
+<key>Contact</key><string>연락처</string>
+<key>First Name</key><string>이름</string>
+<key>Middle Name</key><string>중간 이름</string>
+<key>Last Name</key><string>성</string>
+
+<!-- EmailView -->
+<key>Email</key><string>이메일</string>
+<key>Email address</key><string>이메일 주소</string>
+
+<!-- WallatPassDetailsView -->
+<key>Share card</key><string>카드 공유</string>
+<key>Show card</key><string>카드 보기</string>
+<key>Add to Apple Wallet</key><string>Apple Wallet에 추가</string>
+
+<!-- NotificationsSettingsView -->
+<key>Enable notifications</key><string>알림 활성화</string>
+<key>Notification warning</key><string>알림을 끄면 중요한 카드 업데이트와 알림을 받을 수 없게 됩니다.</string>
+<key>Notifications</key><string>알림</string>
+
+<!-- RestoreNonProductView -->
+<key>Processing...</key><string>처리 중...</string>
+<key>Restore!</key><string>복원!</string>
+
+<!-- PhotosSelectorView -->
+<key>Loading... please wait!</key><string>로딩 중... 잠시만 기다려 주세요!</string>
+
+<!-- WallatPassView -->
+<key>Digital Cards</key><string>디지털 카드</string>
+
+<!-- CardDesignListReducer -->
+<key>Card design</key><string>카드 디자인</string>
+<key>Pick a design</key><string>디자인 선택</string>
+<key>Default</key><string>기본</string>
+<key>Custom</key><string>맞춤</string>
+<key>Pro designs</key><string>프로 디자인</string>
+<key>Loading designs...</key><string>디자인 로딩 중...</string>
+<key>Failed to load</key><string>로딩 실패</string>
+<key>Try again</key><string>다시 시도</string>
+<key>Select card design</key><string>카드 디자인 선택</string>
+<key>Close</key><string>닫기</string>
+<key>NAME</key><string>이름</string>
+<key>POSITION</key><string>직책</string>
+<key>EMAIL</key><string>이메일</string>
+<key>MOBILE</key><string>휴대전화</string>
+
+<!-- StoreKitReducer AlertState -->
+<key>Error</key><string>오류</string>
+<key>We couldn't restore purchases, please try again.</key><string>구매를 복원하지 못했습니다. 다시 시도해 주세요.</string>
+<key>Purchase restore.</key><string>구매 복원.</string>
+<key>Your purchases was successfully restore.</key><string>구매가 성공적으로 복원되었습니다.</string>
+<key>Back</key><string>뒤로</string>
+<key>No Purchases</key><string>구매 내역 없음</string>
+<key>No purchases were found to restore.</key><string>복원할 구매 내역이 없습니다.</string>
+
+<!-- Enum rawValues for LDynamic -->
+<key>HOME</key><string>HOME</string>
+<key>WORK</key><string>WORK</string>
+<key>CELL</key><string>CELL</string>
+<key>FAX</key><string>FAX</string>
+<key>PAGER</key><string>PAGER</string>
+<key>POSTAL</key><string>POSTAL</string>
+<key>DOM</key><string>DOM</string>
+<key>INTL</key><string>INTL</string>
+<key>PARCEL</key><string>PARCEL</string>
+<key>BASIC</key><string>기본</string>
+<key>CUSTOM</key><string>맞춤</string>
+<key>basic</key><string>기본</string>
+<key>custom</key><string>맞춤</string>
+
+<!-- New Keys -->
+<key>Login or Register.</key><string>로그인 또는 회원가입.</string>
+<key>Country Picker</key><string>국가 선택</string>
+<key>Purchase restored</key><string>구매가 복원되었습니다</string>
+<key>Your purchases were successfully restored.</key><string>구매가 성공적으로 복원되었습니다.</string>
+<key>Please don't turn off notification, the whole function will be turned off</key><string>알림을 끄지 마세요. 전체 기능이 비활성화됩니다</string>
+<key>&amp;</key><string>&amp;</string>
+<key>Your nice Name goes here</key><string>멋진 이름을 여기에 입력하세요</string>
+
+<!-- OnboardingView -->
+<key>Welcome to eCardify</key><string>eCardify에 오신 것을 환영합니다</string>
+<key>Create stunning digital business cards</key><string>멋진 디지털 명함을 만드세요</string>
+<key>Design your professional identity with custom templates, colors, and layouts.</key><string>맞춤 템플릿, 색상, 레이아웃으로 프로페셔널한 명함을 디자인하세요.</string>
+<key>Apple Wallet Ready</key><string>Apple Wallet 지원</string>
+<key>Add your card directly to Apple Wallet for instant access anywhere, anytime.</key><string>Apple Wallet에 직접 추가하여 언제 어디서나 즉시 액세스하세요.</string>
+<key>Share Instantly</key><string>즉시 공유</string>
+<key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>QR 코드 또는 링크로 공유하세요. 수신자는 앱이 필요 없습니다.</string>
+<key>Get Started</key><string>시작하기</string>
+<key>Skip</key><string>건너뛰기</string>
+
+</dict>
+</plist>

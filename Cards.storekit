@@ -1,0 +1,95 @@
+{
+  "identifier" : "BAC78A4E",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "14",
+      "familyShareable" : false,
+      "internalID" : "70B4530F",
+      "localizations" : [
+        {
+          "description" : "Basic version of product has fixed design!",
+          "displayName" : "Basic Card 🪪",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "cardify.addame.com.eCardify.BasicCard.testing",
+      "referenceName" : "BasicCard",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "24",
+      "familyShareable" : false,
+      "internalID" : "E70B3B6E",
+      "localizations" : [
+        {
+          "description" : "Flexibility & Customization can add muti data",
+          "displayName" : "Flexi Digital Card.",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "cardify.addame.com.eCardify.FlexiCard.testing",
+      "referenceName" : "FlexiCard",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

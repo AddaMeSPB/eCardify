@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+<!-- AuthenticationView -->
+<key>eCardify</key><string>eCardify</string>
+<key>Register Or Login</key><string>Registrieren oder Anmelden</string>
+<key>Verification Code</key><string>Bestaetigungscode</string>
+<key>000000</key><string>000000</string>
+<key>Didn't get email? Please check your mail spam folder!</key><string>Keine E-Mail erhalten? Bitte pruefen Sie Ihren Spam-Ordner!</string>
+<key>Check our terms and privacy</key><string>Lesen Sie unsere AGB und Datenschutzerklaerung</string>
+<key>Terms</key><string>AGB</string>
+<key>Privacy</key><string>Datenschutz</string>
+
+<!-- GenericPassFormView -->
+<key>Org or Company Name</key><string>Organisation oder Firmenname</string>
+<key>Organization/Company/self employed</key><string>Organisation/Firma/Selbststaendig</string>
+<key>Job title</key><string>Berufsbezeichnung</string>
+<key>Photo description</key><string>Fuegen Sie ein Foto zu Ihrer digitalen Visitenkarte hinzu, um einen professionellen Eindruck zu hinterlassen. Waehlen Sie ein klares, hochaufgeloestes Portraitfoto.</string>
+<key>Organisation &amp; Upload Images!</key><string>Organisation &amp; Bilder hochladen!</string>
+<key>Choice Product Type</key><string>Produkttyp waehlen</string>
+<key>Pick or Preview</key><string>Auswaehlen oder Vorschau</string>
+<key>Your</key><string>Ihr</string>
+<key>Card Design</key><string>Kartendesign</string>
+<key>To activate this function,</key><string>Um diese Funktion zu aktivieren,</string>
+<key>Please change your product type.</key><string>aendern Sie bitte Ihren Produkttyp.</string>
+<key>Pay %@ and Create</key><string>%@ bezahlen und erstellen</string>
+<key>Generating your Digital card! Please wait</key><string>Ihre digitale Karte wird erstellt! Bitte warten</string>
+<key>Create digital card</key><string>Digitale Karte erstellen</string>
+
+<!-- AddressesSectionView -->
+<key>PostOffice</key><string>Postfach</string>
+<key>Extended address - OPTIONAL</key><string>Adresszusatz - OPTIONAL</string>
+<key>Street</key><string>Strasse</string>
+<key>City</key><string>Stadt</string>
+<key>Region/State</key><string>Bundesland</string>
+<key>Post Code</key><string>Postleitzahl</string>
+<key>Select Country</key><string>Land auswaehlen</string>
+<key>Remove this address</key><string>Diese Adresse entfernen</string>
+<key>Address Type</key><string>Adresstyp</string>
+<key>Address</key><string>Adresse</string>
+<key>Please change your product type below.</key><string>Bitte aendern Sie Ihren Produkttyp unten.</string>
+<key>click here to change your product type</key><string>Tippen Sie hier, um Ihren Produkttyp zu aendern</string>
+
+<!-- SettingsView -->
+<key>Hello, %@</key><string>Hallo, %@</string>
+<key>Support our app</key><string>Unsere App unterstuetzen</string>
+<key>Review us</key><string>Bewerten Sie uns</string>
+<key>Share</key><string>Teilen</string>
+<key>Restore</key><string>Wiederherstellen</string>
+<key>Explore our other apps!</key><string>Entdecken Sie unsere anderen Apps!</string>
+<key>Log out!</key><string>Abmelden!</string>
+<key>Build %@</key><string>Build %@</string>
+<key>Report a bug</key><string>Fehler melden</string>
+<key>Settings</key><string>Einstellungen</string>
+
+<!-- TelephoneSectionView -->
+<key>Number is invalid!</key><string>Nummer ist ungueltig!</string>
+<key>Telephone</key><string>Telefon</string>
+<key>Device Type</key><string>Geraetetyp</string>
+
+<!-- OrganizationSectionView -->
+<key>Upload old card.</key><string>Alte Karte hochladen.</string>
+<key>Avatar</key><string>Avatar</string>
+<key>Upload logo</key><string>Logo hochladen</string>
+<key>Upload old card</key><string>Alte Karte hochladen</string>
+
+<!-- ContactSectionView -->
+<key>Contact</key><string>Kontakt</string>
+<key>First Name</key><string>Vorname</string>
+<key>Middle Name</key><string>Zweiter Vorname</string>
+<key>Last Name</key><string>Nachname</string>
+
+<!-- EmailView -->
+<key>Email</key><string>E-Mail</string>
+<key>Email address</key><string>E-Mail-Adresse</string>
+
+<!-- WallatPassDetailsView -->
+<key>Share card</key><string>Karte teilen</string>
+<key>Show card</key><string>Karte anzeigen</string>
+<key>Add to Apple Wallet</key><string>Zu Apple Wallet hinzufuegen</string>
+
+<!-- NotificationsSettingsView -->
+<key>Enable notifications</key><string>Benachrichtigungen aktivieren</string>
+<key>Notification warning</key><string>Wenn Sie Benachrichtigungen deaktivieren, erhalten Sie keine wichtigen Kartenaktualisierungen und Erinnerungen mehr.</string>
+<key>Notifications</key><string>Benachrichtigungen</string>
+
+<!-- RestoreNonProductView -->
+<key>Processing...</key><string>Verarbeitung...</string>
+<key>Restore!</key><string>Wiederherstellen!</string>
+
+<!-- PhotosSelectorView -->
+<key>Loading... please wait!</key><string>Laden... bitte warten!</string>
+
+<!-- WallatPassView -->
+<key>Digital Cards</key><string>Digitale Karten</string>
+
+<!-- CardDesignListReducer -->
+<key>Card design</key><string>Kartendesign</string>
+<key>Pick a design</key><string>Design auswaehlen</string>
+<key>Default</key><string>Standard</string>
+<key>Custom</key><string>Benutzerdefiniert</string>
+<key>Pro designs</key><string>Pro-Designs</string>
+<key>Loading designs...</key><string>Designs werden geladen...</string>
+<key>Failed to load</key><string>Laden fehlgeschlagen</string>
+<key>Try again</key><string>Erneut versuchen</string>
+<key>Select card design</key><string>Kartendesign auswaehlen</string>
+<key>Close</key><string>Schliessen</string>
+<key>NAME</key><string>NAME</string>
+<key>POSITION</key><string>POSITION</string>
+<key>EMAIL</key><string>E-MAIL</string>
+<key>MOBILE</key><string>MOBIL</string>
+
+<!-- StoreKitReducer AlertState -->
+<key>Error</key><string>Fehler</string>
+<key>We couldn't restore purchases, please try again.</key><string>Kaeufe konnten nicht wiederhergestellt werden. Bitte versuchen Sie es erneut.</string>
+<key>Purchase restore.</key><string>Kaufwiederherstellung.</string>
+<key>Your purchases was successfully restore.</key><string>Ihre Kaeufe wurden erfolgreich wiederhergestellt.</string>
+<key>Back</key><string>Zurueck</string>
+<key>No Purchases</key><string>Keine Kaeufe</string>
+<key>No purchases were found to restore.</key><string>Es wurden keine Kaeufe zum Wiederherstellen gefunden.</string>
+
+<!-- Enum rawValues for LDynamic -->
+<key>HOME</key><string>HOME</string>
+<key>WORK</key><string>WORK</string>
+<key>CELL</key><string>CELL</string>
+<key>FAX</key><string>FAX</string>
+<key>PAGER</key><string>PAGER</string>
+<key>POSTAL</key><string>POSTAL</string>
+<key>DOM</key><string>DOM</string>
+<key>INTL</key><string>INTL</string>
+<key>PARCEL</key><string>PARCEL</string>
+<key>BASIC</key><string>Basis</string>
+<key>CUSTOM</key><string>Benutzerdefiniert</string>
+<key>basic</key><string>Basis</string>
+<key>custom</key><string>Benutzerdefiniert</string>
+
+<!-- New Keys -->
+<key>Login or Register.</key><string>Anmelden oder Registrieren.</string>
+<key>Country Picker</key><string>Laenderauswahl</string>
+<key>Purchase restored</key><string>Kauf wiederhergestellt</string>
+<key>Your purchases were successfully restored.</key><string>Ihre Kaeufe wurden erfolgreich wiederhergestellt.</string>
+<key>Please don't turn off notification, the whole function will be turned off</key><string>Bitte schalten Sie die Benachrichtigungen nicht aus, da sonst die gesamte Funktion deaktiviert wird</string>
+<key>&amp;</key><string>&amp;</string>
+<key>Your nice Name goes here</key><string>Ihr schoener Name kommt hierhin</string>
+
+<!-- OnboardingView -->
+<key>Welcome to eCardify</key><string>Willkommen bei eCardify</string>
+<key>Create stunning digital business cards</key><string>Erstellen Sie beeindruckende digitale Visitenkarten</string>
+<key>Design your professional identity with custom templates, colors, and layouts.</key><string>Gestalten Sie Ihre professionelle Identität mit individuellen Vorlagen, Farben und Layouts.</string>
+<key>Apple Wallet Ready</key><string>Apple Wallet bereit</string>
+<key>Add your card directly to Apple Wallet for instant access anywhere, anytime.</key><string>Fügen Sie Ihre Karte direkt zu Apple Wallet für sofortigen Zugriff überall hinzu.</string>
+<key>Share Instantly</key><string>Sofort teilen</string>
+<key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>Per QR-Code oder Link teilen. Empfänger brauchen die App nicht.</string>
+<key>Get Started</key><string>Loslegen</string>
+<key>Skip</key><string>Überspringen</string>
+
+</dict>
+</plist>

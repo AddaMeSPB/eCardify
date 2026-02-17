@@ -1,0 +1,35 @@
+# A list of devices you want to take the screenshots from
+devices([
+    "iPhone 16 Pro Max",
+    "iPhone 16 Pro",
+    "iPhone 16",
+    "iPad Pro 13-inch (M4)"
+])
+
+languages([
+    "en-US",
+    "de-DE",
+    "es-ES",
+    "fr-FR",
+    "it",
+    "ja",
+    "ko",
+    ["pt", "pt_BR"],
+    "zh-Hans",
+    "ru-RU"
+])
+
+# The name of the scheme which contains the UI Tests
+scheme("eCardifyUITests")
+
+# Where should the resulting screenshots be stored?
+output_directory("./screenshots")
+
+# Clear all previously generated screenshots before creating new ones
+clear_previous_screenshots(true)
+
+# Set the status bar to 9:41 AM, and show full battery and reception
+override_status_bar(true)
+
+# For more information about all available options run
+# fastlane action snapshot

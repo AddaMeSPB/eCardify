@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+<!-- AuthenticationView -->
+<key>eCardify</key><string>eCardify</string>
+<key>Register Or Login</key><string>Cadastrar ou Entrar</string>
+<key>Verification Code</key><string>Codigo de verificacao</string>
+<key>000000</key><string>000000</string>
+<key>Didn't get email? Please check your mail spam folder!</key><string>Nao recebeu o e-mail? Verifique sua pasta de spam!</string>
+<key>Check our terms and privacy</key><string>Confira nossos termos e privacidade</string>
+<key>Terms</key><string>Termos</string>
+<key>Privacy</key><string>Privacidade</string>
+
+<!-- GenericPassFormView -->
+<key>Org or Company Name</key><string>Nome da organizacao ou empresa</string>
+<key>Organization/Company/self employed</key><string>Organizacao/Empresa/Autonomo</string>
+<key>Job title</key><string>Cargo</string>
+<key>Photo description</key><string>Adicione uma foto ao seu cartao de visita digital para causar uma impressao profissional. Escolha um retrato nitido e em alta resolucao.</string>
+<key>Organisation &amp; Upload Images!</key><string>Organizacao &amp; Enviar imagens!</string>
+<key>Choice Product Type</key><string>Escolher tipo de produto</string>
+<key>Pick or Preview</key><string>Escolher ou Visualizar</string>
+<key>Your</key><string>Seu</string>
+<key>Card Design</key><string>Design do cartao</string>
+<key>To activate this function,</key><string>Para ativar esta funcao,</string>
+<key>Please change your product type.</key><string>altere seu tipo de produto.</string>
+<key>Pay %@ and Create</key><string>Pagar %@ e criar</string>
+<key>Generating your Digital card! Please wait</key><string>Gerando seu cartao digital! Aguarde</string>
+<key>Create digital card</key><string>Criar cartao digital</string>
+
+<!-- AddressesSectionView -->
+<key>PostOffice</key><string>Caixa postal</string>
+<key>Extended address - OPTIONAL</key><string>Endereco complementar - OPCIONAL</string>
+<key>Street</key><string>Rua</string>
+<key>City</key><string>Cidade</string>
+<key>Region/State</key><string>Regiao/Estado</string>
+<key>Post Code</key><string>CEP</string>
+<key>Select Country</key><string>Selecionar pais</string>
+<key>Remove this address</key><string>Remover este endereco</string>
+<key>Address Type</key><string>Tipo de endereco</string>
+<key>Address</key><string>Endereco</string>
+<key>Please change your product type below.</key><string>Altere seu tipo de produto abaixo.</string>
+<key>click here to change your product type</key><string>Toque aqui para alterar seu tipo de produto</string>
+
+<!-- SettingsView -->
+<key>Hello, %@</key><string>Ola, %@</string>
+<key>Support our app</key><string>Apoie nosso aplicativo</string>
+<key>Review us</key><string>Avalie-nos</string>
+<key>Share</key><string>Compartilhar</string>
+<key>Restore</key><string>Restaurar</string>
+<key>Explore our other apps!</key><string>Confira nossos outros aplicativos!</string>
+<key>Log out!</key><string>Sair!</string>
+<key>Build %@</key><string>Build %@</string>
+<key>Report a bug</key><string>Reportar um bug</string>
+<key>Settings</key><string>Configuracoes</string>
+
+<!-- TelephoneSectionView -->
+<key>Number is invalid!</key><string>Numero invalido!</string>
+<key>Telephone</key><string>Telefone</string>
+<key>Device Type</key><string>Tipo de dispositivo</string>
+
+<!-- OrganizationSectionView -->
+<key>Upload old card.</key><string>Enviar cartao antigo.</string>
+<key>Avatar</key><string>Avatar</string>
+<key>Upload logo</key><string>Enviar logotipo</string>
+<key>Upload old card</key><string>Enviar cartao antigo</string>
+
+<!-- ContactSectionView -->
+<key>Contact</key><string>Contato</string>
+<key>First Name</key><string>Nome</string>
+<key>Middle Name</key><string>Nome do meio</string>
+<key>Last Name</key><string>Sobrenome</string>
+
+<!-- EmailView -->
+<key>Email</key><string>E-mail</string>
+<key>Email address</key><string>Endereco de e-mail</string>
+
+<!-- WallatPassDetailsView -->
+<key>Share card</key><string>Compartilhar cartao</string>
+<key>Show card</key><string>Mostrar cartao</string>
+<key>Add to Apple Wallet</key><string>Adicionar ao Apple Wallet</string>
+
+<!-- NotificationsSettingsView -->
+<key>Enable notifications</key><string>Ativar notificacoes</string>
+<key>Notification warning</key><string>Se voce desativar as notificacoes, nao recebera atualizacoes importantes do cartao nem lembretes.</string>
+<key>Notifications</key><string>Notificacoes</string>
+
+<!-- RestoreNonProductView -->
+<key>Processing...</key><string>Processando...</string>
+<key>Restore!</key><string>Restaurar!</string>
+
+<!-- PhotosSelectorView -->
+<key>Loading... please wait!</key><string>Carregando... aguarde!</string>
+
+<!-- WallatPassView -->
+<key>Digital Cards</key><string>Cartoes digitais</string>
+
+<!-- CardDesignListReducer -->
+<key>Card design</key><string>Design do cartao</string>
+<key>Pick a design</key><string>Escolher um design</string>
+<key>Default</key><string>Padrao</string>
+<key>Custom</key><string>Personalizado</string>
+<key>Pro designs</key><string>Designs Pro</string>
+<key>Loading designs...</key><string>Carregando designs...</string>
+<key>Failed to load</key><string>Falha ao carregar</string>
+<key>Try again</key><string>Tentar novamente</string>
+
+<!-- StoreKitReducer AlertState -->
+<key>Error</key><string>Erro</string>
+<key>We couldn't restore purchases, please try again.</key><string>Nao foi possivel restaurar as compras, tente novamente.</string>
+<key>Purchase restore.</key><string>Restauracao de compra.</string>
+<key>Your purchases was successfully restore.</key><string>Suas compras foram restauradas com sucesso.</string>
+<key>Back</key><string>Voltar</string>
+<key>No Purchases</key><string>Sem compras</string>
+<key>No purchases were found to restore.</key><string>Nenhuma compra encontrada para restaurar.</string>
+
+<!-- Enum rawValues for LDynamic -->
+<key>HOME</key><string>HOME</string>
+<key>WORK</key><string>WORK</string>
+<key>CELL</key><string>CELL</string>
+<key>FAX</key><string>FAX</string>
+<key>PAGER</key><string>PAGER</string>
+<key>POSTAL</key><string>POSTAL</string>
+<key>DOM</key><string>DOM</string>
+<key>INTL</key><string>INTL</string>
+<key>PARCEL</key><string>PARCEL</string>
+<key>BASIC</key><string>Basico</string>
+<key>CUSTOM</key><string>Personalizado</string>
+<key>basic</key><string>Basico</string>
+<key>custom</key><string>Personalizado</string>
+
+<!-- New Keys -->
+<key>Login or Register.</key><string>Entrar ou Cadastrar.</string>
+<key>Country Picker</key><string>Seletor de pais</string>
+<key>Purchase restored</key><string>Compra restaurada</string>
+<key>Your purchases were successfully restored.</key><string>Suas compras foram restauradas com sucesso.</string>
+<key>Please don't turn off notification, the whole function will be turned off</key><string>Por favor, nao desative as notificacoes, toda a funcao sera desativada</string>
+<key>&amp;</key><string>&amp;</string>
+<key>Your nice Name goes here</key><string>Seu lindo nome vai aqui</string>
+
+<!-- OnboardingView -->
+<key>Welcome to eCardify</key><string>Bem-vindo ao eCardify</string>
+<key>Create stunning digital business cards</key><string>Crie cartões de visita digitais incríveis</string>
+<key>Design your professional identity with custom templates, colors, and layouts.</key><string>Projete sua identidade profissional com modelos, cores e layouts personalizados.</string>
+<key>Apple Wallet Ready</key><string>Pronto para Apple Wallet</string>
+<key>Add your card directly to Apple Wallet for instant access anywhere, anytime.</key><string>Adicione seu cartão ao Apple Wallet para acesso instantâneo em qualquer lugar.</string>
+<key>Share Instantly</key><string>Compartilhe instantaneamente</string>
+<key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>Compartilhe via QR code ou link. Os destinatários não precisam do app.</string>
+<key>Get Started</key><string>Começar</string>
+<key>Skip</key><string>Pular</string>
+
+</dict>
+</plist>

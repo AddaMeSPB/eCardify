@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+<!-- AuthenticationView -->
+<key>eCardify</key><string>eCardify</string>
+<key>Register Or Login</key><string>Registrati o Accedi</string>
+<key>Verification Code</key><string>Codice di verifica</string>
+<key>000000</key><string>000000</string>
+<key>Didn't get email? Please check your mail spam folder!</key><string>Non hai ricevuto l'e-mail? Controlla la cartella spam!</string>
+<key>Check our terms and privacy</key><string>Consulta i nostri termini e la privacy</string>
+<key>Terms</key><string>Termini</string>
+<key>Privacy</key><string>Privacy</string>
+
+<!-- GenericPassFormView -->
+<key>Org or Company Name</key><string>Nome dell'organizzazione o azienda</string>
+<key>Organization/Company/self employed</key><string>Organizzazione/Azienda/Libero professionista</string>
+<key>Job title</key><string>Qualifica</string>
+<key>Photo description</key><string>Aggiungi una foto al tuo biglietto da visita digitale per fare un'impressione professionale. Scegli un ritratto nitido e ad alta risoluzione.</string>
+<key>Organisation &amp; Upload Images!</key><string>Organizzazione &amp; Carica immagini!</string>
+<key>Choice Product Type</key><string>Scegli il tipo di prodotto</string>
+<key>Pick or Preview</key><string>Scegli o Anteprima</string>
+<key>Your</key><string>Il tuo</string>
+<key>Card Design</key><string>Design del biglietto</string>
+<key>To activate this function,</key><string>Per attivare questa funzione,</string>
+<key>Please change your product type.</key><string>cambia il tipo di prodotto.</string>
+<key>Pay %@ and Create</key><string>Paga %@ e crea</string>
+<key>Generating your Digital card! Please wait</key><string>Generazione del biglietto digitale! Attendere prego</string>
+<key>Create digital card</key><string>Crea biglietto digitale</string>
+
+<!-- AddressesSectionView -->
+<key>PostOffice</key><string>Casella postale</string>
+<key>Extended address - OPTIONAL</key><string>Indirizzo aggiuntivo - FACOLTATIVO</string>
+<key>Street</key><string>Via</string>
+<key>City</key><string>Citta</string>
+<key>Region/State</key><string>Regione/Provincia</string>
+<key>Post Code</key><string>CAP</string>
+<key>Select Country</key><string>Seleziona il paese</string>
+<key>Remove this address</key><string>Rimuovi questo indirizzo</string>
+<key>Address Type</key><string>Tipo di indirizzo</string>
+<key>Address</key><string>Indirizzo</string>
+<key>Please change your product type below.</key><string>Cambia il tipo di prodotto qui sotto.</string>
+<key>click here to change your product type</key><string>Tocca qui per cambiare il tipo di prodotto</string>
+
+<!-- SettingsView -->
+<key>Hello, %@</key><string>Ciao, %@</string>
+<key>Support our app</key><string>Supporta la nostra app</string>
+<key>Review us</key><string>Lascia una recensione</string>
+<key>Share</key><string>Condividi</string>
+<key>Restore</key><string>Ripristina</string>
+<key>Explore our other apps!</key><string>Scopri le nostre altre app!</string>
+<key>Log out!</key><string>Esci!</string>
+<key>Build %@</key><string>Build %@</string>
+<key>Report a bug</key><string>Segnala un bug</string>
+<key>Settings</key><string>Impostazioni</string>
+
+<!-- TelephoneSectionView -->
+<key>Number is invalid!</key><string>Il numero non e valido!</string>
+<key>Telephone</key><string>Telefono</string>
+<key>Device Type</key><string>Tipo di dispositivo</string>
+
+<!-- OrganizationSectionView -->
+<key>Upload old card.</key><string>Carica vecchio biglietto.</string>
+<key>Avatar</key><string>Avatar</string>
+<key>Upload logo</key><string>Carica logo</string>
+<key>Upload old card</key><string>Carica vecchio biglietto</string>
+
+<!-- ContactSectionView -->
+<key>Contact</key><string>Contatto</string>
+<key>First Name</key><string>Nome</string>
+<key>Middle Name</key><string>Secondo nome</string>
+<key>Last Name</key><string>Cognome</string>
+
+<!-- EmailView -->
+<key>Email</key><string>E-mail</string>
+<key>Email address</key><string>Indirizzo e-mail</string>
+
+<!-- WallatPassDetailsView -->
+<key>Share card</key><string>Condividi biglietto</string>
+<key>Show card</key><string>Mostra biglietto</string>
+<key>Add to Apple Wallet</key><string>Aggiungi ad Apple Wallet</string>
+
+<!-- NotificationsSettingsView -->
+<key>Enable notifications</key><string>Attiva notifiche</string>
+<key>Notification warning</key><string>Se disattivi le notifiche, non riceverai aggiornamenti importanti del biglietto ne promemoria.</string>
+<key>Notifications</key><string>Notifiche</string>
+
+<!-- RestoreNonProductView -->
+<key>Processing...</key><string>Elaborazione...</string>
+<key>Restore!</key><string>Ripristina!</string>
+
+<!-- PhotosSelectorView -->
+<key>Loading... please wait!</key><string>Caricamento... attendere prego!</string>
+
+<!-- WallatPassView -->
+<key>Digital Cards</key><string>Biglietti digitali</string>
+
+<!-- CardDesignListReducer -->
+<key>Card design</key><string>Design del biglietto</string>
+<key>Pick a design</key><string>Scegli un design</string>
+<key>Default</key><string>Predefinito</string>
+<key>Custom</key><string>Personalizzato</string>
+<key>Pro designs</key><string>Design Pro</string>
+<key>Loading designs...</key><string>Caricamento design...</string>
+<key>Failed to load</key><string>Caricamento fallito</string>
+<key>Try again</key><string>Riprova</string>
+
+<!-- StoreKitReducer AlertState -->
+<key>Error</key><string>Errore</string>
+<key>We couldn't restore purchases, please try again.</key><string>Impossibile ripristinare gli acquisti, riprova.</string>
+<key>Purchase restore.</key><string>Ripristino acquisti.</string>
+<key>Your purchases was successfully restore.</key><string>I tuoi acquisti sono stati ripristinati con successo.</string>
+<key>Back</key><string>Indietro</string>
+<key>No Purchases</key><string>Nessun acquisto</string>
+<key>No purchases were found to restore.</key><string>Nessun acquisto trovato da ripristinare.</string>
+
+<!-- Enum rawValues for LDynamic -->
+<key>HOME</key><string>HOME</string>
+<key>WORK</key><string>WORK</string>
+<key>CELL</key><string>CELL</string>
+<key>FAX</key><string>FAX</string>
+<key>PAGER</key><string>PAGER</string>
+<key>POSTAL</key><string>POSTAL</string>
+<key>DOM</key><string>DOM</string>
+<key>INTL</key><string>INTL</string>
+<key>PARCEL</key><string>PARCEL</string>
+<key>BASIC</key><string>Base</string>
+<key>CUSTOM</key><string>Personalizzato</string>
+<key>basic</key><string>Base</string>
+<key>custom</key><string>Personalizzato</string>
+
+<!-- New Keys -->
+<key>Login or Register.</key><string>Accedi o Registrati.</string>
+<key>Country Picker</key><string>Selettore paese</string>
+<key>Purchase restored</key><string>Acquisto ripristinato</string>
+<key>Your purchases were successfully restored.</key><string>I tuoi acquisti sono stati ripristinati con successo.</string>
+<key>Please don't turn off notification, the whole function will be turned off</key><string>Per favore non disattivare le notifiche, l'intera funzione verra disattivata</string>
+<key>&amp;</key><string>&amp;</string>
+<key>Your nice Name goes here</key><string>Il tuo bel nome va qui</string>
+
+<!-- OnboardingView -->
+<key>Welcome to eCardify</key><string>Benvenuto su eCardify</string>
+<key>Create stunning digital business cards</key><string>Crea straordinari biglietti da visita digitali</string>
+<key>Design your professional identity with custom templates, colors, and layouts.</key><string>Progetta la tua identità professionale con modelli, colori e layout personalizzati.</string>
+<key>Apple Wallet Ready</key><string>Pronto per Apple Wallet</string>
+<key>Add your card directly to Apple Wallet for instant access anywhere, anytime.</key><string>Aggiungi il biglietto ad Apple Wallet per accesso immediato ovunque.</string>
+<key>Share Instantly</key><string>Condividi all'istante</string>
+<key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>Condividi via QR code o link. I destinatari non hanno bisogno dell'app.</string>
+<key>Get Started</key><string>Inizia</string>
+<key>Skip</key><string>Salta</string>
+
+</dict>
+</plist>

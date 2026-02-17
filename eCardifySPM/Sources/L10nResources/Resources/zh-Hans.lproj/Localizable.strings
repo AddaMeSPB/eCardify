@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+<!-- AuthenticationView -->
+<key>eCardify</key><string>eCardify</string>
+<key>Register Or Login</key><string>注册或登录</string>
+<key>Verification Code</key><string>验证码</string>
+<key>000000</key><string>000000</string>
+<key>Didn't get email? Please check your mail spam folder!</key><string>没收到邮件？请检查您的垃圾邮件文件夹！</string>
+<key>Check our terms and privacy</key><string>查看我们的条款和隐私政策</string>
+<key>Terms</key><string>条款</string>
+<key>Privacy</key><string>隐私</string>
+
+<!-- GenericPassFormView -->
+<key>Org or Company Name</key><string>组织或公司名称</string>
+<key>Organization/Company/self employed</key><string>组织/公司/个体经营</string>
+<key>Job title</key><string>职位</string>
+<key>Photo description</key><string>将照片添加到您的数字名片中，留下专业的印象。请选择清晰的高分辨率头像。</string>
+<key>Organisation &amp; Upload Images!</key><string>组织信息 &amp; 上传图片！</string>
+<key>Choice Product Type</key><string>选择产品类型</string>
+<key>Pick or Preview</key><string>选择或预览</string>
+<key>Your</key><string>您的</string>
+<key>Card Design</key><string>卡片设计</string>
+<key>To activate this function,</key><string>要启用此功能，</string>
+<key>Please change your product type.</key><string>请更改您的产品类型。</string>
+<key>Pay %@ and Create</key><string>支付 %@ 并创建</string>
+<key>Generating your Digital card! Please wait</key><string>正在生成您的数字名片！请稍候</string>
+<key>Create digital card</key><string>创建数字名片</string>
+
+<!-- AddressesSectionView -->
+<key>PostOffice</key><string>邮政信箱</string>
+<key>Extended address - OPTIONAL</key><string>补充地址 - 可选</string>
+<key>Street</key><string>街道</string>
+<key>City</key><string>城市</string>
+<key>Region/State</key><string>地区/省份</string>
+<key>Post Code</key><string>邮编</string>
+<key>Select Country</key><string>选择国家</string>
+<key>Remove this address</key><string>删除此地址</string>
+<key>Address Type</key><string>地址类型</string>
+<key>Address</key><string>地址</string>
+<key>Please change your product type below.</key><string>请在下方更改您的产品类型。</string>
+<key>click here to change your product type</key><string>点击此处更改您的产品类型</string>
+
+<!-- SettingsView -->
+<key>Hello, %@</key><string>您好，%@</string>
+<key>Support our app</key><string>支持我们的应用</string>
+<key>Review us</key><string>为我们评分</string>
+<key>Share</key><string>分享</string>
+<key>Restore</key><string>恢复</string>
+<key>Explore our other apps!</key><string>看看我们的其他应用！</string>
+<key>Log out!</key><string>退出登录！</string>
+<key>Build %@</key><string>版本 %@</string>
+<key>Report a bug</key><string>报告错误</string>
+<key>Settings</key><string>设置</string>
+
+<!-- TelephoneSectionView -->
+<key>Number is invalid!</key><string>号码无效！</string>
+<key>Telephone</key><string>电话</string>
+<key>Device Type</key><string>设备类型</string>
+
+<!-- OrganizationSectionView -->
+<key>Upload old card.</key><string>上传旧名片。</string>
+<key>Avatar</key><string>头像</string>
+<key>Upload logo</key><string>上传标志</string>
+<key>Upload old card</key><string>上传旧名片</string>
+
+<!-- ContactSectionView -->
+<key>Contact</key><string>联系人</string>
+<key>First Name</key><string>名</string>
+<key>Middle Name</key><string>中间名</string>
+<key>Last Name</key><string>姓</string>
+
+<!-- EmailView -->
+<key>Email</key><string>邮箱</string>
+<key>Email address</key><string>邮箱地址</string>
+
+<!-- WallatPassDetailsView -->
+<key>Share card</key><string>分享名片</string>
+<key>Show card</key><string>显示名片</string>
+<key>Add to Apple Wallet</key><string>添加到 Apple 钱包</string>
+
+<!-- NotificationsSettingsView -->
+<key>Enable notifications</key><string>启用通知</string>
+<key>Notification warning</key><string>如果您关闭通知，将无法收到重要的名片更新和提醒。</string>
+<key>Notifications</key><string>通知</string>
+
+<!-- RestoreNonProductView -->
+<key>Processing...</key><string>处理中...</string>
+<key>Restore!</key><string>恢复！</string>
+
+<!-- PhotosSelectorView -->
+<key>Loading... please wait!</key><string>加载中...请稍候！</string>
+
+<!-- WallatPassView -->
+<key>Digital Cards</key><string>数字名片</string>
+
+<!-- CardDesignListReducer -->
+<key>Card design</key><string>卡片设计</string>
+<key>Pick a design</key><string>选择设计</string>
+<key>Default</key><string>默认</string>
+<key>Custom</key><string>自定义</string>
+<key>Pro designs</key><string>专业设计</string>
+<key>Loading designs...</key><string>正在加载设计...</string>
+<key>Failed to load</key><string>加载失败</string>
+<key>Try again</key><string>重试</string>
+
+<!-- StoreKitReducer AlertState -->
+<key>Error</key><string>错误</string>
+<key>We couldn't restore purchases, please try again.</key><string>无法恢复购买，请重试。</string>
+<key>Purchase restore.</key><string>购买恢复。</string>
+<key>Your purchases was successfully restore.</key><string>您的购买已成功恢复。</string>
+<key>Back</key><string>返回</string>
+<key>No Purchases</key><string>无购买记录</string>
+<key>No purchases were found to restore.</key><string>未找到可恢复的购买记录。</string>
+
+<!-- Enum rawValues for LDynamic -->
+<key>HOME</key><string>HOME</string>
+<key>WORK</key><string>WORK</string>
+<key>CELL</key><string>CELL</string>
+<key>FAX</key><string>FAX</string>
+<key>PAGER</key><string>PAGER</string>
+<key>POSTAL</key><string>POSTAL</string>
+<key>DOM</key><string>DOM</string>
+<key>INTL</key><string>INTL</string>
+<key>PARCEL</key><string>PARCEL</string>
+<key>BASIC</key><string>基础</string>
+<key>CUSTOM</key><string>自定义</string>
+<key>basic</key><string>基础</string>
+<key>custom</key><string>自定义</string>
+
+<!-- New Keys -->
+<key>Login or Register.</key><string>登录或注册。</string>
+<key>Country Picker</key><string>国家选择</string>
+<key>Purchase restored</key><string>购买已恢复</string>
+<key>Your purchases were successfully restored.</key><string>您的购买已成功恢复。</string>
+<key>Please don't turn off notification, the whole function will be turned off</key><string>请不要关闭通知，否则整个功能将被关闭</string>
+<key>&amp;</key><string>&amp;</string>
+<key>Your nice Name goes here</key><string>在此输入您的名字</string>
+
+<!-- OnboardingView -->
+<key>Welcome to eCardify</key><string>欢迎使用 eCardify</string>
+<key>Create stunning digital business cards</key><string>创建精美的数字名片</string>
+<key>Design your professional identity with custom templates, colors, and layouts.</key><string>使用自定义模板、颜色和布局设计您的专业名片。</string>
+<key>Apple Wallet Ready</key><string>支持 Apple Wallet</string>
+<key>Add your card directly to Apple Wallet for instant access anywhere, anytime.</key><string>将名片直接添加到 Apple Wallet，随时随地即时访问。</string>
+<key>Share Instantly</key><string>即时分享</string>
+<key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>通过二维码或链接分享。接收者无需安装应用。</string>
+<key>Get Started</key><string>开始使用</string>
+<key>Skip</key><string>跳过</string>
+
+</dict>
+</plist>

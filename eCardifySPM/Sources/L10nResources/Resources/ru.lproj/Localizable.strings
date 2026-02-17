@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+<!-- ============================================================ -->
+<!-- AuthenticationView                                            -->
+<!-- ============================================================ -->
+<key>eCardify</key><string>eCardify</string>
+<key>Register Or Login</key><string>Регистрация или Вход</string>
+<key>Verification Code</key><string>Код подтверждения</string>
+<key>000000</key><string>000000</string>
+<key>Didn't get email? Please check your mail spam folder!</key><string>*** Не получили письмо? Проверьте папку «Спам»!</string>
+<key>Check our terms and privacy</key><string>Ознакомьтесь с условиями и политикой конфиденциальности</string>
+<key>Terms</key><string>Условия</string>
+<key>Privacy</key><string>Конфиденциальность</string>
+<key>&amp;</key><string>&amp;</string>
+<key>Your nice Name goes here</key><string>Введите ваше имя</string>
+
+<!-- ============================================================ -->
+<!-- GenericPassFormView                                           -->
+<!-- ============================================================ -->
+<key>Org or Company Name</key><string>***Название организации или компании</string>
+<key>Organization/Company/self employed</key><string>***Организация/Компания/ИП</string>
+<key>Job title</key><string>*Должность</string>
+<key>Photo description</key><string>Добавляя фотографию на цифровую визитку, вы создаёте более личное и запоминающееся впечатление.</string>
+<key>Organisation &amp; Upload Images!</key><string>Организация &amp; Загрузка изображений!</string>
+<key>Choice Product Type</key><string>Выберите тип продукта</string>
+<key>Pick or Preview</key><string>Выбрать или просмотреть</string>
+<key>Your</key><string>Ваш</string>
+<key>Card Design</key><string>Дизайн карты</string>
+<key>To activate this function,</key><string>Чтобы активировать эту функцию,</string>
+<key>Please change your product type.</key><string>Пожалуйста, измените тип продукта.</string>
+<key>Pay %@ and Create</key><string>Оплатить %@ и создать</string>
+<key>Generating your Digital card! Please wait</key><string>Генерация цифровой визитки! Пожалуйста, подождите</string>
+<key>Create digital card</key><string>Создать цифровую визитку</string>
+
+<!-- ============================================================ -->
+<!-- AddressesSectionView                                          -->
+<!-- ============================================================ -->
+<key>PostOffice</key><string>Почтовое отделение</string>
+<key>Extended address - OPTIONAL</key><string>Дополнительный адрес — НЕОБЯЗАТЕЛЬНО</string>
+<key>Street</key><string>*Улица</string>
+<key>City</key><string>*Город</string>
+<key>Region/State</key><string>Регион/Область</string>
+<key>Post Code</key><string>*Почтовый индекс</string>
+<key>Select Country</key><string>* Выберите страну</string>
+<key>Remove this address</key><string>Удалить этот адрес</string>
+<key>Address Type</key><string>Тип адреса</string>
+<key>Address</key><string>Адрес</string>
+<key>Please change your product type below.</key><string>Пожалуйста, измените тип продукта ниже.</string>
+<key>click here to change your product type</key><string>нажмите здесь, чтобы изменить тип продукта</string>
+
+<!-- ============================================================ -->
+<!-- SettingsView                                                  -->
+<!-- ============================================================ -->
+<key>Hello, %@</key><string>Привет, %@</string>
+<key>Support our app</key><string>Поддержите приложение</string>
+<key>Review us</key><string>Оценить</string>
+<key>Share</key><string>Поделиться</string>
+<key>Restore</key><string>Восстановить</string>
+<key>Explore our other apps!</key><string>Попробуйте наши другие приложения!</string>
+<key>Log out!</key><string>Выйти!</string>
+<key>Build %@</key><string>Сборка %@</string>
+<key>Report a bug</key><string>Сообщить об ошибке</string>
+<key>Settings</key><string>Настройки</string>
+
+<!-- ============================================================ -->
+<!-- TelephoneSectionView                                          -->
+<!-- ============================================================ -->
+<key>Number is invalid!</key><string>Номер недействителен!</string>
+<key>Telephone</key><string>Телефон</string>
+<key>Device Type</key><string>Тип устройства</string>
+
+<!-- ============================================================ -->
+<!-- OrganizationSectionView                                       -->
+<!-- ============================================================ -->
+<key>Upload old card.</key><string>Загрузить старую визитку.</string>
+<key>Avatar</key><string>*Аватар</string>
+<key>Upload logo</key><string>*Загрузить логотип</string>
+<key>Upload old card</key><string>Загрузить старую визитку</string>
+
+<!-- ============================================================ -->
+<!-- ContactSectionView                                            -->
+<!-- ============================================================ -->
+<key>Contact</key><string>Контакт</string>
+<key>First Name</key><string>*Имя</string>
+<key>Middle Name</key><string>Отчество</string>
+<key>Last Name</key><string>*Фамилия</string>
+
+<!-- ============================================================ -->
+<!-- EmailView                                                     -->
+<!-- ============================================================ -->
+<key>Email</key><string>Эл. почта</string>
+<key>Email address</key><string>*Адрес эл. почты</string>
+
+<!-- ============================================================ -->
+<!-- WallatPassDetailsView                                         -->
+<!-- ============================================================ -->
+<key>Share card</key><string>Поделиться визиткой</string>
+<key>Show card</key><string>Показать визитку</string>
+<key>Add to Apple Wallet</key><string>Добавить в Apple Wallet</string>
+
+<!-- ============================================================ -->
+<!-- NotificationsSettingsView                                     -->
+<!-- ============================================================ -->
+<key>Enable notifications</key><string>Включить уведомления</string>
+<key>Notification warning</key><string>*** Пожалуйста, не отключайте уведомления, иначе вся функция будет отключена</string>
+<key>Please don't turn off notification, the whole function will be turned off</key><string>Пожалуйста, не отключайте уведомления, иначе вся функция будет отключена</string>
+<key>Notifications</key><string>Уведомления</string>
+
+<!-- ============================================================ -->
+<!-- RestoreNonProductView                                         -->
+<!-- ============================================================ -->
+<key>Processing...</key><string>Обработка...</string>
+<key>Restore!</key><string>Восстановить!</string>
+
+<!-- ============================================================ -->
+<!-- PhotosSelectorView                                            -->
+<!-- ============================================================ -->
+<key>Loading... please wait!</key><string>Загрузка... подождите!</string>
+
+<!-- ============================================================ -->
+<!-- WallatPassView                                                -->
+<!-- ============================================================ -->
+<key>Digital Cards</key><string>Цифровые визитки</string>
+<key>Login or Register.</key><string>Войти или зарегистрироваться.</string>
+<key>Country Picker</key><string>Выбор страны</string>
+
+<!-- ============================================================ -->
+<!-- CardDesignListReducer                                         -->
+<!-- ============================================================ -->
+<key>Card design</key><string>Дизайн карты</string>
+<key>Pick a design</key><string>Выбрать дизайн</string>
+<key>Default</key><string>По умолчанию</string>
+<key>Custom</key><string>Пользовательский</string>
+<key>Pro designs</key><string>Профессиональные дизайны</string>
+<key>Loading designs...</key><string>Загрузка дизайнов...</string>
+<key>Failed to load</key><string>Не удалось загрузить</string>
+<key>Try again</key><string>Попробовать снова</string>
+<key>Select card design</key><string>Выбрать дизайн карты</string>
+<key>Close</key><string>Закрыть</string>
+<key>NAME</key><string>ИМЯ</string>
+<key>POSITION</key><string>ДОЛЖНОСТЬ</string>
+<key>EMAIL</key><string>ЭЛ. ПОЧТА</string>
+<key>MOBILE</key><string>МОБИЛЬНЫЙ</string>
+
+<!-- ============================================================ -->
+<!-- StoreKitReducer AlertState                                    -->
+<!-- ============================================================ -->
+<key>Error</key><string>Ошибка</string>
+<key>We couldn't restore purchases, please try again.</key><string>Не удалось восстановить покупки, попробуйте снова.</string>
+<key>Purchase restore.</key><string>Восстановление покупок.</string>
+<key>Purchase restored</key><string>Покупки восстановлены</string>
+<key>Your purchases was successfully restore.</key><string>Ваши покупки были успешно восстановлены.</string>
+<key>Your purchases were successfully restored.</key><string>Ваши покупки были успешно восстановлены.</string>
+<key>Back</key><string>Назад</string>
+<key>No Purchases</key><string>Нет покупок</string>
+<key>No purchases were found to restore.</key><string>Покупки для восстановления не найдены.</string>
+
+<!-- ============================================================ -->
+<!-- Enum rawValues for LDynamic                                   -->
+<!-- ============================================================ -->
+<key>HOME</key><string>ДОМ</string>
+<key>WORK</key><string>РАБОТА</string>
+<key>CELL</key><string>СОТОВЫЙ</string>
+<key>FAX</key><string>ФАКС</string>
+<key>PAGER</key><string>ПЕЙДЖЕР</string>
+<key>POSTAL</key><string>ПОЧТОВЫЙ</string>
+<key>DOM</key><string>ДОМ</string>
+<key>INTL</key><string>МЕЖДУН.</string>
+<key>PARCEL</key><string>ПОСЫЛКА</string>
+<key>BASIC</key><string>БАЗОВЫЙ</string>
+<key>CUSTOM</key><string>ПОЛЬЗОВАТЕЛЬСКИЙ</string>
+<key>basic</key><string>базовый</string>
+<key>custom</key><string>пользовательский</string>
+
+<!-- ============================================================ -->
+<!-- OnboardingView                                                -->
+<!-- ============================================================ -->
+<key>Welcome to eCardify</key><string>Добро пожаловать в eCardify</string>
+<key>Create stunning digital business cards</key><string>Создавайте потрясающие цифровые визитки</string>
+<key>Design your professional identity with custom templates, colors, and layouts.</key><string>Создайте свою профессиональную визитку с пользовательскими шаблонами, цветами и макетами.</string>
+<key>Apple Wallet Ready</key><string>Готово для Apple Wallet</string>
+<key>Add your card directly to Apple Wallet for instant access anywhere, anytime.</key><string>Добавьте визитку в Apple Wallet для мгновенного доступа в любое время.</string>
+<key>Share Instantly</key><string>Поделитесь мгновенно</string>
+<key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>Делитесь через QR-код или ссылку. Получателям не нужно приложение.</string>
+<key>Get Started</key><string>Начать</string>
+<key>Skip</key><string>Пропустить</string>
+
+</dict>
+</plist>

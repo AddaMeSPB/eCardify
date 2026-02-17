@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "eCardifySPM",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v16)
     ],
@@ -19,22 +20,34 @@ let package = Package(
         .library(name: "GenericPassFeature", targets: ["GenericPassFeature"]),
         .library(name: "VNRecognizeFeature", targets: ["VNRecognizeFeature"]),
         .library(name: "LocalDatabaseClient", targets: ["LocalDatabaseClient"]),
-        .library(name: "SettingsFeature", targets: ["SettingsFeature"])
+        .library(name: "SettingsFeature", targets: ["SettingsFeature"]),
+        .library(name: "L10nResources", targets: ["L10nResources"])
     ],
     dependencies: [
+        // TCA - NOTE: Version must be compatible with CommonTCALibraries
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.10.0"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.2.2"),
-        .package(url: "https://github.com/AddaMeSPB/CommonTCALibraries.git", branch: "main"),
-//        .package(path: "/Users/alif/Developer/Swift/MySideProjects/CommonTCALibraries"),
-        .package(url: "https://github.com/AddaMeSPB/ECSharedModels.git", branch: "main"),
-//        .package(path: "/Users/alif/Developer/Swift/MySideProjects/VertualBusinessCard/ECSharedModels"),
 
+        // Common libraries - using local path for development
+        .package(path: "../../../../CommonTCALibraries"),
+
+        // Shared models - use local path for development
+        .package(path: "../../../ECSharedModels"),
+
+        // AWS S3
         .package(url: "https://github.com/soto-project/soto.git", from: "6.0.0"),
-        .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.1.2"),
-        .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0")
-        
+
+        // Local database
+        .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0"),
     ],
     targets: [
+        .target(
+            name: "L10nResources",
+            resources: [
+                .process("Resources")
+            ]
+        ),
+
         .target(
             name: "AppFeature",
             dependencies: [
@@ -52,7 +65,8 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
-                "AppFeature", "GenericPassFeature", "AuthenticationView", "SettingsFeature"
+                "AppFeature", "GenericPassFeature", "AuthenticationView", "SettingsFeature",
+                "L10nResources"
             ]
         ),
 
@@ -84,10 +98,11 @@ let package = Package(
         ),
 
         .target(
-            name: "ImagePicker",
+            name: "ECImagePicker",
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
+                "L10nResources"
             ]
         ),
 
@@ -107,7 +122,8 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
-                "AuthenticationCore"
+                "AuthenticationCore",
+                "L10nResources"
             ],
             resources: [
                 .process("Resources/PhoneNumberMetadata.json")
@@ -138,7 +154,7 @@ let package = Package(
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-                "ImagePicker", "VNRecognizeFeature", "AttachmentS3Client", "APIClient",
+                "ECImagePicker", "VNRecognizeFeature", "AttachmentS3Client", "APIClient",
                 "LocalDatabaseClient", "SettingsFeature", "AppConfiguration"
             ]
         ),
@@ -156,4 +172,3 @@ let package = Package(
         )
     ]
 )
-

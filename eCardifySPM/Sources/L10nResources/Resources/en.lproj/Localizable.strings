@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+<!-- ============================================================ -->
+<!-- AuthenticationView                                            -->
+<!-- ============================================================ -->
+<key>eCardify</key><string>eCardify</string>
+<key>Register Or Login</key><string>Register Or Login</string>
+<key>Verification Code</key><string>Verification Code</string>
+<key>000000</key><string>000000</string>
+<key>Didn't get email? Please check your mail spam folder!</key><string>*** Didn't get email? Please check your mail spam folder!</string>
+<key>Check our terms and privacy</key><string>Check our terms and privacy</string>
+<key>Terms</key><string>Terms</string>
+<key>Privacy</key><string>Privacy</string>
+<key>&amp;</key><string>&amp;</string>
+<key>Your nice Name goes here</key><string>Your nice Name goes here</string>
+
+<!-- ============================================================ -->
+<!-- GenericPassFormView                                           -->
+<!-- ============================================================ -->
+<key>Org or Company Name</key><string>***Org or Company Name</string>
+<key>Organization/Company/self employed</key><string>***Organization/Company/self employee(put your name)</string>
+<key>Job title</key><string>*Job title</string>
+<key>Photo description</key><string>By incorporating your photo into a digital business card, you create a more personal and memorable experience for the recipient.</string>
+<key>Organisation &amp; Upload Images!</key><string>Organisation &amp; Upload Images!</string>
+<key>Choice Product Type</key><string>Choice Product Type</string>
+<key>Pick or Preview</key><string>Pick or Preview</string>
+<key>Your</key><string>Your</string>
+<key>Card Design</key><string>Card Design</string>
+<key>To activate this function,</key><string>To activate this function,</string>
+<key>Please change your product type.</key><string>Please change your product type.</string>
+<key>Pay %@ and Create</key><string>Pay %@ and Create</string>
+<key>Generating your Digital card! Please wait</key><string>Generating your Digital card! Please wait</string>
+<key>Create digital card</key><string>Create digital card</string>
+
+<!-- ============================================================ -->
+<!-- AddressesSectionView                                          -->
+<!-- ============================================================ -->
+<key>PostOffice</key><string>PostOffice</string>
+<key>Extended address - OPTIONAL</key><string>Extended address - OPTIONAL</string>
+<key>Street</key><string>*Street</string>
+<key>City</key><string>*City</string>
+<key>Region/State</key><string>Region/State</string>
+<key>Post Code</key><string>*Post Code</string>
+<key>Select Country</key><string>* Select Country</string>
+<key>Remove this address</key><string>Remove this address</string>
+<key>Address Type</key><string>Address Type</string>
+<key>Address</key><string>Address</string>
+<key>Please change your product type below.</key><string>Please change your product type below.</string>
+<key>click here to change your product type</key><string>click here to change your product type</string>
+
+<!-- ============================================================ -->
+<!-- SettingsView                                                  -->
+<!-- ============================================================ -->
+<key>Hello, %@</key><string>Hello, %@</string>
+<key>Support our app</key><string>Support our app</string>
+<key>Review us</key><string>Review us</string>
+<key>Share</key><string>Share</string>
+<key>Restore</key><string>Restore</string>
+<key>Explore our other apps!</key><string>Explore our other apps!</string>
+<key>Log out!</key><string>Log out!</string>
+<key>Build %@</key><string>Build %@</string>
+<key>Report a bug</key><string>Report a bug</string>
+<key>Settings</key><string>Settings</string>
+
+<!-- ============================================================ -->
+<!-- TelephoneSectionView                                          -->
+<!-- ============================================================ -->
+<key>Number is invalid!</key><string>Number is invalid!</string>
+<key>Telephone</key><string>Telephone</string>
+<key>Device Type</key><string>Device Type</string>
+
+<!-- ============================================================ -->
+<!-- OrganizationSectionView                                       -->
+<!-- ============================================================ -->
+<key>Upload old card.</key><string>Upload old card.</string>
+<key>Avatar</key><string>*Avatar</string>
+<key>Upload logo</key><string>*Upload logo</string>
+<key>Upload old card</key><string>Upload old card</string>
+
+<!-- ============================================================ -->
+<!-- ContactSectionView                                            -->
+<!-- ============================================================ -->
+<key>Contact</key><string>Contact</string>
+<key>First Name</key><string>*First Name</string>
+<key>Middle Name</key><string>Middle Name</string>
+<key>Last Name</key><string>*Last Name</string>
+
+<!-- ============================================================ -->
+<!-- EmailView                                                     -->
+<!-- ============================================================ -->
+<key>Email</key><string>Email</string>
+<key>Email address</key><string>*Email</string>
+
+<!-- ============================================================ -->
+<!-- WallatPassDetailsView                                         -->
+<!-- ============================================================ -->
+<key>Share card</key><string>Share card</string>
+<key>Show card</key><string>Show card</string>
+<key>Add to Apple Wallet</key><string>Add to Apple Wallet</string>
+
+<!-- ============================================================ -->
+<!-- NotificationsSettingsView                                     -->
+<!-- ============================================================ -->
+<key>Enable notifications</key><string>Enable notifications</string>
+<key>Notification warning</key><string>*** Please don't turn off notification then whole function will be turn off</string>
+<key>Please don't turn off notification, the whole function will be turned off</key><string>Please don't turn off notification, the whole function will be turned off</string>
+<key>Notifications</key><string>Notifications</string>
+
+<!-- ============================================================ -->
+<!-- RestoreNonProductView                                         -->
+<!-- ============================================================ -->
+<key>Processing...</key><string>Processing...</string>
+<key>Restore!</key><string>Restore!</string>
+
+<!-- ============================================================ -->
+<!-- PhotosSelectorView                                            -->
+<!-- ============================================================ -->
+<key>Loading... please wait!</key><string>Loading... please wait!</string>
+
+<!-- ============================================================ -->
+<!-- WallatPassView                                                -->
+<!-- ============================================================ -->
+<key>Digital Cards</key><string>Digital Cards</string>
+<key>Login or Register.</key><string>Login or Register.</string>
+<key>Country Picker</key><string>Country Picker</string>
+
+<!-- ============================================================ -->
+<!-- CardDesignListReducer                                         -->
+<!-- ============================================================ -->
+<key>Card design</key><string>Card design</string>
+<key>Pick a design</key><string>Pick a design</string>
+<key>Default</key><string>Default</string>
+<key>Custom</key><string>Custom</string>
+<key>Pro designs</key><string>Pro designs</string>
+<key>Loading designs...</key><string>Loading designs...</string>
+<key>Failed to load</key><string>Failed to load</string>
+<key>Try again</key><string>Try again</string>
+<key>Select card design</key><string>Select card design</string>
+<key>Close</key><string>Close</string>
+<key>NAME</key><string>NAME</string>
+<key>POSITION</key><string>POSITION</string>
+<key>EMAIL</key><string>EMAIL</string>
+<key>MOBILE</key><string>MOBILE</string>
+
+<!-- ============================================================ -->
+<!-- StoreKitReducer AlertState                                    -->
+<!-- ============================================================ -->
+<key>Error</key><string>Error</string>
+<key>We couldn't restore purchases, please try again.</key><string>We couldn't restore purchases, please try again.</string>
+<key>Purchase restore.</key><string>Purchase restore.</string>
+<key>Purchase restored</key><string>Purchase restored</string>
+<key>Your purchases was successfully restore.</key><string>Your purchases was successfully restore.</string>
+<key>Your purchases were successfully restored.</key><string>Your purchases were successfully restored.</string>
+<key>Back</key><string>Back</string>
+<key>No Purchases</key><string>No Purchases</string>
+<key>No purchases were found to restore.</key><string>No purchases were found to restore.</string>
+
+<!-- ============================================================ -->
+<!-- Enum rawValues for LDynamic                                   -->
+<!-- ============================================================ -->
+<key>HOME</key><string>HOME</string>
+<key>WORK</key><string>WORK</string>
+<key>CELL</key><string>CELL</string>
+<key>FAX</key><string>FAX</string>
+<key>PAGER</key><string>PAGER</string>
+<key>POSTAL</key><string>POSTAL</string>
+<key>DOM</key><string>DOM</string>
+<key>INTL</key><string>INTL</string>
+<key>PARCEL</key><string>PARCEL</string>
+<key>BASIC</key><string>BASIC</string>
+<key>CUSTOM</key><string>CUSTOM</string>
+<key>basic</key><string>basic</string>
+<key>custom</key><string>custom</string>
+
+</dict>
+</plist>

@@ -117,7 +117,6 @@ public struct Login {
 
                 if isAuthorized {
                     if !isAskPermissionCompleted {
-
                         return .none
                     }
                 }
@@ -249,12 +248,12 @@ public struct Login {
 
 
             case .destination(.presented(.termsAndPrivacy(.privacy))):
-                state.destination = .termsAndPrivacy(.init(wbModel: .init(link: .terms)))
+                state.destination = .termsAndPrivacy(.init(wbModel: .init(link: .privacy)))
                 return .none
 
 
             case .destination(.presented(.termsAndPrivacy(.terms))):
-                state.destination = .termsAndPrivacy(.init(wbModel: .init(link: .privacy)))
+                state.destination = .termsAndPrivacy(.init(wbModel: .init(link: .terms)))
                 return .none
 
             case .destination(.presented(.termsAndPrivacy(.leaveCurrentPageButtonClick))):

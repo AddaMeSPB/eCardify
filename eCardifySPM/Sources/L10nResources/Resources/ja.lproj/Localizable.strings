@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+<!-- AuthenticationView -->
+<key>eCardify</key><string>eCardify</string>
+<key>Register Or Login</key><string>登録またはログイン</string>
+<key>Verification Code</key><string>認証コード</string>
+<key>000000</key><string>000000</string>
+<key>Didn't get email? Please check your mail spam folder!</key><string>メールが届きませんか？迷惑メールフォルダをご確認ください！</string>
+<key>Check our terms and privacy</key><string>利用規約とプライバシーポリシーをご確認ください</string>
+<key>Terms</key><string>利用規約</string>
+<key>Privacy</key><string>プライバシー</string>
+
+<!-- GenericPassFormView -->
+<key>Org or Company Name</key><string>組織名または会社名</string>
+<key>Organization/Company/self employed</key><string>組織/会社/個人事業主</string>
+<key>Job title</key><string>役職</string>
+<key>Photo description</key><string>写真をデジタル名刺に追加して、プロフェッショナルな印象を与えましょう。鮮明で高画質なヘッドショットをお選びください。</string>
+<key>Organisation &amp; Upload Images!</key><string>組織情報 &amp; 画像アップロード！</string>
+<key>Choice Product Type</key><string>製品タイプを選択</string>
+<key>Pick or Preview</key><string>選択またはプレビュー</string>
+<key>Your</key><string>あなたの</string>
+<key>Card Design</key><string>カードデザイン</string>
+<key>To activate this function,</key><string>この機能を有効にするには、</string>
+<key>Please change your product type.</key><string>製品タイプを変更してください。</string>
+<key>Pay %@ and Create</key><string>%@ を支払って作成</string>
+<key>Generating your Digital card! Please wait</key><string>デジタルカードを生成中！しばらくお待ちください</string>
+<key>Create digital card</key><string>デジタルカードを作成</string>
+
+<!-- AddressesSectionView -->
+<key>PostOffice</key><string>私書箱</string>
+<key>Extended address - OPTIONAL</key><string>追加住所 - 任意</string>
+<key>Street</key><string>番地</string>
+<key>City</key><string>市区町村</string>
+<key>Region/State</key><string>都道府県</string>
+<key>Post Code</key><string>郵便番号</string>
+<key>Select Country</key><string>国を選択</string>
+<key>Remove this address</key><string>この住所を削除</string>
+<key>Address Type</key><string>住所タイプ</string>
+<key>Address</key><string>住所</string>
+<key>Please change your product type below.</key><string>以下から製品タイプを変更してください。</string>
+<key>click here to change your product type</key><string>こちらをタップして製品タイプを変更</string>
+
+<!-- SettingsView -->
+<key>Hello, %@</key><string>こんにちは、%@</string>
+<key>Support our app</key><string>アプリをサポート</string>
+<key>Review us</key><string>レビューする</string>
+<key>Share</key><string>共有</string>
+<key>Restore</key><string>復元</string>
+<key>Explore our other apps!</key><string>他のアプリもチェック！</string>
+<key>Log out!</key><string>ログアウト！</string>
+<key>Build %@</key><string>ビルド %@</string>
+<key>Report a bug</key><string>バグを報告</string>
+<key>Settings</key><string>設定</string>
+
+<!-- TelephoneSectionView -->
+<key>Number is invalid!</key><string>番号が無効です！</string>
+<key>Telephone</key><string>電話</string>
+<key>Device Type</key><string>デバイスタイプ</string>
+
+<!-- OrganizationSectionView -->
+<key>Upload old card.</key><string>旧名刺をアップロード。</string>
+<key>Avatar</key><string>アバター</string>
+<key>Upload logo</key><string>ロゴをアップロード</string>
+<key>Upload old card</key><string>旧名刺をアップロード</string>
+
+<!-- ContactSectionView -->
+<key>Contact</key><string>連絡先</string>
+<key>First Name</key><string>名</string>
+<key>Middle Name</key><string>ミドルネーム</string>
+<key>Last Name</key><string>姓</string>
+
+<!-- EmailView -->
+<key>Email</key><string>メール</string>
+<key>Email address</key><string>メールアドレス</string>
+
+<!-- WallatPassDetailsView -->
+<key>Share card</key><string>カードを共有</string>
+<key>Show card</key><string>カードを表示</string>
+<key>Add to Apple Wallet</key><string>Apple Walletに追加</string>
+
+<!-- NotificationsSettingsView -->
+<key>Enable notifications</key><string>通知を有効にする</string>
+<key>Notification warning</key><string>通知をオフにすると、重要なカード更新やリマインダーを受け取れなくなります。</string>
+<key>Notifications</key><string>通知</string>
+
+<!-- RestoreNonProductView -->
+<key>Processing...</key><string>処理中...</string>
+<key>Restore!</key><string>復元！</string>
+
+<!-- PhotosSelectorView -->
+<key>Loading... please wait!</key><string>読み込み中...しばらくお待ちください！</string>
+
+<!-- WallatPassView -->
+<key>Digital Cards</key><string>デジタルカード</string>
+
+<!-- CardDesignListReducer -->
+<key>Card design</key><string>カードデザイン</string>
+<key>Pick a design</key><string>デザインを選択</string>
+<key>Default</key><string>デフォルト</string>
+<key>Custom</key><string>カスタム</string>
+<key>Pro designs</key><string>プロデザイン</string>
+<key>Loading designs...</key><string>デザインを読み込み中...</string>
+<key>Failed to load</key><string>読み込み失敗</string>
+<key>Try again</key><string>再試行</string>
+<key>Select card design</key><string>カードデザインを選択</string>
+<key>Close</key><string>閉じる</string>
+<key>NAME</key><string>名前</string>
+<key>POSITION</key><string>役職</string>
+<key>EMAIL</key><string>メール</string>
+<key>MOBILE</key><string>携帯電話</string>
+
+<!-- StoreKitReducer AlertState -->
+<key>Error</key><string>エラー</string>
+<key>We couldn't restore purchases, please try again.</key><string>購入の復元に失敗しました。もう一度お試しください。</string>
+<key>Purchase restore.</key><string>購入の復元。</string>
+<key>Your purchases was successfully restore.</key><string>購入が正常に復元されました。</string>
+<key>Back</key><string>戻る</string>
+<key>No Purchases</key><string>購入なし</string>
+<key>No purchases were found to restore.</key><string>復元できる購入が見つかりませんでした。</string>
+
+<!-- Enum rawValues for LDynamic -->
+<key>HOME</key><string>HOME</string>
+<key>WORK</key><string>WORK</string>
+<key>CELL</key><string>CELL</string>
+<key>FAX</key><string>FAX</string>
+<key>PAGER</key><string>PAGER</string>
+<key>POSTAL</key><string>POSTAL</string>
+<key>DOM</key><string>DOM</string>
+<key>INTL</key><string>INTL</string>
+<key>PARCEL</key><string>PARCEL</string>
+<key>BASIC</key><string>ベーシック</string>
+<key>CUSTOM</key><string>カスタム</string>
+<key>basic</key><string>ベーシック</string>
+<key>custom</key><string>カスタム</string>
+
+<!-- New Keys -->
+<key>Login or Register.</key><string>ログインまたは登録。</string>
+<key>Country Picker</key><string>国の選択</string>
+<key>Purchase restored</key><string>購入が復元されました</string>
+<key>Your purchases were successfully restored.</key><string>購入が正常に復元されました。</string>
+<key>Please don't turn off notification, the whole function will be turned off</key><string>通知をオフにしないでください。機能全体がオフになります</string>
+<key>&amp;</key><string>&amp;</string>
+<key>Your nice Name goes here</key><string>あなたの素敵な名前をここに入力</string>
+
+</dict>
+</plist>

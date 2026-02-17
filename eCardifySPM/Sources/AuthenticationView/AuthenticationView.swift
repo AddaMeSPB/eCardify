@@ -11,6 +11,7 @@ import SettingsFeature
 import SwiftUIExtension
 import AuthenticationCore
 import ECSharedModels
+import L10nResources
 import ComposableArchitecture
 
 public enum UILoginAccessibility: String {
@@ -35,19 +36,19 @@ public struct AuthenticationView: View {
 
                 VStack {
 
-                    Text("eCardify")
+                    Text(L("eCardify"))
                         .font(Font.system(size: 60, weight: .heavy, design: .serif))
                         .foregroundColor(.red)
                         .padding(.top, 30)
 
                     if !store.isValidationCodeIsSend {
-                        Text("Register Or Login")
+                        Text(L("Register Or Login"))
                             .font(Font.system(size: 33, weight: .heavy, design: .rounded))
                             .foregroundColor(.green)
                     }
 
                     if store.isValidationCodeIsSend {
-                        Text("Verification Code")
+                        Text(L("Verification Code"))
                             .font(Font.system(size: 33, weight: .heavy, design: .rounded))
                             .foregroundColor(.blue)
                     }
@@ -107,9 +108,9 @@ public struct AuthenticationView: View {
                         .accessibilityIdentifier(UILoginAccessibility.sendEmailButtonTapped.rawValue)
                         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 60, maxHeight: 60)
                         .disabled(
-                            (!store.isEmailValidated
-                             || store.isLoginRequestInFlight)
-                            && self.store.niceName.isEmpty
+                            !store.isEmailValidated
+                            || store.isLoginRequestInFlight
+                            || self.store.niceName.isEmpty
                         )
                         .foregroundColor(
                             self.store.isEmailValidated
@@ -126,7 +127,7 @@ public struct AuthenticationView: View {
                     }
 
                     if store.isValidationCodeIsSend {
-                        Text("*** Didn't get email? Please check your mail spam folder!")
+                        Text(L("Didn't get email? Please check your mail spam folder!"))
                             .lineLimit(2)
                             .multilineTextAlignment(.center)
                             .font(Font.system(size: 16, weight: .medium, design: .rounded))
@@ -162,7 +163,7 @@ public struct AuthenticationView: View {
     private func inputEmailTextView() -> some View {
         VStack {
             TextField(
-                "* Your nice Name goes here",
+                L("Your nice Name goes here"),
                 text: $store.niceName
             )
             .keyboardType(.default)
@@ -179,7 +180,7 @@ public struct AuthenticationView: View {
             Divider()
 
             TextField(
-                "* Email",
+                L("Email"),
                 text: $store.email
             )
             .keyboardType(.emailAddress)
@@ -236,7 +237,7 @@ public struct AuthenticationView: View {
                         )
                 )
 
-            Text("*** Didn't Get My Email? PLease Check Your mail Spam Folder!")
+            Text(L("Didn't get email? Please check your mail spam folder!"))
                 .lineLimit(2)
                 .multilineTextAlignment(.center)
                 .font(Font.system(size: 16, weight: .medium, design: .rounded))
@@ -250,7 +251,7 @@ public struct AuthenticationView: View {
 
     private func termsAndPrivacyView() -> some View {
         VStack {
-            Text("Check our terms and privacy")
+            Text(L("Check our terms and privacy"))
                 .font(.body)
                 .bold()
                 .foregroundColor(.green)
@@ -262,14 +263,14 @@ public struct AuthenticationView: View {
                         store.send(.termsPrivacySheet(isPresented: .terms))
                     },
                     label: {
-                        Text("Terms")
+                        Text(L("Terms"))
                             .font(.title3)
                             .bold()
                             .foregroundColor(.green)
                     }
                 )
 
-                Text("&")
+                Text(L("&"))
                     .font(.title3)
                     .bold()
                     .padding([.leading, .trailing], 10)
@@ -280,7 +281,7 @@ public struct AuthenticationView: View {
                         store.send(.termsPrivacySheet(isPresented: .privacy))
                     },
                     label: {
-                        Text("Privacy")
+                        Text(L("Privacy"))
                             .font(.title3)
                             .bold()
                             .foregroundColor(.green)

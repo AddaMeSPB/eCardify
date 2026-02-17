@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+<!-- AuthenticationView -->
+<key>eCardify</key><string>eCardify</string>
+<key>Register Or Login</key><string>Registrarse o Iniciar sesion</string>
+<key>Verification Code</key><string>Codigo de verificacion</string>
+<key>000000</key><string>000000</string>
+<key>Didn't get email? Please check your mail spam folder!</key><string>No recibio el correo? Por favor, revise su carpeta de spam!</string>
+<key>Check our terms and privacy</key><string>Consulte nuestros terminos y privacidad</string>
+<key>Terms</key><string>Terminos</string>
+<key>Privacy</key><string>Privacidad</string>
+
+<!-- GenericPassFormView -->
+<key>Org or Company Name</key><string>Nombre de la organizacion o empresa</string>
+<key>Organization/Company/self employed</key><string>Organizacion/Empresa/Autonomo</string>
+<key>Job title</key><string>Cargo</string>
+<key>Photo description</key><string>Agregue una foto a su tarjeta de presentacion digital para causar una impresion profesional. Elija un retrato nitido y de alta resolucion.</string>
+<key>Organisation &amp; Upload Images!</key><string>Organizacion &amp; Subir imagenes!</string>
+<key>Choice Product Type</key><string>Elegir tipo de producto</string>
+<key>Pick or Preview</key><string>Elegir o Vista previa</string>
+<key>Your</key><string>Su</string>
+<key>Card Design</key><string>Diseno de tarjeta</string>
+<key>To activate this function,</key><string>Para activar esta funcion,</string>
+<key>Please change your product type.</key><string>cambie su tipo de producto.</string>
+<key>Pay %@ and Create</key><string>Pagar %@ y crear</string>
+<key>Generating your Digital card! Please wait</key><string>Generando su tarjeta digital! Por favor espere</string>
+<key>Create digital card</key><string>Crear tarjeta digital</string>
+
+<!-- AddressesSectionView -->
+<key>PostOffice</key><string>Apartado postal</string>
+<key>Extended address - OPTIONAL</key><string>Direccion adicional - OPCIONAL</string>
+<key>Street</key><string>Calle</string>
+<key>City</key><string>Ciudad</string>
+<key>Region/State</key><string>Region/Estado</string>
+<key>Post Code</key><string>Codigo postal</string>
+<key>Select Country</key><string>Seleccionar pais</string>
+<key>Remove this address</key><string>Eliminar esta direccion</string>
+<key>Address Type</key><string>Tipo de direccion</string>
+<key>Address</key><string>Direccion</string>
+<key>Please change your product type below.</key><string>Cambie su tipo de producto a continuacion.</string>
+<key>click here to change your product type</key><string>Toque aqui para cambiar su tipo de producto</string>
+
+<!-- SettingsView -->
+<key>Hello, %@</key><string>Hola, %@</string>
+<key>Support our app</key><string>Apoye nuestra aplicacion</string>
+<key>Review us</key><string>Dejenos una resena</string>
+<key>Share</key><string>Compartir</string>
+<key>Restore</key><string>Restaurar</string>
+<key>Explore our other apps!</key><string>Descubra nuestras otras aplicaciones!</string>
+<key>Log out!</key><string>Cerrar sesion!</string>
+<key>Build %@</key><string>Build %@</string>
+<key>Report a bug</key><string>Reportar un error</string>
+<key>Settings</key><string>Ajustes</string>
+
+<!-- TelephoneSectionView -->
+<key>Number is invalid!</key><string>El numero no es valido!</string>
+<key>Telephone</key><string>Telefono</string>
+<key>Device Type</key><string>Tipo de dispositivo</string>
+
+<!-- OrganizationSectionView -->
+<key>Upload old card.</key><string>Subir tarjeta antigua.</string>
+<key>Avatar</key><string>Avatar</string>
+<key>Upload logo</key><string>Subir logotipo</string>
+<key>Upload old card</key><string>Subir tarjeta antigua</string>
+
+<!-- ContactSectionView -->
+<key>Contact</key><string>Contacto</string>
+<key>First Name</key><string>Nombre</string>
+<key>Middle Name</key><string>Segundo nombre</string>
+<key>Last Name</key><string>Apellido</string>
+
+<!-- EmailView -->
+<key>Email</key><string>Correo electronico</string>
+<key>Email address</key><string>Direccion de correo electronico</string>
+
+<!-- WallatPassDetailsView -->
+<key>Share card</key><string>Compartir tarjeta</string>
+<key>Show card</key><string>Mostrar tarjeta</string>
+<key>Add to Apple Wallet</key><string>Agregar a Apple Wallet</string>
+
+<!-- NotificationsSettingsView -->
+<key>Enable notifications</key><string>Activar notificaciones</string>
+<key>Notification warning</key><string>Si desactiva las notificaciones, no recibira actualizaciones importantes de tarjetas ni recordatorios.</string>
+<key>Notifications</key><string>Notificaciones</string>
+
+<!-- RestoreNonProductView -->
+<key>Processing...</key><string>Procesando...</string>
+<key>Restore!</key><string>Restaurar!</string>
+
+<!-- PhotosSelectorView -->
+<key>Loading... please wait!</key><string>Cargando... por favor espere!</string>
+
+<!-- WallatPassView -->
+<key>Digital Cards</key><string>Tarjetas digitales</string>
+
+<!-- CardDesignListReducer -->
+<key>Card design</key><string>Diseno de tarjeta</string>
+<key>Pick a design</key><string>Elegir un diseno</string>
+<key>Default</key><string>Predeterminado</string>
+<key>Custom</key><string>Personalizado</string>
+<key>Pro designs</key><string>Disenos Pro</string>
+<key>Loading designs...</key><string>Cargando disenos...</string>
+<key>Failed to load</key><string>Error al cargar</string>
+<key>Try again</key><string>Intentar de nuevo</string>
+
+<!-- StoreKitReducer AlertState -->
+<key>Error</key><string>Error</string>
+<key>We couldn't restore purchases, please try again.</key><string>No se pudieron restaurar las compras, intente de nuevo.</string>
+<key>Purchase restore.</key><string>Restauracion de compra.</string>
+<key>Your purchases was successfully restore.</key><string>Sus compras fueron restauradas con exito.</string>
+<key>Back</key><string>Atras</string>
+<key>No Purchases</key><string>Sin compras</string>
+<key>No purchases were found to restore.</key><string>No se encontraron compras para restaurar.</string>
+
+<!-- Enum rawValues for LDynamic -->
+<key>HOME</key><string>HOME</string>
+<key>WORK</key><string>WORK</string>
+<key>CELL</key><string>CELL</string>
+<key>FAX</key><string>FAX</string>
+<key>PAGER</key><string>PAGER</string>
+<key>POSTAL</key><string>POSTAL</string>
+<key>DOM</key><string>DOM</string>
+<key>INTL</key><string>INTL</string>
+<key>PARCEL</key><string>PARCEL</string>
+<key>BASIC</key><string>Basico</string>
+<key>CUSTOM</key><string>Personalizado</string>
+<key>basic</key><string>Basico</string>
+<key>custom</key><string>Personalizado</string>
+
+<!-- New Keys -->
+<key>Login or Register.</key><string>Iniciar sesion o Registrarse.</string>
+<key>Country Picker</key><string>Selector de pais</string>
+<key>Purchase restored</key><string>Compra restaurada</string>
+<key>Your purchases were successfully restored.</key><string>Sus compras fueron restauradas con exito.</string>
+<key>Please don't turn off notification, the whole function will be turned off</key><string>Por favor no desactive las notificaciones, toda la funcion se desactivara</string>
+<key>&amp;</key><string>&amp;</string>
+<key>Your nice Name goes here</key><string>Su lindo nombre va aqui</string>
+
+</dict>
+</plist>

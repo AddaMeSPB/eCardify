@@ -145,5 +145,16 @@
 <key>&amp;</key><string>&amp;</string>
 <key>Your nice Name goes here</key><string>멋진 이름을 여기에 입력하세요</string>
 
+<!-- OnboardingView -->
+<key>Welcome to eCardify</key><string>eCardify에 오신 것을 환영합니다</string>
+<key>Create stunning digital business cards</key><string>멋진 디지털 명함을 만드세요</string>
+<key>Design your professional identity with custom templates, colors, and layouts.</key><string>맞춤 템플릿, 색상, 레이아웃으로 프로페셔널한 명함을 디자인하세요.</string>
+<key>Apple Wallet Ready</key><string>Apple Wallet 지원</string>
+<key>Add your card directly to Apple Wallet for instant access anywhere, anytime.</key><string>Apple Wallet에 직접 추가하여 언제 어디서나 즉시 액세스하세요.</string>
+<key>Share Instantly</key><string>즉시 공유</string>
+<key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>QR 코드 또는 링크로 공유하세요. 수신자는 앱이 필요 없습니다.</string>
+<key>Get Started</key><string>시작하기</string>
+<key>Skip</key><string>건너뛰기</string>
+
 </dict>
 </plist>

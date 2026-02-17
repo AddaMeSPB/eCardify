@@ -43,6 +43,7 @@ private let _screenshotBundle: Bundle? = {
     case "es-ES": lprojName = "es"
     case "pt-BR": lprojName = "pt-BR"
     case "zh-Hans": lprojName = "zh-Hans"
+    case "ru-RU": lprojName = "ru"
     default: lprojName = localeID
     }
 

@@ -175,5 +175,18 @@
 <key>basic</key><string>basic</string>
 <key>custom</key><string>custom</string>
 
+<!-- ============================================================ -->
+<!-- OnboardingView                                                -->
+<!-- ============================================================ -->
+<key>Welcome to eCardify</key><string>Welcome to eCardify</string>
+<key>Create stunning digital business cards</key><string>Create stunning digital business cards</string>
+<key>Design your professional identity with custom templates, colors, and layouts.</key><string>Design your professional identity with custom templates, colors, and layouts.</string>
+<key>Apple Wallet Ready</key><string>Apple Wallet Ready</string>
+<key>Add your card directly to Apple Wallet for instant access anywhere, anytime.</key><string>Add your card directly to Apple Wallet for instant access anywhere, anytime.</string>
+<key>Share Instantly</key><string>Share Instantly</string>
+<key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>Share via QR code or link. Recipients don't need the app to view your card.</string>
+<key>Get Started</key><string>Get Started</string>
+<key>Skip</key><string>Skip</string>
+
 </dict>
 </plist>

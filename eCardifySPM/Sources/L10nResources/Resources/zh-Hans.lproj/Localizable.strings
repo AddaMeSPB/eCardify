@@ -139,5 +139,16 @@
 <key>&amp;</key><string>&amp;</string>
 <key>Your nice Name goes here</key><string>在此输入您的名字</string>
 
+<!-- OnboardingView -->
+<key>Welcome to eCardify</key><string>欢迎使用 eCardify</string>
+<key>Create stunning digital business cards</key><string>创建精美的数字名片</string>
+<key>Design your professional identity with custom templates, colors, and layouts.</key><string>使用自定义模板、颜色和布局设计您的专业名片。</string>
+<key>Apple Wallet Ready</key><string>支持 Apple Wallet</string>
+<key>Add your card directly to Apple Wallet for instant access anywhere, anytime.</key><string>将名片直接添加到 Apple Wallet，随时随地即时访问。</string>
+<key>Share Instantly</key><string>即时分享</string>
+<key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>通过二维码或链接分享。接收者无需安装应用。</string>
+<key>Get Started</key><string>开始使用</string>
+<key>Skip</key><string>跳过</string>
+
 </dict>
 </plist>

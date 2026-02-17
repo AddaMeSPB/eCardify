@@ -145,5 +145,16 @@
 <key>&amp;</key><string>&amp;</string>
 <key>Your nice Name goes here</key><string>Ihr schoener Name kommt hierhin</string>
 
+<!-- OnboardingView -->
+<key>Welcome to eCardify</key><string>Willkommen bei eCardify</string>
+<key>Create stunning digital business cards</key><string>Erstellen Sie beeindruckende digitale Visitenkarten</string>
+<key>Design your professional identity with custom templates, colors, and layouts.</key><string>Gestalten Sie Ihre professionelle Identität mit individuellen Vorlagen, Farben und Layouts.</string>
+<key>Apple Wallet Ready</key><string>Apple Wallet bereit</string>
+<key>Add your card directly to Apple Wallet for instant access anywhere, anytime.</key><string>Fügen Sie Ihre Karte direkt zu Apple Wallet für sofortigen Zugriff überall hinzu.</string>
+<key>Share Instantly</key><string>Sofort teilen</string>
+<key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>Per QR-Code oder Link teilen. Empfänger brauchen die App nicht.</string>
+<key>Get Started</key><string>Loslegen</string>
+<key>Skip</key><string>Überspringen</string>
+
 </dict>
 </plist>

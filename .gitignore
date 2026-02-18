@@ -31,3 +31,7 @@ Package.resolved
 .build/
 *.xcconfig
 u2net.mlmodel
+
+# Fastlane sensitive files
+fastlane/api_key.json
+*.p8

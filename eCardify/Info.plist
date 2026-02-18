@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NFCReaderUsageDescription</key>
+	<string>Tap to share your business card via NFC</string>
+	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+	<array>
+		<string>D2760000850101</string>
+	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow your photo library to add your photo to a digital business card with an avatar for Apple Wallet and app view, enabling others to instantly recognize you.</string>
 	<key>ACCESS_KEY_ID</key>

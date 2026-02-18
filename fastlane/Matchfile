@@ -1,0 +1,9 @@
+git_url("https://github.com/saroar/fastlane-certs.git")
+
+storage_mode("git")
+
+type("appstore")
+
+app_identifier(["cardify.addame.com.eCardify"])
+username("saroarkhandoker@yahoo.com")
+team_id("6989658CU5")

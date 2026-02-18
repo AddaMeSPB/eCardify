@@ -1,24 +1,40 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
-
 default_platform(:ios)
 
 platform :ios do
+
+  desc "Sync code signing certificates and profiles"
+  lane :certs do
+    match(type: "appstore")
+  end
+
+  desc "Force regenerate provisioning profile (e.g. after adding capabilities)"
+  lane :regen_profile do
+    match(type: "appstore", force_for_new_devices: true)
+  end
+
   desc "Generate new localized screenshots"
   lane :screenshots do
     capture_screenshots(workspace: "eCardify.xcworkspace", scheme: "eCardifyUITests")
-    #upload_to_app_store(skip_binary_upload: true, skip_metadata: true)
   end
+
+  desc "Build and upload to TestFlight"
+  lane :beta do
+    match(type: "appstore")
+    build_app(
+      workspace: "eCardify.xcworkspace",
+      scheme: "eCardify",
+      export_method: "app-store"
+    )
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+  end
+
+  desc "Upload metadata to App Store Connect"
+  lane :metadata do
+    deliver(
+      skip_binary_upload: true,
+      skip_screenshots: true,
+      force: true
+    )
+  end
+
 end

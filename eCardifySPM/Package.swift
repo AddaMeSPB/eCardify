@@ -173,6 +173,36 @@ let package = Package(
         .testTarget(name: "GenericPassFormTests", dependencies: ["GenericPassFeature"]),
         .testTarget(name: "GenericPassFormUITests", dependencies: ["GenericPassFeature"]),
 
+        .testTarget(
+            name: "AuthenticationCoreTests",
+            dependencies: [
+                "AuthenticationCore",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
+                .product(name: "CommonTCALibraries", package: "CommonTCALibraries")
+            ]
+        ),
+
+        .testTarget(
+            name: "SettingsFeatureTests",
+            dependencies: [
+                "SettingsFeature",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
+                .product(name: "CommonTCALibraries", package: "CommonTCALibraries")
+            ]
+        ),
+
+        .testTarget(
+            name: "WalletPassListTests",
+            dependencies: [
+                "GenericPassFeature",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
+                .product(name: "CommonTCALibraries", package: "CommonTCALibraries")
+            ]
+        ),
+
         .target(
             name: "LocalDatabaseClient",
             dependencies: [

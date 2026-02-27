@@ -35,3 +35,4 @@ u2net.mlmodel
 # Fastlane sensitive files
 fastlane/api_key.json
 *.p8
+landing/

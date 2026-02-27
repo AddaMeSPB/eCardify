@@ -99,13 +99,16 @@ public struct GenericPassForm {
         case isImagePicker(isPresented: Bool)
         case uploadAvatar(_ image: UIImage)
         case createAttachment(_ attachment: AttachmentInOutPut)
-        case imageUploadResponse(TaskResult<String>)
-        case attachmentResponse(TaskResult<AttachmentInOutPut>)
+        case imageUploadSuccess(String)
+        case imageUploadFailed
+        case attachmentResponse(AttachmentInOutPut)
+        case attachmentFailed
         case imageFor(ImageFor)
         case recognizeText(VNRecognizeResponse)
         case createPass
         case buildPKPassFrom(url: String)
-        case passResponse(TaskResult<WalletPassResponse>)
+        case passResponse(WalletPassResponse)
+        case passResponseFailed
         case openSheetLogin(Bool)
         case storeKit(StoreKitReducer.Action)
         case buyProduct
@@ -216,49 +219,35 @@ public struct GenericPassForm {
                 return .none
             }
 
-            return .run { [imageFor = state.imageFor] send in
-                    await send(.attachmentResponse(
-                        await TaskResult {
-
-                            //                  if TARGET_OS_SIMULATOR == 1 {
-                            //                      if imageFor == .avatar {
-                            //                          return AttachmentInOutPut.thumbnail
-                            //                      }
-                            //
-                            //                      if imageFor == .logo {
-                            //                          return AttachmentInOutPut.logo
-                            //                      }
-                            //                  }
-
-                            return try await apiClient.request(
-                                for: .authEngine(.users(.user(id: id, route: .attachments(.create(input: attachment))))),
-                                as: AttachmentInOutPut.self,
-                                decoder: .iso8601
-                            )
-                        }
+            return .run { send in
+                do {
+                    let result = try await apiClient.request(
+                        for: .authEngine(.users(.user(id: id, route: .attachments(.create(input: attachment))))),
+                        as: AttachmentInOutPut.self,
+                        decoder: .iso8601
                     )
-                    )
+                    await send(.attachmentResponse(result))
+                } catch {
+                    sharedLogger.logError(error)
+                    await send(.attachmentFailed)
+                }
             }
 
-        case .imageUploadResponse(.success(let imageURL)):
+        case .imageUploadSuccess(let imageURL):
             switch state.imageFor {
             case .logo:
                 state.vCard.imageURLs.append(.init(type: .logo, urlString: imageURL))
                 state.vCard.imageURLs.append(.init(type: .icon, urlString: imageURL))
             case .avatar:
-                sharedLogger.log(imageURL)
                 state.vCard.imageURLs.append(.init(type: .thumbnail, urlString: imageURL))
             case .card:
-                sharedLogger.log(imageURL)
+                break
             }
-
             sharedLogger.log(imageURL)
-
             return .none
-            
-        case .imageUploadResponse(.failure(let error)):
+
+        case .imageUploadFailed:
             state.alert = AlertState { TextState("Unable to upload image please try again!") }
-            sharedLogger.logError(error)
             return .none
 
         case let .imagePicker(.presented(.picked(result: .success(image)))):
@@ -273,24 +262,21 @@ public struct GenericPassForm {
                 }
 
                 return .run { [serialNumber = state.pass.serialNumber] send in
-                    await send(.imageUploadResponse(
-                        TaskResult {
-//                            if TARGET_OS_SIMULATOR == 1 {
-//                                return "https://learnplaygrow.ams3.digitaloceanspaces.com/uploads/images/9155F894-E500-453A-A691-6CDE8F722BDF/CECF3925-180E-4373-A15E-E7876760D18F/logo.png"
-//
-//                            }
-
-                            return try await attachmentS3Client.uploadImageToS3(
-                                image, .init(
-                                    passId: serialNumber,
-                                    compressionQuality: .lowest,
-                                    type: .png,
-                                    passImagesType: .logo,
-                                    userId: currentUserID.hexString
-                                )
+                    do {
+                        let url = try await attachmentS3Client.uploadImageToS3(
+                            image, .init(
+                                passId: serialNumber,
+                                compressionQuality: .lowest,
+                                type: .png,
+                                passImagesType: .logo,
+                                userId: currentUserID.hexString
                             )
-                        }
-                    ))
+                        )
+                        await send(.imageUploadSuccess(url))
+                    } catch {
+                        sharedLogger.logError(error)
+                        await send(.imageUploadFailed)
+                    }
                 }
 
             case .avatar:
@@ -300,24 +286,22 @@ public struct GenericPassForm {
                     return .none
                 }
 
-                return .run { [serialNumber = state.pass.serialNumber]  send in
-                    await send(.imageUploadResponse(
-                        TaskResult {
-//                            if TARGET_OS_SIMULATOR == 1 {
-//                                return "https://learnplaygrow.ams3.digitaloceanspaces.com/uploads/images/DC6E2827-FF38-4038-A3BB-6F2C40695EC5/CECF3925-180E-4373-A15E-E7876760D18F/thumbnail.png"
-//                            }
-
-                            return try await attachmentS3Client.uploadImageToS3(
-                                image, .init(
-                                    passId: serialNumber,
-                                    compressionQuality: .lowest,
-                                    type: .png,
-                                    passImagesType: .thumbnail,
-                                    userId: currentUserID.hexString
-                                )
+                return .run { [serialNumber = state.pass.serialNumber] send in
+                    do {
+                        let url = try await attachmentS3Client.uploadImageToS3(
+                            image, .init(
+                                passId: serialNumber,
+                                compressionQuality: .lowest,
+                                type: .png,
+                                passImagesType: .thumbnail,
+                                userId: currentUserID.hexString
                             )
-                        }
-                    ))
+                        )
+                        await send(.imageUploadSuccess(url))
+                    } catch {
+                        sharedLogger.logError(error)
+                        await send(.imageUploadFailed)
+                    }
                 }
 
             case .card:
@@ -334,27 +318,12 @@ public struct GenericPassForm {
         case .imagePicker:
             return .none
 
-        case .attachmentResponse(.success(let attachmentResponse)):
+        case .attachmentResponse:
             state.isUploadingImage = false
+            return .none
 
-            switch state.imageFor {
-            case .logo:
-                //if let image = attachmentResponse.imageUrlString {
-                    // state.imageURLs.append(image, at: 0)
-                //}
-                return .none
-            case .avatar:
-                //if let image = attachmentResponse.imageUrlString {
-//                     state.imageURLs.append(image, at: 0)
-                //}
-                return .none
-            case .card:
-                return .none
-            }
-
-
-        case .attachmentResponse(.failure(let error)):
-            sharedLogger.logError(error)
+        case .attachmentFailed:
+            state.isUploadingImage = false
             return .none
 
         case .imageFor(let type):
@@ -472,17 +441,19 @@ public struct GenericPassForm {
             state.isActivityIndicatorVisible = true
 
             return .run { send in
-               await send(.passResponse(
-                    await TaskResult {
-                        try await apiClient.request(
-                            for: .walletPasses(.create(input: wp)),
-                            as: WalletPassResponse.self
-                        )
-                    }
-                ))
+                do {
+                    let response = try await apiClient.request(
+                        for: .walletPasses(.create(input: wp)),
+                        as: WalletPassResponse.self
+                    )
+                    await send(.passResponse(response))
+                } catch {
+                    sharedLogger.logError("passResponse error:- \(error)")
+                    await send(.passResponseFailed)
+                }
             }
 
-        case .passResponse(.success(let response)):
+        case .passResponse(let response):
 
             state.isActivityIndicatorVisible = false
             guard
@@ -504,9 +475,8 @@ public struct GenericPassForm {
 
             }
 
-        case .passResponse(.failure(let error)):
+        case .passResponseFailed:
             state.isActivityIndicatorVisible = false
-                sharedLogger.logError("passResponse error:- \(error)")
             return .none
 
         case .buildPKPassFrom:

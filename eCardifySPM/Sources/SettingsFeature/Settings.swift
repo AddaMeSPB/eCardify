@@ -48,7 +48,7 @@ public struct Settings {
         case onAppear
         case didBecomeActive
         case openSettingButtonTapped
-        case userNotificationAuthorizationResponse(TaskResult<Bool>)
+        case userNotificationAuthorizationResponse(Bool)
         case userNotificationSettingsResponse(UserNotificationClient.Notification.Settings)
         case leaveUsAReviewButtonTapped
         case reportABugButtonTapped
@@ -95,11 +95,12 @@ public struct Settings {
                             case .notDetermined, .provisional:
                                 state.enableNotifications = true
                                 return .run { send in
-                                    await send(.userNotificationAuthorizationResponse(
-                                        TaskResult {
-                                            try await self.userNotifications.requestAuthorization([.alert, .badge, .sound])
-                                        }
-                                    ))
+                                    do {
+                                        let granted = try await self.userNotifications.requestAuthorization([.alert, .badge, .sound])
+                                        await send(.userNotificationAuthorizationResponse(granted))
+                                    } catch {
+                                        await send(.userNotificationAuthorizationResponse(false))
+                                    }
                                 }
                                 .animation()
 
@@ -110,7 +111,7 @@ public struct Settings {
                             case .authorized:
                                 state.enableNotifications = true
                                 return .run { send in
-                                    await send(.userNotificationAuthorizationResponse(.success(true)))
+                                    await send(.userNotificationAuthorizationResponse(true))
                                 }
 
                             case .ephemeral:
@@ -141,16 +142,13 @@ public struct Settings {
                             _ = await self.applicationClient.open(url, [:])
                         }
 
-                    case let .userNotificationAuthorizationResponse(.success(granted)):
+                    case let .userNotificationAuthorizationResponse(granted):
                         state.enableNotifications = granted
                         return granted
                         ?  .run { _ in
                             await self.unRegisterForRemoteNotifications()
-                        }// .fireAndForget { await self.registerForRemoteNotifications() }
+                        }
                         : .none
-
-                    case .userNotificationAuthorizationResponse:
-                        return .none
 
                     case let .userNotificationSettingsResponse(settings):
                         state.userNotificationSettings = settings

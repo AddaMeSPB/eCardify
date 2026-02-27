@@ -76,8 +76,10 @@ public struct Login {
         case onAppear
 
         case sendEmailButtonTapped
-        case otpSendResponse(TaskResult<NeuAuthOtpResponse>)
-        case verificationResponse(TaskResult<SuccessfulLoginResponse>)
+        case otpSendSuccess
+        case otpSendFailed
+        case verificationSuccess(SuccessfulLoginResponse)
+        case verificationFailed
 
 
         case termsPrivacySheet(isPresented: TermsOrPrivacy)
@@ -131,11 +133,13 @@ public struct Login {
                 let request = NeuAuthOtpRequest(email: state.email.lowercased())
 
                 return .run { send in
-                    await send(.otpSendResponse(
-                        await TaskResult {
-                            try await neuAuthClient.sendOtp(request)
-                        }
-                    ))
+                    do {
+                        _ = try await neuAuthClient.sendOtp(request)
+                        await send(.otpSendSuccess)
+                    } catch {
+                        sharedLogger.logError(error.localizedDescription)
+                        await send(.otpSendFailed)
+                    }
                 }
 
             case .binding(\.code):
@@ -154,13 +158,12 @@ public struct Login {
                     )
 
                     return .run { send in
-                        await send(.verificationResponse(
-                            await TaskResult {
-                                let neuAuthResponse = try await neuAuthClient.verifyOtp(request)
-                                // Map NeuAuth response to existing app model
-                                return neuAuthResponse.toSuccessfulLoginResponse()
-                            }
-                        ))
+                        do {
+                            let neuAuthResponse = try await neuAuthClient.verifyOtp(request)
+                            await send(.verificationSuccess(neuAuthResponse.toSuccessfulLoginResponse()))
+                        } catch {
+                            await send(.verificationFailed)
+                        }
                     }
                 }
 
@@ -169,19 +172,17 @@ public struct Login {
             case .binding:
                 return .none
 
-            case .otpSendResponse(.success):
+            case .otpSendSuccess:
                 state.isLoginRequestInFlight = false
                 state.isValidationCodeIsSend = true
-
                 return .none
 
-            case .otpSendResponse(.failure(let error)):
+            case .otpSendFailed:
                 state.isLoginRequestInFlight = false
                 state.isValidationCodeIsSend = false
-                sharedLogger.logError(error.localizedDescription)
                 return .none
 
-            case let .verificationResponse(.success(loginRes)):
+            case let .verificationSuccess(loginRes):
 
                 if loginRes.user == nil || loginRes.access == nil {
                     return .none
@@ -200,11 +201,8 @@ public struct Login {
                     }
                 }
 
-            case .verificationResponse(.failure(_)):
-                // state.alert = .init(title: TextState("Please try again!") )
-                // send this for logs .init(title: TextState(error.description))
+            case .verificationFailed:
                 state.isLoginRequestInFlight = false
-
                 return .none
 
 

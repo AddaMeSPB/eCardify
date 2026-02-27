@@ -108,7 +108,7 @@ public struct AppReducer {
         case .walletAction:
             return .none
 
-        case .auth(.presented(.verificationResponse(.success))):
+        case .auth(.presented(.verificationSuccess)):
             // isAuthorized is @Shared — automatically synced via AppStorage.
             // The .update(isAuthorized:) action below is redundant for the value itself
             // but signals GenericPassForm that auth completed (e.g., to proceed with pass creation).

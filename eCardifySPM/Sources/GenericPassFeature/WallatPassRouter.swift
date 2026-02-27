@@ -42,11 +42,12 @@ public struct WalletPassList {
         case binding(BindingAction<State>)
         case onAppear
         case wPass(id: WalletPassDetails.State.ID, action: WalletPassDetails.Action)
-        case wpResponse(TaskResult<[WalletPass]>)
-        case wpLocalDataResponse(TaskResult<[WalletPass]>)
+        case wpResponse([WalletPass])
+        case wpResponseFailed
+        case wpLocalDataResponse([WalletPass])
+        case wpLocalDataFailed
         case getWP
         case sendPass(PKPass)
-        case passResponse(TaskResult<WalletPassResponse>)
         case openSheetLogin(Bool)
         case destination(PresentationAction<Destination.Action>)
         case createGenericFormButtonTapped
@@ -103,26 +104,27 @@ public struct WalletPassList {
                 await send(.getWP)
                 do {
                     let wpl = try await localDatabase.find()
-                    await send(.wpLocalDataResponse(.success(wpl)))
+                    await send(.wpLocalDataResponse(wpl))
                 } catch {
-                    await send(.wpLocalDataResponse(.failure(error)))
                     sharedLogger.logError("\(#line) cant find any data error:- \(error.localizedDescription)")
+                    await send(.wpLocalDataFailed)
                 }
             }
 
 
         case .getWP:
-
             return .run { send in
-               await send(.wpResponse(
-                    await TaskResult {
-                        try await apiClient.request(
-                            for: .walletPasses(.list),
-                            as: [WalletPass].self,
-                            decoder: .iso8601
-                        )
-                    }
-                ))
+                do {
+                    let wp = try await apiClient.request(
+                        for: .walletPasses(.list),
+                        as: [WalletPass].self,
+                        decoder: .iso8601
+                    )
+                    await send(.wpResponse(wp))
+                } catch {
+                    sharedLogger.logError(error)
+                    await send(.wpResponseFailed)
+                }
             }
             
         case .openSheetLogin:
@@ -157,38 +159,26 @@ public struct WalletPassList {
 
             return .none
 
-        case .wpResponse(.success(let wp)):
-
-            if wp.count < 0 {
-                //state.genericPassForm = .init()
-                // add something onbording video
-            }
-
+        case .wpResponse(let wp):
             let wPassResponse = wp.map { WalletPassDetails.State(wp: $0, vCard: $0.vCard) }
             state.wPass = .init(uniqueElements: wPassResponse)
             return .run { send in
-              await send(.wpLocalDataResponse(.success(wp)))
+                await send(.wpLocalDataResponse(wp))
             }
 
-        case .wpResponse(.failure(_)):
+        case .wpResponseFailed:
             return .none
 
-        case .wpLocalDataResponse(.success(let wpl)):
-
+        case .wpLocalDataResponse(let wpl):
             let wPassLocalResponse = wpl
                 .filter { $0.isPaid == true }
                 .map { WalletPassDetails.State(wp: $0, vCard: $0.vCard) }
-            
             state.wPassLocal = .init(uniqueElements: wPassLocalResponse)
-
             state.isLoadingWPL = false
             return .none
 
-        case .wpLocalDataResponse(.failure(_)):
+        case .wpLocalDataFailed:
             state.isLoadingWPL = false
-            return .none
-
-        case .passResponse(_):
             return .none
 
         case .destination(.presented(.add(.buildPKPassFrom(url: let passUrl)))):

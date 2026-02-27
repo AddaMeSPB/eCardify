@@ -71,7 +71,8 @@ public struct StoreKitReducer {
         case alert(PresentationAction<Alert>)
         case fetchProduct
         case paymentTransaction(StoreKitClient.PaymentTransactionObserverEvent)
-        case productsResponse(TaskResult<StoreKitClient.ProductsResponse>)
+        case productsResponse(StoreKitClient.ProductsResponse)
+        case productsResponseFailed
         case restoreButtonTapped
         case tappedProduct(StoreKitClient.Product)
         case buySuccess
@@ -110,11 +111,13 @@ public struct StoreKitReducer {
                 }
 
                 group.addTask {
-                  await send(.productsResponse(
-                    TaskResult {
-                        try await self.storeKit.fetchProducts(productIdsSET)
-                    }
-                  ), animation: .default)
+                  do {
+                      let response = try await self.storeKit.fetchProducts(productIdsSET)
+                      await send(.productsResponse(response), animation: .default)
+                  } catch {
+                      sharedLogger.logError(error)
+                      await send(.productsResponseFailed, animation: .default)
+                  }
                 }
               }
             }
@@ -150,13 +153,11 @@ public struct StoreKitReducer {
         case .buySuccess:
             return .none
 
-        case .productsResponse(.success(let response)):
+        case .productsResponse(let response):
             state.products = response.products
             return .none
 
-        case .productsResponse(.failure(let error)):
-            // have to send message for analytics
-            sharedLogger.logError(error)
+        case .productsResponseFailed:
             return .none
 
         case .restoreButtonTapped:

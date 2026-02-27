@@ -32,8 +32,11 @@ struct eCardifyApp: App {
             } else {
 
                 AppView(store: self.appDelegate.store)
-                    .onChange(of: self.scenePhase) {
-                        self.appDelegate.store.send(.didChangeScenePhase($0))
+                    .onOpenURL { url in
+                        self.appDelegate.store.send(.deepLink(url))
+                    }
+                    .onChange(of: self.scenePhase) { _, newPhase in
+                        self.appDelegate.store.send(.didChangeScenePhase(newPhase))
                     }
             }
         }

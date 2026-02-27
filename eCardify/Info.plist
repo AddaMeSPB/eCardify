@@ -33,5 +33,20 @@
 	<string>$(eCardify_IOS_APP_NAME)</string>
 	<key>eCardify_IOS_ENVIRONMENT</key>
 	<string>$(eCardify_IOS_ENVIRONMENT)</string>
+	<key>NEUAUTH_URL</key>
+	<string>$(NEUAUTH_URL)</string>
+	<key>NEUAUTH_CLIENT_ID</key>
+	<string>$(NEUAUTH_CLIENT_ID)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>cardify.addame.com.eCardify</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>cardify.addame.com.eCardify</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

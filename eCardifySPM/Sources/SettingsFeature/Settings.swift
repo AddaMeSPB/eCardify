@@ -2,6 +2,7 @@ import os
 import UIKit
 import Build
 import Foundation
+import APIClient
 import KeychainClient
 import ECSharedModels
 import ComposableStoreKit
@@ -35,6 +36,9 @@ public struct Settings {
         public var userSettings: UserSettings
         public var enableNotifications: Bool
 
+        @Shared(.appStorage("isAuthorized")) public var isAuthorized = false
+        @Shared(.appStorage("isUserFirstNameEmpty")) public var isUserFirstNameEmpty = true
+
         public var currentUser: UserOutput = .withFirstName
         public var buildNumber: Build.Number?
         public var userNotificationSettings: UserNotificationClient.Notification.Settings?
@@ -62,6 +66,7 @@ public struct Settings {
     @Dependency(\.continuousClock) var clock
     @Dependency(\.storeKit) var storeKitClient
     @Dependency(\.keychainClient) var keychainClient
+    @Dependency(\.neuAuthClient) var neuAuthClient
     @Dependency(\.applicationClient) var applicationClient
     @Dependency(\.userNotifications) var userNotifications
     @Dependency(\.remoteNotifications.unregister) var unRegisterForRemoteNotifications
@@ -191,7 +196,29 @@ public struct Settings {
                             _ = await self.applicationClient.open(components.url!, [:])
                         }
                     case .logOutButtonTapped:
-                        return .none
+                        state.$isAuthorized.withLock { $0 = false }
+                        state.$isUserFirstNameEmpty.withLock { $0 = true }
+
+                        return .run { _ in
+                            // Revoke server session (fire-and-forget)
+                            do {
+                                let tokens = try keychainClient.readCodable(
+                                    .token, build.identifier(), RefreshTokenResponse.self
+                                )
+                                try await neuAuthClient.logout(
+                                    NeuAuthRefreshRequest(refreshToken: tokens.refreshToken)
+                                )
+                            } catch {
+                                logger.error("Server logout failed: \(error.localizedDescription)")
+                            }
+
+                            // Clear all keychain data
+                            do {
+                                try await keychainClient.logout()
+                            } catch {
+                                logger.error("Keychain clear failed: \(error.localizedDescription)")
+                            }
+                        }
 
                     case .restoreButtonTapped:
                         state.destination = .restore(.init())

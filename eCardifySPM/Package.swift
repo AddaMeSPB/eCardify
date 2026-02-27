@@ -147,7 +147,7 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
-                "AppConfiguration", "DesignSystem", "L10nResources"
+                "AppConfiguration", "APIClient", "DesignSystem", "L10nResources"
             ]
         ),
 

@@ -5,7 +5,6 @@ import Foundation
 import KeychainClient
 import ECSharedModels
 import ComposableStoreKit
-import UserDefaultsClient
 import NotificationHelpers
 import UIApplicationClient
 import FoundationExtension
@@ -62,7 +61,6 @@ public struct Settings {
     @Dependency(\.mainQueue) var mainQueue
     @Dependency(\.continuousClock) var clock
     @Dependency(\.storeKit) var storeKitClient
-    @Dependency(\.userDefaults) var userDefaults
     @Dependency(\.keychainClient) var keychainClient
     @Dependency(\.applicationClient) var applicationClient
     @Dependency(\.userNotifications) var userNotifications

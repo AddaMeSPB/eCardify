@@ -4,7 +4,6 @@ import APIClient
 import LoggerKit
 import KeychainClient
 import SettingsFeature
-import UserDefaultsClient
 import FoundationExtension
 import ECSharedModels
 import ComposableArchitecture
@@ -52,13 +51,15 @@ public struct Login {
 
         @Presents public var destination: Destination.State?
 
+        @Shared(.appStorage("isAuthorized")) public var isAuthorized = false
+        @Shared(.appStorage("isUserFirstNameEmpty")) public var isUserFirstNameEmpty = true
+        @Shared(.appStorage("isAskPermissionCompleted")) public var isAskPermissionCompleted = false
+
         public var email: String = ""
         public var code: String = ""
 
         public var isValidationCodeIsSend = false
         public var isLoginRequestInFlight = false
-        public var isAuthorized: Bool = false
-        public var isUserFirstNameEmpty: Bool = true
         public var deviceCheckData: Data?
         public var isEmailValidated: Bool = false
 
@@ -87,7 +88,6 @@ public struct Login {
     public enum AlertAction: Equatable {}
 
     @Dependency(\.mainQueue) var mainQueue
-    @Dependency(\.userDefaults) var userDefaults
     @Dependency(\.keychainClient) var keychainClient
     @Dependency(\.build) var build
     @Dependency(\.neuAuthClient) var neuAuthClient
@@ -105,14 +105,9 @@ public struct Login {
         switch action {
 
             case .onAppear:
-                state.isAuthorized = userDefaults.boolForKey(UserDefaultKey.isAuthorized.rawValue)
-                state.isUserFirstNameEmpty = userDefaults.boolForKey(UserDefaultKey.isUserFirstNameEmpty.rawValue)
-
-                let isAuthorized = userDefaults.boolForKey(UserDefaultKey.isAuthorized.rawValue) == true
-                let isAskPermissionCompleted = userDefaults.boolForKey(UserDefaultKey.isAskPermissionCompleted.rawValue) == true
-
-                if isAuthorized {
-                    if !isAskPermissionCompleted {
+                // @Shared properties auto-sync with AppStorage — no manual read needed
+                if state.isAuthorized {
+                    if !state.isAskPermissionCompleted {
                         return .none
                     }
                 }
@@ -193,31 +188,15 @@ public struct Login {
                 }
 
                 state.isLoginRequestInFlight = false
+                state.$isAuthorized.withLock { $0 = true }
+                state.$isUserFirstNameEmpty.withLock { $0 = loginRes.user?.fullName == nil }
 
                 return .run { _ in
-
-                    await withThrowingTaskGroup(of: Void.self) { group in
-
-                        group.addTask {
-                            await userDefaults.setBool(
-                                true,
-                                UserDefaultKey.isAuthorized.rawValue
-                            )
-
-                            await self.userDefaults.setBool(
-                                loginRes.user?.fullName != nil,
-                                UserDefaultKey.isUserFirstNameEmpty.rawValue
-                            )
-                        }
-
-                        group.addTask {
-                            do {
-                                try await keychainClient.saveOrUpdateCodable(loginRes.user, .user, build.identifier())
-                                try await keychainClient.saveOrUpdateCodable(loginRes.access, .token, build.identifier())
-                            } catch {
-                                sharedLogger.logError(error.localizedDescription)
-                            }
-                        }
+                    do {
+                        try await keychainClient.saveOrUpdateCodable(loginRes.user, .user, build.identifier())
+                        try await keychainClient.saveOrUpdateCodable(loginRes.access, .token, build.identifier())
+                    } catch {
+                        sharedLogger.logError(error.localizedDescription)
                     }
                 }
 

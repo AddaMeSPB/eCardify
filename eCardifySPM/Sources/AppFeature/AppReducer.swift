@@ -3,7 +3,6 @@ import Build
 import SwiftUI
 import KeychainClient
 import SettingsFeature
-import UserDefaultsClient
 import GenericPassFeature
 import AuthenticationCore
 import NotificationHelpers
@@ -47,7 +46,6 @@ public struct AppReducer {
         case isSheetLogin(isPresented: Bool)
     }
 
-    @Dependency(\.userDefaults) var userDefaults
     @Dependency(\.userNotifications) var userNotifications
     @Dependency(\.remoteNotifications) var remoteNotifications
     @Dependency(\.mainRunLoop) var mainRunLoop
@@ -77,7 +75,11 @@ public struct AppReducer {
     func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
         case .onAppear:
-//            state.authState = .init()
+            #if DEBUG
+            if ProcessInfo.processInfo.arguments.contains("-UI_TESTING") {
+                state.walletState.$isAuthorized.withLock { $0 = true }
+            }
+            #endif
             return .none
 
         case .appDelegate:
@@ -107,8 +109,9 @@ public struct AppReducer {
             return .none
 
         case .auth(.presented(.verificationResponse(.success))):
-            state.walletState.isAuthorized = true
-
+            // isAuthorized is @Shared — automatically synced via AppStorage.
+            // The .update(isAuthorized:) action below is redundant for the value itself
+            // but signals GenericPassForm that auth completed (e.g., to proceed with pass creation).
             return .run { send in
                 try await clock.sleep(for: .seconds(1))
                 await send(.walletAction(.destination(.presented(.add(.update(isAuthorized: true))))))

@@ -6,7 +6,6 @@ import APIClient
 import Foundation
 import SettingsFeature
 import VNRecognizeFeature
-import UserDefaultsClient
 import ECSharedModels
 import ComposableArchitecture
 
@@ -32,7 +31,7 @@ public struct WalletPassList {
         public var wPassLocal: IdentifiedArrayOf<WalletPassDetails.State> = []
         public var isActivityIndicatorVisible = false
         public var isLoadingWPL: Bool = false
-        public var isAuthorized: Bool = true
+        @Shared(.appStorage("isAuthorized")) public var isAuthorized = false
         public var user: UserOutput? = nil
         
     }
@@ -61,7 +60,6 @@ public struct WalletPassList {
     @Dependency(\.build) var build
     @Dependency(\.apiClient) var apiClient
     @Dependency(\.continuousClock) var clock
-    @Dependency(\.userDefaults) var userDefaults
     @Dependency(\.localDatabase) var localDatabase
     @Dependency(\.keychainClient) var keychainClient
     @Dependency(\.vnRecognizeClient) var vnRecognizeClient
@@ -89,7 +87,7 @@ public struct WalletPassList {
         case .onAppear:
 
             sharedLogger.log("onAppear get success before login")
-            state.isAuthorized = userDefaults.boolForKey(UserDefaultKey.isAuthorized.rawValue)
+            // @Shared(.appStorage) auto-syncs — no manual read needed
 
             do {
                 state.user = try self.keychainClient.readCodable(.user, self.build.identifier(), UserOutput.self)

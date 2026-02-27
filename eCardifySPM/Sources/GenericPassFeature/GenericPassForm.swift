@@ -9,7 +9,6 @@ import ECSharedModels
 import SettingsFeature
 import VNRecognizeFeature
 import AttachmentS3Client
-import UserDefaultsClient
 import ComposableStoreKit
 import LocalDatabaseClient
 import FoundationExtension
@@ -41,7 +40,6 @@ public struct GenericPassForm {
             imageFor: ImageFor = .avatar,
             imageURLS: [ImageURL] = [],
             isFormValid: Bool = false,
-            isAuthorized: Bool = true,
             user: UserOutput? = nil,
             vCard: VCard,
             telephone: VCard.Telephone = .empty,
@@ -55,7 +53,6 @@ public struct GenericPassForm {
             self.cardImage = cardImage
             self.imageFor = imageFor
             self.isFormValid = isFormValid
-            self.isAuthorized = isAuthorized
             self.user = user
             self.vCard = vCard
             self.telephone = telephone
@@ -79,7 +76,7 @@ public struct GenericPassForm {
         public var cardImage: UIImage?
         public var imageFor: ImageFor = .avatar
         public var isFormValid: Bool = false
-        public var isAuthorized: Bool = true
+        @Shared(.appStorage("isAuthorized")) public var isAuthorized = false
         public var user: UserOutput? = nil
         public var walletPass: WalletPass? = nil
         public var bottomID: Int = 9
@@ -130,7 +127,6 @@ public struct GenericPassForm {
 
     @Dependency(\.build) var build
     @Dependency(\.apiClient) var apiClient
-    @Dependency(\.userDefaults) var userDefaults
     @Dependency(\.keychainClient) var keychainClient
     @Dependency(\.vnRecognizeClient) var vnRecognizeClient
     @Dependency(\.attachmentS3Client) var attachmentS3Client
@@ -183,8 +179,7 @@ public struct GenericPassForm {
             return .none
             // MARK: - .onAppear
         case .onAppear:
-
-            state.isAuthorized = userDefaults.boolForKey(UserDefaultKey.isAuthorized.rawValue)
+            // @Shared(.appStorage) auto-syncs — no manual read needed
 
             do {
                 state.user = try self.keychainClient.readCodable(.user, self.build.identifier(), UserOutput.self)
@@ -524,7 +519,7 @@ public struct GenericPassForm {
 
             return .none
         case .update(isAuthorized: let bool):
-            state.isAuthorized = bool
+            state.$isAuthorized.withLock { $0 = bool }
             return .none
 
         case .addOneMoreEmailSection:

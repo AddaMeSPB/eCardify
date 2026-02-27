@@ -4,7 +4,6 @@ import AppFeature
 import KeychainClient
 import SettingsFeature
 import GenericPassFeature
-import UserDefaultsClient
 import AuthenticationView
 import NotificationHelpers
 import ComposableArchitecture

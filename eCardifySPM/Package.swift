@@ -21,12 +21,11 @@ let package = Package(
         .library(name: "VNRecognizeFeature", targets: ["VNRecognizeFeature"]),
         .library(name: "LocalDatabaseClient", targets: ["LocalDatabaseClient"]),
         .library(name: "SettingsFeature", targets: ["SettingsFeature"]),
-        .library(name: "UserDefaultsClient", targets: ["UserDefaultsClient"]),
         .library(name: "L10nResources", targets: ["L10nResources"])
     ],
     dependencies: [
         // TCA - NOTE: Version must be compatible with CommonTCALibraries
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.17.0"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.24.0"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.4.0"),
 
         // Common libraries - using local path for development
@@ -59,7 +58,7 @@ let package = Package(
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 "APIClient", "AttachmentS3Client", "GenericPassFeature",
-                "AuthenticationCore", "SettingsFeature", "UserDefaultsClient"
+                "AuthenticationCore", "SettingsFeature"
             ]
         ),
 
@@ -70,7 +69,7 @@ let package = Package(
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 "AppFeature", "GenericPassFeature", "AuthenticationView", "SettingsFeature",
-                "UserDefaultsClient", "L10nResources"
+                "L10nResources"
             ]
         ),
 
@@ -116,7 +115,7 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
-                "APIClient", "SettingsFeature", "UserDefaultsClient"
+                "APIClient", "SettingsFeature"
             ]
         ),
 
@@ -140,7 +139,7 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
-                "AppConfiguration", "UserDefaultsClient"
+                "AppConfiguration"
             ]
         ),
 
@@ -160,18 +159,11 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "iPhoneNumberField", package: "iPhoneNumberField"),
                 "ECImagePicker", "VNRecognizeFeature", "AttachmentS3Client", "APIClient",
-                "LocalDatabaseClient", "SettingsFeature", "AppConfiguration", "UserDefaultsClient"
+                "LocalDatabaseClient", "SettingsFeature", "AppConfiguration"
             ]
         ),
         .testTarget(name: "GenericPassFormTests", dependencies: ["GenericPassFeature"]),
         .testTarget(name: "GenericPassFormUITests", dependencies: ["GenericPassFeature"]),
-
-        .target(
-            name: "UserDefaultsClient",
-            dependencies: [
-                .product(name: "Dependencies", package: "swift-dependencies")
-            ]
-        ),
 
         .target(
             name: "LocalDatabaseClient",

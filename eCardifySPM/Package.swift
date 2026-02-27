@@ -21,6 +21,7 @@ let package = Package(
         .library(name: "VNRecognizeFeature", targets: ["VNRecognizeFeature"]),
         .library(name: "LocalDatabaseClient", targets: ["LocalDatabaseClient"]),
         .library(name: "SettingsFeature", targets: ["SettingsFeature"]),
+        .library(name: "DesignSystem", targets: ["DesignSystem"]),
         .library(name: "L10nResources", targets: ["L10nResources"])
     ],
     dependencies: [
@@ -44,6 +45,13 @@ let package = Package(
         .package(url: "https://github.com/MojtabaHs/iPhoneNumberField.git", from: "0.10.0"),
     ],
     targets: [
+        .target(
+            name: "DesignSystem",
+            resources: [
+                .process("Resources")
+            ]
+        ),
+
         .target(
             name: "L10nResources",
             resources: [
@@ -69,7 +77,7 @@ let package = Package(
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 "AppFeature", "GenericPassFeature", "AuthenticationView", "SettingsFeature",
-                "L10nResources"
+                "DesignSystem", "L10nResources"
             ]
         ),
 
@@ -126,7 +134,7 @@ let package = Package(
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 "AuthenticationCore",
-                "L10nResources"
+                "DesignSystem", "L10nResources"
             ],
             resources: [
                 .process("Resources/PhoneNumberMetadata.json")
@@ -139,7 +147,7 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
-                "AppConfiguration"
+                "AppConfiguration", "DesignSystem", "L10nResources"
             ]
         ),
 
@@ -159,7 +167,7 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "iPhoneNumberField", package: "iPhoneNumberField"),
                 "ECImagePicker", "VNRecognizeFeature", "AttachmentS3Client", "APIClient",
-                "LocalDatabaseClient", "SettingsFeature", "AppConfiguration"
+                "LocalDatabaseClient", "SettingsFeature", "AppConfiguration", "DesignSystem"
             ]
         ),
         .testTarget(name: "GenericPassFormTests", dependencies: ["GenericPassFeature"]),

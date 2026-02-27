@@ -1,4 +1,6 @@
 import SwiftUI
+import DesignSystem
+import L10nResources
 import ECSharedModels
 import iPhoneNumberField
 import ComposableArchitecture
@@ -22,80 +24,68 @@ struct TelephoneSectionView: View {
 
             ForEach(store.vCard.telephones.indices, id: \.self) { index in
 
-                Picker("Device Type", selection: $store.vCard.telephones[index].type) {
+                Picker(L("Device Type"), selection: $store.vCard.telephones[index].type) {
                     ForEach(VCard.Telephone.TType.allCases) { option in
                         Text(option.rawValue.uppercased())
-                            .font(.title2)
-                            .fontWeight(.medium)
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 6)
-
+                            .font(ECTypography.body(.medium))
                     }
                 }
 
-                    iPhoneNumberField(
-                        "+351 (000) 000-0000",
-                        text: $store.vCard.telephones[index].number,
-                        isEditing: $isEditing
-                    )
-                    .flagHidden(false)
-                    .prefixHidden(false)
-                    .font(UIFont(size: 20, weight: .semibold, design: .monospaced))
-                    .placeholderColor(Color.red.opacity(0.3))
-                    .foregroundColor(isPhoneNumberValid ? Color.black : Color.red.opacity(0.5))
-                    .clearButtonMode(.whileEditing)
-                    .onClear { _ in isEditing.toggle() }
-                    .padding(.vertical, 16)
-                    if !isPhoneNumberValid && isEditing {
-                        Text("Number is invalid!")
-                            .font(.caption2)
-                            .foregroundColor(isPhoneNumberValid ? Color.blue : Color.red)
+                iPhoneNumberField(
+                    "+351 (000) 000-0000",
+                    text: $store.vCard.telephones[index].number,
+                    isEditing: $isEditing
+                )
+                .flagHidden(false)
+                .prefixHidden(false)
+                .font(UIFont(size: 20, weight: .semibold, design: .monospaced))
+                .placeholderColor(ECColors.error.opacity(0.3))
+                .foregroundColor(isPhoneNumberValid ? .label : UIColor.systemRed.withAlphaComponent(0.5))
+                .clearButtonMode(.whileEditing)
+                .onClear { _ in isEditing.toggle() }
+                .padding(.vertical, ECSpacing.md)
 
-                    }
-
+                if !isPhoneNumberValid && isEditing {
+                    Text(L("Number is invalid"))
+                        .font(ECTypography.caption())
+                        .foregroundStyle(ECColors.error)
                 }
-                .onDelete(perform: deletePhoneNumber)
+            }
+            .onDelete(perform: deletePhoneNumber)
 
-            } header: {
-                HStack {
-                    Text("Telephone")
-                        .font(.title2)
-                        .fontWeight(.medium)
+        } header: {
+            HStack {
+                Text(L("Telephone"))
+                    .font(ECTypography.headline())
 
-                    Spacer()
+                Spacer()
 
-                    if store.isCustomProduct {
+                if store.isCustomProduct {
+                    Button {
+                        store.send(.addOneMoreTelephoneSection)
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title3)
+                            .foregroundStyle(ECColors.primary)
+                    }
+                } else {
+                    Menu {
+                        Text(L("To activate this function,"))
+                        Text(L("Please change your product type below."))
                         Button {
-                            store.send(.addOneMoreTelephoneSection)
-                        } label: {
-                            Image(systemName: "plus.square.on.square")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                        }
-                    } else {
-                        Menu {
-                            Text("To activate this function,")
-                            Text("Please change your product type below.")
-                            Button {
-                                withAnimation(.easeInOut(duration: 90)) {
-                                    value.scrollTo(store.bottomID, anchor: .bottom)
-                                }
-                            } label: {
-                                Text("click here to change your product type 👇🏼")
+                            withAnimation(.easeInOut(duration: 0.9)) {
+                                value.scrollTo(store.bottomID, anchor: .bottom)
                             }
                         } label: {
-                            Button {} label: {
-                                Image(systemName: "plus.square.on.square")
-                                    .resizable()
-                                    .frame(width: 30, height: 30)
-                            }
-                            .disabled(!store.isCustomProduct)
-                            .foregroundColor(store.isCustomProduct ? Color.blue : Color.gray)
+                            Text(L("Change product type"))
                         }
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title3)
+                            .foregroundStyle(ECColors.textSecondary)
                     }
-
                 }
-                .padding(.vertical, 10)
+            }
         }
     }
 
@@ -105,7 +95,6 @@ struct TelephoneSectionView: View {
         }
     }
 }
-
 
 struct TelephoneSectionView_Previews: PreviewProvider {
     static var store = Store(initialState: GenericPassForm.State(storeKitState: .demoProducts, vCard: .demo)) {

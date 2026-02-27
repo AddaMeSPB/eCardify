@@ -1,50 +1,42 @@
 import SwiftUI
+import DesignSystem
+import L10nResources
 import ECSharedModels
 
 struct ContactSectionView: View {
     @Binding var contact: VCard.Contact
 
     var body: some View {
-        Section(header: Text("Contact").font(.title2).fontWeight(.medium)) {
-            TextField(
-                "",
-                text: $contact.firstName,
-                prompt: Text("*First Name")
-                    .font(.title2)
-                    .fontWeight(.medium)
-                    .foregroundColor(.red.opacity(0.5))
-            )
-            .standardTextFieldStyle()
-            .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.firstNameTextFields.rawValue)
+        Section {
+            HStack(spacing: ECSpacing.xs) {
+                ECRequiredDot()
+                TextField(L("First Name"), text: $contact.firstName)
+                    .formFieldStyle()
+                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.firstNameTextFields.rawValue)
+            }
 
-            TextField(
-                "",
-                text: $contact.additionalName.orEmpty,
-                prompt: Text("Middle Name").font(.title2).fontWeight(.medium)
-            )
-            .standardTextFieldStyle()
-            .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.middleNameTextFields.rawValue)
+            TextField(L("Middle Name"), text: $contact.additionalName.orEmpty)
+                .formFieldStyle()
+                .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.middleNameTextFields.rawValue)
 
-            TextField(
-                "",
-                text: $contact.lastName,
-                prompt: Text("*Last Name")
-                    .font(.title2)
-                    .fontWeight(.medium)
-                    .foregroundColor(.red.opacity(0.5))
-            )
-            .standardTextFieldStyle()
-            .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.lastNameTextFields.rawValue)
+            HStack(spacing: ECSpacing.xs) {
+                ECRequiredDot()
+                TextField(L("Last Name"), text: $contact.lastName)
+                    .formFieldStyle()
+                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.lastNameTextFields.rawValue)
+            }
+        } header: {
+            Text(L("Contact"))
+                .font(ECTypography.headline())
         }
     }
 }
 
 extension View {
-    func standardTextFieldStyle() -> some View {
-        self.disableAutocorrection(true)
-            .font(.title2)
-            .fontWeight(.medium)
-            .padding(.vertical, 10)
+    func formFieldStyle() -> some View {
+        self.autocorrectionDisabled()
+            .font(ECTypography.body(.medium))
+            .padding(.vertical, ECSpacing.xs)
     }
 }
 
@@ -54,8 +46,6 @@ struct ContactSectionView_Previews: PreviewProvider {
     static var previews: some View {
         Form {
             ContactSectionView(contact: $contact)
-                .padding()
         }
-        .previewLayout(.sizeThatFits)
     }
 }

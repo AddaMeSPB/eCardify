@@ -1,4 +1,6 @@
 import SwiftUI
+import DesignSystem
+import L10nResources
 import ECSharedModels
 import ComposableArchitecture
 
@@ -29,7 +31,7 @@ struct OrganizationSectionView: View {
                             } label: {
                                 Image(uiImage: uiImage)
                                     .resizable()
-                                    .cornerRadius(15)
+                                    .clipShape(RoundedRectangle(cornerRadius: ECRadius.lg))
                                     .overlay(alignment: .bottomTrailing) {
                                         Button {
                                             store.send(.isImagePicker(isPresented: true))
@@ -53,34 +55,33 @@ struct OrganizationSectionView: View {
                                     store.send(.imageFor(.card))
                                 } label: {
                                     VStack {
-                                        Text("Upload old card.")
-                                            .font(.body)
-                                            .fontWeight(.medium)
-                                            .padding(.horizontal, 15)
+                                        Text(L("Upload old card"))
+                                            .font(ECTypography.body(.medium))
+                                            .padding(.horizontal, ECSpacing.md)
                                     }
                                 }
-                                .foregroundColor(.gray)
+                                .foregroundStyle(ECColors.textSecondary)
                                 .frame(width: geoProxy.size.width / 2.3,   height: 98)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 15)
-                                        .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
+                                    RoundedRectangle(cornerRadius: ECRadius.lg)
+                                        .stroke(ECColors.separator, style: StrokeStyle(lineWidth: 3, dash: [9]))
                                         .padding(5)
                                 )
-                                .buttonStyle(BorderlessButtonStyle())
+                                .buttonStyle(.borderless)
                             }
                             .frame(width: geoProxy.size.width / 2.3,   height: 98)
                         }
 
                     } else {
                         Menu {
-                            Text("To activate this function,")
-                            Text("Please change your product type below.")
+                            Text(L("To activate this function,"))
+                            Text(L("Please change your product type below."))
                             Button {
-                                withAnimation(.easeInOut(duration: 90)) {
+                                withAnimation(.easeInOut(duration: 0.9)) {
                                     scrollProxy.scrollTo(store.bottomID, anchor: .bottom)
                                 }
                             } label: {
-                                Text("click here to change your product type 👇🏼")
+                                Text(L("Change product type"))
                             }
                         } label: {
 
@@ -88,20 +89,19 @@ struct OrganizationSectionView: View {
                                 store.send(.isImagePicker(isPresented: true))
                                 store.send(.imageFor(.card))
                             } label: {
-                                Text("Upload old card")
-                                    .font(.title3)
-                                    .fontWeight(.medium)
-                                    .padding(.horizontal, 15)
+                                Text(L("Upload old card"))
+                                    .font(ECTypography.body(.medium))
+                                    .padding(.horizontal, ECSpacing.md)
                             }
                             .disabled(!store.isCustomProduct)
-                            .foregroundColor(store.isCustomProduct ? Color.blue : Color.gray)
+                            .foregroundStyle(store.isCustomProduct ? ECColors.primary : ECColors.textSecondary)
                             .frame(width: geoProxy.size.width / 2.3,   height: 98)
                             .overlay(
-                                RoundedRectangle(cornerRadius: 15)
-                                    .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
+                                RoundedRectangle(cornerRadius: ECRadius.lg)
+                                    .stroke(ECColors.separator, style: StrokeStyle(lineWidth: 3, dash: [9]))
                                     .padding(5)
                             )
-                            .buttonStyle(BorderlessButtonStyle())
+                            .buttonStyle(.borderless)
 
                         }
                     }
@@ -113,22 +113,21 @@ struct OrganizationSectionView: View {
                         if let logoImage = store.logoImage {
                             Image(uiImage: logoImage)
                                 .resizable()
-                                .cornerRadius(15)
+                                .clipShape(RoundedRectangle(cornerRadius: ECRadius.lg))
                                 .frame(width: geoProxy.size.width / 2.3,   height: 96)
                         } else {
-                            Text("*Upload logo")
-                                .font(.title3)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 15)
+                            Text(L("Upload Logo"))
+                                .font(ECTypography.body(.medium))
+                                .padding(.horizontal, ECSpacing.md)
                         }
                     }
                     .frame(width: geoProxy.size.width / 2.3,   height: 98)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 15)
-                            .stroke(store.logoImage == nil ? Color.yellow.opacity(0.5) : Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
+                        RoundedRectangle(cornerRadius: ECRadius.lg)
+                            .stroke(store.logoImage == nil ? ECColors.warning.opacity(0.5) : ECColors.separator, style: StrokeStyle(lineWidth: 3, dash: [9]))
                             .padding(5)
                     )
-                    .buttonStyle(BorderlessButtonStyle())
+                    .buttonStyle(.borderless)
 
 
                 }.frame(width: geoProxy.size.width / 2.3,   height: 200)
@@ -137,7 +136,7 @@ struct OrganizationSectionView: View {
                 if let uiImage = store.avatarImage {
                     Image(uiImage: uiImage)
                         .resizable()
-                        .cornerRadius(15)
+                        .clipShape(RoundedRectangle(cornerRadius: ECRadius.lg))
                         .overlay(alignment: .bottomTrailing) {
                             Button {
                                 store.send(.isImagePicker(isPresented: true))
@@ -147,10 +146,10 @@ struct OrganizationSectionView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 40, height: 40)
-                                    .padding(15)
+                                    .padding(ECSpacing.md)
 
                             }
-                            .buttonStyle(BorderlessButtonStyle())
+                            .buttonStyle(.borderless)
                         }
                         .frame(width: geoProxy.size.width / 2.3,   height: 200)
 
@@ -164,20 +163,19 @@ struct OrganizationSectionView: View {
                                 .resizable()
                                 .frame(width: 60, height: 60)
                                 .padding()
-                                .cornerRadius(15)
+                                .clipShape(RoundedRectangle(cornerRadius: ECRadius.lg))
 
-                            Text("*Avatar")
-                                .font(.title2)
-                                .fontWeight(.medium)
+                            Text(L("Avatar"))
+                                .font(ECTypography.sectionTitle(.medium))
                         }
                     }
                     .frame(width: geoProxy.size.width / 2.3,   height: 200)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 15)
-                            .stroke(store.avatarImage == nil ? Color.yellow.opacity(0.5) : Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
+                        RoundedRectangle(cornerRadius: ECRadius.lg)
+                            .stroke(store.avatarImage == nil ? ECColors.warning.opacity(0.5) : ECColors.separator, style: StrokeStyle(lineWidth: 3, dash: [9]))
                             .padding(5)
                     )
-                    .buttonStyle(BorderlessButtonStyle())
+                    .buttonStyle(.borderless)
                 }
         }
     }

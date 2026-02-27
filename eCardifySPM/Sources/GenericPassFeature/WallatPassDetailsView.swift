@@ -2,7 +2,10 @@ import CoreNFC
 import PassKit
 import SwiftUI
 import Foundation
+import DesignSystem
+import L10nResources
 import ECSharedModels
+import SwiftUIExtension
 import ComposableArchitecture
 
 @Reducer
@@ -58,8 +61,8 @@ public struct WalletPassDetails {
             state.isNFCAvailable = nfcClient.isAvailable()
             let vCardRepresentation = state.vCard.vCardRepresentation
 
-            return .run { send in
-                if let image = await generateQRCode(from: vCardRepresentation) {
+            return .run { [vCardRepresentation] send in
+                if let image = generateQRCode(from: vCardRepresentation) {
                     let swiftuiImage = Image(uiImage: image)
                     await send(.qrCode(swiftuiImage))
                 }
@@ -91,7 +94,7 @@ public struct WalletPassDetails {
             state.nfcWriteStatus = .writing
             return .run { send in
                 do {
-                    let url = URL(string: "https://apps.apple.com/app/ecardify/id6452084315")!
+                    guard let url = URL(string: "https://apps.apple.com/app/ecardify/id6452084315") else { return }
                     try await nfcClient.writeURL(url)
                     await send(.nfcWriteResult(.success(true)))
                 } catch {
@@ -101,7 +104,10 @@ public struct WalletPassDetails {
 
         case .nfcWriteResult(.success):
             state.nfcWriteStatus = .success
-            return .none
+            return .run { send in
+                try await Task.sleep(for: .seconds(2))
+                await send(.dismissNFCStatus)
+            }
 
         case .nfcWriteResult(.failure(let error)):
             if error.message.contains("cancelled") {
@@ -114,47 +120,34 @@ public struct WalletPassDetails {
         case .dismissNFCStatus:
             state.nfcWriteStatus = .idle
             return .none
-
         }
     }
 
-    private func generateQRCode(from string: String) async -> UIImage? {
-        return await withCheckedContinuation { continuation in
-            Task {
-                let data = string.data(using: .utf8)
+    private func generateQRCode(from string: String) -> UIImage? {
+        let data = string.data(using: .utf8)
+        guard let filter = CIFilter(name: "CIQRCodeGenerator") else { return nil }
+        filter.setValue(data, forKey: "inputMessage")
+        filter.setValue("H", forKey: "inputCorrectionLevel")
+        guard let outputImage = filter.outputImage else { return nil }
 
-                if let filter = CIFilter(name: "CIQRCodeGenerator") {
-                    filter.setValue(data, forKey: "inputMessage")
-                    filter.setValue("H", forKey: "inputCorrectionLevel")
+        let transformedImage = outputImage.transformed(
+            by: CGAffineTransform(scaleX: 10, y: 10)
+        )
+        let context = CIContext()
+        guard let cgImage = context.createCGImage(
+            transformedImage,
+            from: transformedImage.extent
+        ) else { return nil }
 
-                    guard let outputImage = filter.outputImage else {
-                        continuation.resume(returning: nil)
-                        return
-                    }
-
-                    let scaleX = 10.0
-                    let scaleY = 10.0
-                    let transformedImage = outputImage.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
-
-                    let context = CIContext()
-                    if let cgImage = context.createCGImage(transformedImage, from: transformedImage.extent) {
-                        continuation.resume(returning: UIImage(cgImage: cgImage))
-                    } else {
-                        continuation.resume(returning: nil)
-                    }
-                } else {
-                    continuation.resume(returning: nil)
-                }
-            }
-        }
+        return UIImage(cgImage: cgImage)
     }
 }
 
-import SwiftUIExtension
+// MARK: - Card Details View
 
 public struct WalletPassDetailsView: View {
 
-    @State var isShareViewPresented = false
+    @State private var isShareViewPresented = false
     @Bindable public var store: StoreOf<WalletPassDetails>
 
     public init(store: StoreOf<WalletPassDetails>) {
@@ -162,129 +155,160 @@ public struct WalletPassDetailsView: View {
     }
 
     public var body: some View {
-        Menu {
+        cardContent
+            .contextMenu {
+                contextMenuItems
+            }
+            .onAppear {
+                store.send(.onAppear)
+            }
+            .sheet(isPresented: $isShareViewPresented) {
+                ActivityView(
+                    activityItems: [
+                        URL(string: "https://apps.apple.com/pt/app/ecardify/id6452084315?l=en-GB")!
+                    ]
+                )
+                .ignoresSafeArea()
+            }
+            .overlay {
+                nfcStatusOverlay
+            }
+    }
 
-                Button {
-                    self.isShareViewPresented.toggle()
-                } label: {
-                    Text("🪪 Share card")
-                        .foregroundColor(Color.black)
-                }
+    // MARK: - Card Content
 
-                if store.isNFCAvailable {
-                    Button {
-                        store.send(.writeNFCVCard)
-                    } label: {
-                        Label("Write to NFC Tag", systemImage: "wave.3.right")
-                            .foregroundColor(Color.black)
-                    }
+    private var cardContent: some View {
+        HStack(spacing: ECSpacing.sm) {
+            // Thumbnail
+            thumbnailView
 
-                    Button {
-                        store.send(.writeNFCURL)
-                    } label: {
-                        Label("Write App Link to NFC", systemImage: "link.badge.plus")
-                            .foregroundColor(Color.black)
-                    }
-                }
-
-                Button {
-                    store.send(.viewCardButtonTapped)
-                } label: {
-                    Text("Show card 🪪")
-                        .foregroundColor(Color.black)
-                }
-
-                Button {
-                    store.send(.addPassToWallet)
-                } label: {
-                    Image("PassbookWallet_logo_Icon")
-                    Text("Add to Apple Wallet")
-                        .foregroundColor(Color.black)
-                }
-
-            } label: {
-
-                VStack(alignment: .leading) {
-                    HStack {
-
-                        if let imageUrl = store.vCard.imageURLs.first(where: { $0.type == .thumbnail }) {
-
-                            AsyncImage(url: URL(string: imageUrl.urlString)) { phase in
-                                if let image = phase.image {
-                                    image.resizable()
-                                } else if phase.error != nil {
-                                    Color.red
-                                } else {
-                                    ProgressView()
-                                        .tint(Color.blue)
-                                }
-                            }
-                            .frame(width: 100, height: 100)
+            // Info
+            VStack(alignment: .leading, spacing: ECSpacing.xxs) {
+                // Logo + Name row
+                if let imageUrl = store.vCard.imageURLs.first(where: { $0.type == .icon }) {
+                    AsyncImage(url: URL(string: imageUrl.urlString)) { phase in
+                        if let image = phase.image {
+                            image.resizable().aspectRatio(contentMode: .fit)
+                        } else {
+                            EmptyView()
                         }
-
-                        HStack {
-
-                            VStack(alignment: .leading) {
-                                if let imageUrl = store.vCard.imageURLs.first(where: { $0.type == .icon }) {
-                                    AsyncImage(url: URL(string: imageUrl.urlString)) { phase in
-                                        if let image = phase.image {
-                                            image.resizable()
-                                        } else if phase.error != nil {
-                                            Color.red
-                                        } else {
-                                            ProgressView()
-                                                .tint(Color.blue)
-                                            }
-                                    }
-                                    .frame(width: 30, height: 30)
-                                }
-
-                                Spacer()
-
-                                VStack(alignment: .leading) {
-                                    Text(store.vCard.contact.firstName)
-                                    Text(store.vCard.position)
-                                    Text(store.vCard.organization ?? "")
-                                }
-                                .lineLimit(1)
-                                .layoutPriority(1)
-                            }
-
-
-                            Spacer()
-
-                            if let image = store.qrCodeImage {
-                                image
-                                    .resizable()
-                                    .interpolation(.none)
-                                    .frame(width: 50, height: 100)
-                                    .padding(.trailing, -16)
-                            }
-                        }
-                        .padding(.vertical, 14)
-
-                        Spacer()
-
                     }
-                    .padding()
+                    .frame(width: 24, height: 24)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
                 }
-                .frame(height: 130)
-                .onAppear {
-                    store.send(.onAppear)
+
+                Text(store.vCard.contact.fullName)
+                    .font(ECTypography.headline())
+                    .foregroundStyle(ECColors.textPrimary)
+                    .lineLimit(1)
+
+                if !store.vCard.position.isEmpty {
+                    Text(store.vCard.position)
+                        .font(ECTypography.caption())
+                        .foregroundStyle(ECColors.textSecondary)
+                        .lineLimit(1)
                 }
-                .background(Color.white)
-                .cornerRadius(10)
-                .padding(.vertical, 8)
-                .padding(.horizontal, 16)
-                .sheet(isPresented: self.$isShareViewPresented) {
-                  ActivityView(activityItems: [URL(string: "https://apps.apple.com/pt/app/ecardify/id6452084315?l=en-GB")!])
-                    .ignoresSafeArea()
+
+                if let org = store.vCard.organization, !org.isEmpty {
+                    Text(org)
+                        .font(ECTypography.caption())
+                        .foregroundStyle(ECColors.textSecondary)
+                        .lineLimit(1)
                 }
-                .overlay {
-                    nfcStatusOverlay
+            }
+
+            Spacer(minLength: ECSpacing.xs)
+
+            // QR Code
+            if let image = store.qrCodeImage {
+                image
+                    .resizable()
+                    .interpolation(.none)
+                    .aspectRatio(1, contentMode: .fit)
+                    .frame(width: 64, height: 64)
+                    .clipShape(RoundedRectangle(cornerRadius: ECRadius.sm))
+            }
+        }
+        .padding(ECSpacing.md)
+        .background(.regularMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: ECRadius.lg))
+        .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
+    }
+
+    // MARK: - Thumbnail
+
+    @ViewBuilder
+    private var thumbnailView: some View {
+        if let imageUrl = store.vCard.imageURLs.first(where: { $0.type == .thumbnail }) {
+            AsyncImage(url: URL(string: imageUrl.urlString)) { phase in
+                if let image = phase.image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } else if phase.error != nil {
+                    placeholderAvatar
+                } else {
+                    ProgressView()
+                        .tint(ECColors.primary)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
+            }
+            .frame(width: 72, height: 72)
+            .clipShape(RoundedRectangle(cornerRadius: ECRadius.md))
+        } else {
+            placeholderAvatar
         }
     }
+
+    private var placeholderAvatar: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: ECRadius.md)
+                .fill(ECColors.primary.opacity(0.12))
+            Image(systemName: "person.crop.rectangle.fill")
+                .font(.title2)
+                .foregroundStyle(ECColors.primary)
+        }
+        .frame(width: 72, height: 72)
+    }
+
+    // MARK: - Context Menu
+
+    @ViewBuilder
+    private var contextMenuItems: some View {
+        Button {
+            store.send(.viewCardButtonTapped)
+        } label: {
+            Label(L("View Card"), systemImage: "creditcard.fill")
+        }
+
+        Button {
+            isShareViewPresented.toggle()
+        } label: {
+            Label(L("Share"), systemImage: "square.and.arrow.up")
+        }
+
+        if store.isNFCAvailable {
+            Button {
+                store.send(.writeNFCVCard)
+            } label: {
+                Label(L("Write to NFC Tag"), systemImage: "wave.3.right")
+            }
+
+            Button {
+                store.send(.writeNFCURL)
+            } label: {
+                Label(L("Write App Link to NFC"), systemImage: "link.badge.plus")
+            }
+        }
+
+        Button {
+            store.send(.addPassToWallet)
+        } label: {
+            Label(L("Add to Apple Wallet"), systemImage: "wallet.pass.fill")
+        }
+    }
+
+    // MARK: - NFC Status Overlay
 
     @ViewBuilder
     private var nfcStatusOverlay: some View {
@@ -292,51 +316,71 @@ public struct WalletPassDetailsView: View {
         case .idle:
             EmptyView()
         case .writing:
-            HStack(spacing: 8) {
-                ProgressView()
-                    .tint(.white)
-                Text("Hold near NFC tag...")
-                    .font(.caption)
-                    .foregroundColor(.white)
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
-            .background(Color.blue.cornerRadius(8))
+            nfcBanner(
+                icon: nil,
+                text: L("Hold near NFC tag..."),
+                color: ECColors.primary,
+                showProgress: true
+            )
         case .success:
-            Label("Written!", systemImage: "checkmark.circle.fill")
-                .font(.caption)
-                .foregroundColor(.white)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(Color.green.cornerRadius(8))
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        store.send(.dismissNFCStatus)
-                    }
-                }
+            nfcBanner(
+                icon: "checkmark.circle.fill",
+                text: L("Written!"),
+                color: ECColors.success,
+                showProgress: false
+            )
         case .failed(let message):
-            Label(message, systemImage: "xmark.circle.fill")
-                .font(.caption)
-                .foregroundColor(.white)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(Color.red.cornerRadius(8))
-                .onTapGesture {
-                    store.send(.dismissNFCStatus)
-                }
+            nfcBanner(
+                icon: "xmark.circle.fill",
+                text: message,
+                color: ECColors.error,
+                showProgress: false
+            )
+            .onTapGesture {
+                store.send(.dismissNFCStatus)
+            }
         }
     }
+
+    private func nfcBanner(
+        icon: String?,
+        text: String,
+        color: Color,
+        showProgress: Bool
+    ) -> some View {
+        HStack(spacing: ECSpacing.xs) {
+            if showProgress {
+                ProgressView()
+                    .tint(.white)
+            }
+            if let icon {
+                Image(systemName: icon)
+                    .foregroundStyle(.white)
+            }
+            Text(text)
+                .font(ECTypography.caption(.medium))
+                .foregroundStyle(.white)
+        }
+        .padding(.horizontal, ECSpacing.md)
+        .padding(.vertical, ECSpacing.sm)
+        .background(color)
+        .clipShape(Capsule())
+        .shadow(color: color.opacity(0.3), radius: 4, y: 2)
+    }
 }
+
+// MARK: - Preview
 
 struct WalletPassDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         WalletPassDetailsView(
             store: .init(
-                initialState: WalletPassDetails.State.init(wp: .mock, vCard: .demo)
+                initialState: WalletPassDetails.State(wp: .mock, vCard: .demo)
             ) {
                 WalletPassDetails()
             }
         )
-        .background(Color(red: 243/255, green: 243/255, blue: 243/255))
+        .padding()
+        .background(ECColors.groupedBackground)
     }
 }

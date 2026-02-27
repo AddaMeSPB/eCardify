@@ -1,4 +1,6 @@
 import SwiftUI
+import DesignSystem
+import L10nResources
 import SettingsFeature
 import ECSharedModels
 import ComposableArchitecture
@@ -11,141 +13,164 @@ public struct WalletPassView: View {
         self.store = store
     }
 
-    let columns = [
-        GridItem(.flexible()),
-        GridItem(.flexible())
-    ]
-
     public var body: some View {
         ZStack(alignment: .bottomTrailing) {
-                ScrollView {
-                    Group {
-                        if store.wPassLocal.count > 0 {
-                            ForEachStore(
-                                self.store.scope(
-                                    state: \.wPassLocal,
-                                    action: \.wPass
-                                )
-                            ) {
-                                WalletPassDetailsView(store: $0)
-                            }
-                        } else {
+            ECColors.groupedBackground.ignoresSafeArea()
 
-                            if store.isAuthorized {
-                                Button {
-                                    store.send(.createGenericFormButtonTapped)
-                                } label: {
-                                    Image(systemName: "plus")
-                                        .resizable()
-                                        .frame(width: 60, height: 60)
-                                        .frame(maxWidth: .infinity)
-                                        .frame(height: 130)
-                                        .buttonBorderShape(.capsule)
-                                        .foregroundColor(.gray)
-                                        .padding()
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 25)
-                                                .stroke(Color.gray, style: StrokeStyle(lineWidth: 3, dash: [9]))
-                                        )
-                                }
-                                .padding(20)
-                                .accessibility(identifier: "add_card_button")
-                            }
+            mainScrollView
 
-                            if !store.isAuthorized {
-                                Button {
-                                    store.send(.openSheetLogin(true))
-                                } label: {
-                                    VStack {
-                                        Text("Login or Register.")
-                                            .font(.title3)
-                                        //  .fontWeight(.light)
+            // FAB
+            if !store.wPassLocal.isEmpty {
+                addButton
+            }
+        }
+    }
 
-                                        Image(systemName: "iphone.and.arrow.forward")
-                                            .resizable()
-                                            .frame(width: 40, height: 60)
-                                    }
-                                }
-                                .padding(32)
-                            }
-
-                        }
-                    }
-                }
-                .redacted(reason: store.isLoadingWPL ? .placeholder : .init())
-                .navigationBarTitle("Digital Cards")
-                .navigationViewStyle(StackNavigationViewStyle())
-                .navigationBarTitleDisplayMode(.automatic)
-                .toolbar {
-                    if store.isAuthorized {
-                        ToolbarItem(placement: ToolbarItemPlacement.navigationBarTrailing) {
-                            Button {
-                                store.send(.navigateSettingsButtonTapped)
-                            } label: {
-                                Image(systemName: "gear")
-                                    .font(.title2)
-                                //.foregroundColor(colorScheme == .dark ? .white : Color.yellow)
-                            }
-                            .accessibility(identifier: "settings_button")
-                        }
-                    }
-                }
-                .onAppear {
-                    store.send(.onAppear)
-                }
-                .sheet(
-                  store: self.store.scope(
+    private var mainScrollView: some View {
+        scrollContent
+            .redacted(reason: store.isLoadingWPL ? .placeholder : .init())
+            .navigationTitle(L("Digital Cards"))
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar { settingsToolbar }
+            .onAppear { store.send(.onAppear) }
+            .sheet(
+                store: self.store.scope(
                     state: \.$destination.digitalCard,
                     action: \.destination.digitalCard
-                  )
-                ) { store in
-                    CardDesignView(store: store)
-                }
-                .navigationDestination(
-                    store: self.store.scope(
-                        state: \.$destination.add,
-                        action: \.destination.add
-                    )
-                ) { store in
-                    GenericPassFormView(store: store)
-                }
-                .navigationDestination(
-                    store: self.store.scope(
-                        state: \.$destination.settings,
-                        action: \.destination.settings
-                    )
-                ) { store in
-                    SettingsView.init(store: store)
+                )
+            ) { store in
+                CardDesignView(store: store)
+            }
+            .navigationDestination(
+                store: self.store.scope(
+                    state: \.$destination.add,
+                    action: \.destination.add
+                )
+            ) { store in
+                GenericPassFormView(store: store)
+            }
+            .navigationDestination(
+                store: self.store.scope(
+                    state: \.$destination.settings,
+                    action: \.destination.settings
+                )
+            ) { store in
+                SettingsView(store: store)
+            }
+            .sheet(
+                store: self.store.scope(
+                    state: \.$destination.addPass,
+                    action: \.destination.addPass
+                )
+            ) { store in
+                AddPassView(store: store)
+            }
+    }
 
-                }
-                .sheet(
-                    store: self.store.scope(
-                        state: \.$destination.addPass,
-                        action: \.destination.addPass
-                    )
-                ) { store in
-                    AddPassView(store: store)
-                }
-
-                if store.wPassLocal.count > 0 {
-                    Button {
-                        store.send(.createGenericFormButtonTapped)
-                    } label: {
-                        Image(systemName: "plus.square.fill")
-                            .resizable()
-                            .frame(width: 40, height: 40)
-                            .foregroundStyle(.white, .blue)
-                    }
-                    .padding(32)
-                    .accessibility(identifier: "add_card_button")
-                }
+    private var scrollContent: some View {
+        ScrollView {
+            if !store.wPassLocal.isEmpty {
+                cardListContent
+            } else {
+                emptyStateContent
+            }
         }
+    }
+
+    @ToolbarContentBuilder
+    private var settingsToolbar: some ToolbarContent {
+        if store.isAuthorized {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    store.send(.navigateSettingsButtonTapped)
+                } label: {
+                    Image(systemName: "gearshape.fill")
+                        .font(ECTypography.body())
+                        .foregroundStyle(ECColors.primary)
+                }
+                .accessibilityIdentifier("settings_button")
+            }
+        }
+    }
+
+    // MARK: - Card List
+
+    private var cardListContent: some View {
+        LazyVStack(spacing: ECSpacing.md) {
+            ForEachStore(
+                self.store.scope(
+                    state: \.wPassLocal,
+                    action: \.wPass
+                )
+            ) {
+                WalletPassDetailsView(store: $0)
+            }
+        }
+        .padding(.horizontal, ECSpacing.md)
+        .padding(.top, ECSpacing.sm)
+        .padding(.bottom, 80) // Space for FAB
+    }
+
+    // MARK: - Empty State
+
+    private var emptyStateContent: some View {
+        VStack(spacing: ECSpacing.xxl) {
+            Spacer(minLength: ECSpacing.xxxl)
+
+            if store.isAuthorized {
+                ECEmptyState(
+                    icon: "creditcard.fill",
+                    title: L("No Cards Yet"),
+                    message: L("Create your first digital business card and share it instantly."),
+                    actionTitle: L("Create Card")
+                ) {
+                    store.send(.createGenericFormButtonTapped)
+                }
+            } else {
+                ECEmptyState(
+                    icon: "person.crop.circle.badge.plus",
+                    title: L("Welcome to eCardify"),
+                    message: L("Login or register to create and manage your digital business cards."),
+                    actionTitle: L("Login or Register")
+                ) {
+                    store.send(.openSheetLogin(true))
+                }
+            }
+
+            Spacer()
+        }
+    }
+
+    // MARK: - FAB
+
+    private var addButton: some View {
+        Button {
+            store.send(.createGenericFormButtonTapped)
+        } label: {
+            Image(systemName: "plus")
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(width: 56, height: 56)
+                .background(
+                    LinearGradient(
+                        colors: [ECColors.primary, ECColors.primaryDark],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .clipShape(Circle())
+                .shadow(color: ECColors.primary.opacity(0.35), radius: 8, y: 4)
+        }
+        .padding(ECSpacing.xl)
+        .accessibilityIdentifier("add_card_button")
     }
 }
 
+// MARK: - Preview
+
 struct WalletPassView_Previews: PreviewProvider {
     static public var demoWPassLocal: IdentifiedArrayOf<WalletPassDetails.State> {
-        return .init(
+        .init(
             uniqueElements: [
                 WalletPassDetails.State(wp: .mock, vCard: .demo),
                 WalletPassDetails.State(wp: .mock1, vCard: .demo)
@@ -162,7 +187,7 @@ struct WalletPassView_Previews: PreviewProvider {
     }
 
     static var previews: some View {
-        NavigationView {
+        NavigationStack {
             WalletPassView(store: store)
         }
     }
@@ -180,8 +205,6 @@ extension Binding where Value == Optional<String> {
 }
 
 extension String {
-
-    // may be prefix which will more speed
     var colorFromRGBString: Color {
         let components = self.replacingOccurrences(of: "rgb(", with: "")
             .replacingOccurrences(of: ")", with: "")

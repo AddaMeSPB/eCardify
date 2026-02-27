@@ -1,4 +1,6 @@
 import SwiftUI
+import DesignSystem
+import L10nResources
 import ECSharedModels
 import FoundationExtension
 import ComposableArchitecture
@@ -18,34 +20,30 @@ struct EmailsSectionView: View {
 
     var body: some View {
         Section {
-                ForEach($store.vCard.emails, id: \.id) { $email in
-                    HStack {
-                        TextField(
-                            "",
-                            text: $email.text,
-                            prompt: Text("*Email").foregroundColor(.red.opacity(0.5))
-                        )
-                        .font(.title2)
-                        .fontWeight(.medium)
+            ForEach($store.vCard.emails, id: \.id) { $email in
+                HStack {
+                    ECRequiredDot()
+
+                    TextField(L("Email"), text: $email.text)
+                        .font(ECTypography.body(.medium))
                         .keyboardType(.emailAddress)
                         .textInputAutocapitalization(.never)
-                        .padding(.vertical, 10)
-                        .disableAutocorrection(true)
+                        .padding(.vertical, ECSpacing.xs)
+                        .autocorrectionDisabled()
                         .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.emailTextFields.rawValue)
-                        .foregroundColor(
-                            email.text.isEmailValid 
-                            ? Color.black
-                            : Color.red.opacity(0.5)
+                        .foregroundStyle(
+                            email.text.isEmailValid
+                            ? ECColors.textPrimary
+                            : ECColors.error.opacity(0.7)
                         )
 
-                        Image(systemName: "checkmark.circle")
-                            .foregroundColor(email.text.isEmailValid ? Color.blue : Color.red)
-                            .opacity(email.text.isEmailValid ? 1 : 0)
-
+                    if email.text.isEmailValid {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(ECColors.success)
                     }
-
                 }
-                .onDelete(perform: deleteEmails)
+            }
+            .onDelete(perform: deleteEmails)
         } header: {
             headerView
         }
@@ -53,9 +51,8 @@ struct EmailsSectionView: View {
 
     private var headerView: some View {
         HStack {
-            Text("Email")
-                .font(.title2)
-                .fontWeight(.medium)
+            Text(L("Email"))
+                .font(ECTypography.headline())
 
             Spacer()
 
@@ -63,35 +60,32 @@ struct EmailsSectionView: View {
                 Button {
                     store.send(.addOneMoreEmailSection)
                 } label: {
-                    Image(systemName: "plus.square.on.square")
-                        .resizable()
-                        .frame(width: 30, height: 30)
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title3)
+                        .foregroundStyle(ECColors.primary)
                 }
             } else {
                 disabledMenu
             }
         }
-        .padding(.vertical, 10)
     }
 
     private var disabledMenu: some View {
         Menu {
-            Text("To activate this function,")
-            Text("Please change your product type below.")
+            Text(L("To activate this function,"))
+            Text(L("Please change your product type below."))
             Button {
                 withAnimation(.easeInOut(duration: 0.9)) {
                     scrollProxy.scrollTo(store.bottomID, anchor: .bottom)
                 }
             } label: {
-                Text("click here to change your product type 👇🏼")
+                Text(L("Change product type"))
             }
         } label: {
-            Image(systemName: "plus.square.on.square")
-                .resizable()
-                .frame(width: 30, height: 30)
+            Image(systemName: "plus.circle.fill")
+                .font(.title3)
+                .foregroundStyle(ECColors.textSecondary)
         }
-        .disabled(!store.isCustomProduct)
-        .foregroundColor(store.isCustomProduct ? Color.blue : Color.gray)
     }
 
     func deleteEmails(at offsets: IndexSet) {
@@ -100,7 +94,6 @@ struct EmailsSectionView: View {
         }
     }
 }
-
 
 import ComposableStoreKit
 

@@ -1,4 +1,6 @@
 import SwiftUI
+import DesignSystem
+import L10nResources
 import ECSharedModels
 import ComposableArchitecture
 
@@ -19,193 +21,138 @@ struct AddressesSectionView: View {
 
     var body: some View {
         Section {
-                ForEach($store.vCard.addresses, id: \.id) { $item in
+            ForEach($store.vCard.addresses, id: \.id) { $item in
 
-                    Picker("Address Type", selection: $item.type) {
-                        ForEach(VCard.Address.AType.allCases, id: \.self) { option in
-                            Text(option.rawValue.uppercased())
-                                .tag(option)
-                        }
+                Picker(L("Address Type"), selection: $item.type) {
+                    ForEach(VCard.Address.AType.allCases, id: \.self) { option in
+                        Text(option.rawValue.uppercased())
+                            .tag(option)
                     }
+                }
 
-                    TextField(
-                        "",
-                        text: $item.postOfficeAddress.orEmpty,
-                        prompt: Text("PostOffice")
-                            .font(.title2)
-                            .fontWeight(.medium)
-                    )
-                    .disableAutocorrection(true)
-                    .font(.title2)
-                    .fontWeight(.medium)
-                    .padding(.vertical, 10)
+                TextField(L("Post Office"), text: $item.postOfficeAddress.orEmpty)
+                    .formFieldStyle()
                     .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.postOfficeTextFields.rawValue)
 
+                TextField(L("Extended Address (Optional)"), text: $item.extendedAddress.orEmpty)
+                    .formFieldStyle()
 
-                    TextField(
-                        "",
-                        text: $item.extendedAddress.orEmpty,
-                        prompt: Text("Extended address - OPTIONAL")
-                            .font(.title2)
-                            .fontWeight(.medium)
-                    )
-                    .disableAutocorrection(true)
-                    .font(.title2)
-                    .fontWeight(.medium)
-                    .padding(.vertical, 10)
+                HStack(spacing: ECSpacing.xs) {
+                    ECRequiredDot()
+                    TextField(L("Street"), text: $item.street)
+                        .formFieldStyle()
+                        .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.streetTextFields.rawValue)
+                }
 
-                    TextField(
-                        "",
-                        text: $item.street,
-                        prompt: Text("*Street")
-                            .font(.title2)
-                            .fontWeight(.medium)
-                            .foregroundColor(.red.opacity(0.5))
-                    )
-                    .disableAutocorrection(true)
-                    .font(.title2)
-                    .fontWeight(.medium)
-                    .padding(.vertical, 10)
-                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.streetTextFields.rawValue)
+                HStack(spacing: ECSpacing.xs) {
+                    ECRequiredDot()
+                    TextField(L("City"), text: $item.locality)
+                        .formFieldStyle()
+                        .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.cityTextFields.rawValue)
+                }
 
-
-                    TextField(
-                        "",
-                        text: $item.locality,
-                        prompt: Text("*City")
-                            .font(.title2)
-                            .fontWeight(.medium)
-                            .foregroundColor(.red.opacity(0.5))
-                    )
-                    .disableAutocorrection(true)
-                    .font(.title2)
-                    .fontWeight(.medium)
-                    .padding(.vertical, 10)
-                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.cityTextFields.rawValue)
-
-                    TextField(
-                        "",
-                        text: $item.region.orEmpty,
-                        prompt: Text("Region/State")
-                            .font(.title2)
-                            .fontWeight(.medium)
-                    )
-                    .disableAutocorrection(true)
-                    .font(.title2)
-                    .fontWeight(.medium)
-                    .padding(.vertical, 10)
+                TextField(L("Region / State"), text: $item.region.orEmpty)
+                    .formFieldStyle()
                     .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.regionTextFields.rawValue)
 
+                HStack(spacing: ECSpacing.xs) {
+                    ECRequiredDot()
+                    TextField(L("Post Code"), text: $item.postalCode)
+                        .formFieldStyle()
+                        .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.postTextFields.rawValue)
+                }
 
-                    TextField(
-                        "",
-                        text: $item.postalCode,
-                        prompt: Text("*Post Code")
-                            .font(.title2)
-                            .fontWeight(.medium)
-                            .foregroundColor(.red.opacity(0.5))
-                    )
-                    .disableAutocorrection(true)
-                    .font(.title2)
-                    .fontWeight(.medium)
-                    .padding(.vertical, 10)
-                    .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.postTextFields.rawValue)
+                countryPicker(item: $item)
 
-                    VStack {
-                        Button(action: { isPickerPresented = true }) {
-                            HStack {
-                                Text(item.country.isEmpty ? "* Select Country" : "\(item.country)")
-                                    .foregroundColor(item.country.isEmpty ? .red.opacity(0.5) : .black)
-                                    .font(.title2)
-                                    .fontWeight(.medium)
-
-                                Spacer()
-                                Image(systemName: "chevron.down")
-                                    .foregroundColor(.gray)
-                            }
-                            .padding(.vertical, 16)
-                        }
-                        .sheet(isPresented: $isPickerPresented) {
-                            NavigationStack {
-                                List(Locale.Region.isoRegions, id: \.identifier) { region in
-                                    Button {
-                                        item.country = Locale.current.localizedString(forRegionCode: region.identifier) ?? region.identifier
-                                        isPickerPresented = false
-                                    } label: {
-                                        Text(Locale.current.localizedString(forRegionCode: region.identifier) ?? region.identifier)
-                                    }
-                                }
-                                .navigationTitle("Select Country")
-                                .navigationBarTitleDisplayMode(.inline)
-                            }
-                        }
-                        .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.countryTextFields.rawValue)
-                    }
-
-                    if store.vCard.addresses.count > 1 {
-                        HStack {
-
-                            Spacer()
-
-                            Text("Remove this address")
-                                .font(.title2)
-                                .fontWeight(.medium)
-                                .padding()
-
-
-                            Button {
-                                store.send(.removeAddressSection(by: item.id))
-                            } label: {
-                                Image(systemName: "trash")
-                                    .resizable()
-                                    .frame(width: 30, height: 30)
-                                    .tint(Color.red)
-                            }
-                            .frame(width: 50, height: 50)
-                            .padding(.trailing, -10)
-                        }
+                if store.vCard.addresses.count > 1 {
+                    Button(role: .destructive) {
+                        store.send(.removeAddressSection(by: item.id))
+                    } label: {
+                        Label(L("Remove Address"), systemImage: "trash")
+                            .font(ECTypography.subheadline())
+                            .foregroundStyle(ECColors.error)
                     }
                 }
-                .onDelete(perform: deleteAddress)
-            } header: {
-                HStack {
-                    Text("Address")
-                        .font(.title2)
-                        .fontWeight(.medium)
+            }
+            .onDelete(perform: deleteAddress)
+        } header: {
+            HStack {
+                Text(L("Address"))
+                    .font(ECTypography.headline())
 
-                    Spacer()
+                Spacer()
 
-                    if store.isCustomProduct {
+                if store.isCustomProduct {
+                    Button {
+                        store.send(.addOneMoreAddressSection)
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title3)
+                            .foregroundStyle(ECColors.primary)
+                    }
+                } else {
+                    Menu {
+                        Text(L("To activate this function,"))
+                        Text(L("Please change your product type below."))
                         Button {
-                            store.send(.addOneMoreAddressSection)
-                        } label: {
-                            Image(systemName: "plus.square.on.square")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                        }
-                    } else {
-                        Menu {
-                            Text("To activate this function,")
-                            Text("Please change your product type below.")
-                            Button {
-                                withAnimation(.easeInOut(duration: 90)) {
-                                    scrollProxy.scrollTo(store.bottomID, anchor: .bottom)
-                                }
-                            } label: {
-                                Text("click here to change your product type 👇🏼")
+                            withAnimation(.easeInOut(duration: 0.9)) {
+                                scrollProxy.scrollTo(store.bottomID, anchor: .bottom)
                             }
                         } label: {
-                            Button {} label: {
-                                Image(systemName: "plus.square.on.square")
-                                    .resizable()
-                                    .frame(width: 30, height: 30)
-                            }
-                            .disabled(!store.isCustomProduct)
-                            .foregroundColor(store.isCustomProduct ? Color.blue : Color.gray)
+                            Text(L("Change product type"))
                         }
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title3)
+                            .foregroundStyle(ECColors.textSecondary)
                     }
                 }
-                .padding(.vertical, 10)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func countryPicker(item: Binding<VCard.Address>) -> some View {
+        VStack {
+            Button { isPickerPresented = true } label: {
+                HStack {
+                    HStack(spacing: ECSpacing.xs) {
+                        ECRequiredDot()
+                        Text(item.wrappedValue.country.isEmpty
+                             ? L("Select Country")
+                             : item.wrappedValue.country)
+                        .font(ECTypography.body(.medium))
+                        .foregroundStyle(
+                            item.wrappedValue.country.isEmpty
+                            ? ECColors.textSecondary
+                            : ECColors.textPrimary
+                        )
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.down")
+                        .foregroundStyle(ECColors.textSecondary)
+                }
+                .padding(.vertical, ECSpacing.xs)
+            }
+            .sheet(isPresented: $isPickerPresented) {
+                NavigationStack {
+                    List(Locale.Region.isoRegions, id: \.identifier) { region in
+                        Button {
+                            item.wrappedValue.country = Locale.current.localizedString(
+                                forRegionCode: region.identifier
+                            ) ?? region.identifier
+                            isPickerPresented = false
+                        } label: {
+                            Text(Locale.current.localizedString(
+                                forRegionCode: region.identifier
+                            ) ?? region.identifier)
+                        }
+                    }
+                    .navigationTitle(L("Select Country"))
+                    .navigationBarTitleDisplayMode(.inline)
+                }
+            }
+            .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.countryTextFields.rawValue)
         }
     }
 

@@ -15,8 +15,8 @@
 import Foundation
 import XCTest
 
-var deviceLanguage = ""
-var locale = ""
+nonisolated(unsafe) var deviceLanguage = ""
+nonisolated(unsafe) var locale = ""
 
 func setupSnapshot(_ app: XCUIApplication, waitForAnimations: Bool = true) {
     Snapshot.setupSnapshot(app, waitForAnimations: waitForAnimations)
@@ -53,9 +53,9 @@ enum SnapshotError: Error, CustomDebugStringConvertible {
 
 @objcMembers
 open class Snapshot: NSObject {
-    static var app: XCUIApplication?
-    static var waitForAnimations = true
-    static var cacheDirectory: URL?
+    nonisolated(unsafe) static var app: XCUIApplication?
+    nonisolated(unsafe) static var waitForAnimations = true
+    nonisolated(unsafe) static var cacheDirectory: URL?
     static var screenshotsDirectory: URL? {
         return cacheDirectory?.appendingPathComponent("screenshots", isDirectory: true)
     }

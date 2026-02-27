@@ -9,7 +9,7 @@ devices([
 languages([
     "en-US",
     "de-DE",
-    "es-ES",
+    "es-MX",
     "fr-FR",
     "it",
     "ja",
@@ -30,6 +30,9 @@ clear_previous_screenshots(true)
 
 # Set the status bar to 9:41 AM, and show full battery and reception
 override_status_bar(true)
+
+# Arguments to pass to the app on launch
+launch_arguments(["-UI_TESTING"])
 
 # For more information about all available options run
 # fastlane action snapshot

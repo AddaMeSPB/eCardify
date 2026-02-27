@@ -105,6 +105,12 @@
 <key>Loading designs...</key><string>正在加载设计...</string>
 <key>Failed to load</key><string>加载失败</string>
 <key>Try again</key><string>重试</string>
+<key>Select card design</key><string>选择卡片设计</string>
+<key>Close</key><string>关闭</string>
+<key>NAME</key><string>姓名</string>
+<key>POSITION</key><string>职位</string>
+<key>EMAIL</key><string>邮箱</string>
+<key>MOBILE</key><string>手机</string>
 
 <!-- StoreKitReducer AlertState -->
 <key>Error</key><string>错误</string>

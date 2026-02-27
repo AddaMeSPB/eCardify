@@ -3,38 +3,44 @@ import SwiftUI
 import SnapshotTesting
 import ComposableArchitecture
 import ECSharedModels
+import L10nResources
 
 @testable import AppView
-import GenericPassFeature
-import SettingsFeature
+@testable import GenericPassFeature
+@testable import SettingsFeature
 import AuthenticationView
-import AuthenticationCore
+@testable import AuthenticationCore
 
 // MARK: - Screenshot Tests
 
 /// Deterministic App Store screenshot generation using swift-snapshot-testing.
 ///
-/// Gated by `GENERATE_SCREENSHOTS=1` env var — skipped in normal test runs.
-/// Locale driven by `SCREENSHOT_LOCALE` env var (default: en-US).
+/// Env vars are NOT forwarded to the simulator test process, so locale
+/// iteration happens inside the test methods themselves.
 ///
 /// Run manually:
-///   GENERATE_SCREENSHOTS=1 xcodebuild test \
-///     -scheme eCardify \
+///   xcodebuild test \
+///     -scheme eCardifySPM-Package \
 ///     -only-testing ScreenshotTests \
 ///     -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max'
 final class ScreenshotTests: XCTestCase {
 
-    // MARK: - Gating
+    // MARK: - Configuration
 
-    private var shouldGenerate: Bool {
-        ProcessInfo.processInfo.environment["GENERATE_SCREENSHOTS"] == "1"
+    /// Set to `false` to skip screenshot generation in normal test runs.
+    /// Env vars can't be forwarded to the simulator, so this is the toggle.
+    private var shouldGenerate: Bool { true }
+
+    /// Locales to generate screenshots for.
+    /// Set to `[.current]` or a single locale for faster iteration.
+    private var locales: [ScreenshotLocaleConfig] {
+        ScreenshotLocaleConfig.all
     }
 
     // MARK: - Output
 
     /// Resolves to `fastlane/screenshots/{locale}/`
-    private var outputDirectory: String {
-        let locale = ScreenshotLocaleConfig.current
+    private func outputDirectory(for locale: ScreenshotLocaleConfig) -> String {
         let testFile = URL(fileURLWithPath: #filePath)
         // Tests/ScreenshotTests/ScreenshotTests.swift → eCardifySPM/
         let spmRoot = testFile
@@ -52,60 +58,84 @@ final class ScreenshotTests: XCTestCase {
     // MARK: - Helpers
 
     /// Captures a screenshot of a SwiftUI view at the given device config
-    /// and writes it directly to `outputDirectory/{filename}.png`.
-    ///
-    /// Bypasses swift-snapshot-testing's directory/naming conventions
-    /// so filenames match what the landing page PhoneCarousel expects.
+    /// and saves it to `fastlane/screenshots/{locale}/{filename}`.
     private func captureAndSave<V: View>(
         _ view: V,
         config: ViewImageConfig,
-        filename: String
+        filename: String,
+        locale: ScreenshotLocaleConfig
     ) {
-        let localeConfig = ScreenshotLocaleConfig.current
+        // Switch the L10n bundle to the target locale so L() returns
+        // translated strings when the view body is evaluated.
+        setScreenshotLocale(locale.fastlaneDir)
+
         let localizedView = view.environment(
             \.locale,
-            Locale(identifier: localeConfig.swiftLocale)
+            Locale(identifier: locale.swiftLocale)
         )
 
         let vc = UIHostingController(rootView: localizedView)
         vc.overrideUserInterfaceStyle = .light
 
-        let strategy: Snapshotting<UIViewController, UIImage> = .image(on: config)
-        let exp = expectation(description: filename)
+        // Create output directory
+        let dir = outputDirectory(for: locale)
+        try! FileManager.default.createDirectory(
+            atPath: dir,
+            withIntermediateDirectories: true
+        )
 
-        strategy.snapshot.run(vc) { image in
-            let dir = self.outputDirectory
-            try! FileManager.default.createDirectory(
-                atPath: dir,
-                withIntermediateDirectories: true
-            )
-            let path = URL(fileURLWithPath: dir)
-                .appendingPathComponent(filename)
-            try! image.pngData()!.write(to: path)
-            exp.fulfill()
+        // Use verifySnapshot in record mode, which writes the PNG file.
+        // verifySnapshot names files as "{testName}.1.png", so we strip ".png"
+        // from the filename to use as testName, then rename afterward.
+        let baseName = filename.replacingOccurrences(of: ".png", with: "")
+        let failure = verifySnapshot(
+            of: vc,
+            as: .image(on: config),
+            record: true,
+            snapshotDirectory: dir,
+            testName: baseName
+        )
+
+        if let failure {
+            // In record mode, "failure" is expected (it means a new reference was recorded).
+            // Only truly fail if it's not a recording message.
+            if !failure.contains("record") && !failure.contains("Record") {
+                XCTFail(failure)
+            }
         }
 
-        wait(for: [exp], timeout: 30)
+        // Rename from "{baseName}.1.png" → "{filename}" for fastlane compatibility
+        let generatedPath = URL(fileURLWithPath: dir)
+            .appendingPathComponent("\(baseName).1.png").path
+        let finalPath = URL(fileURLWithPath: dir)
+            .appendingPathComponent(filename).path
+        try? FileManager.default.removeItem(atPath: finalPath)
+        try? FileManager.default.moveItem(atPath: generatedPath, toPath: finalPath)
     }
 
-    /// Snapshots a SwiftUI view on both iPhone 6.9" and iPad Pro 13".
+    /// Snapshots a SwiftUI view on both iPhone 6.9" and iPad Pro 13"
+    /// for every locale in `self.locales`.
     private func snapshotAllDevices<V: View>(
         _ view: V,
         screenName: String
     ) {
-        // iPhone 6.9" (1320×2868 @3x)
-        captureAndSave(
-            view,
-            config: ScreenshotDevice.iPhone6_9,
-            filename: "\(screenName)_iPhone.png"
-        )
+        for locale in locales {
+            // iPhone 6.9" (1320×2868 @3x)
+            captureAndSave(
+                view,
+                config: ScreenshotDevice.iPhone6_9,
+                filename: "\(screenName)_iPhone.png",
+                locale: locale
+            )
 
-        // iPad Pro 13" (2064×2752 @2x)
-        captureAndSave(
-            view,
-            config: ScreenshotDevice.iPadPro13,
-            filename: "\(screenName)_iPad.png"
-        )
+            // iPad Pro 13" (2064×2752 @2x)
+            captureAndSave(
+                view,
+                config: ScreenshotDevice.iPadPro13,
+                filename: "\(screenName)_iPad.png",
+                locale: locale
+            )
+        }
     }
 
     // MARK: - 01 Onboarding Welcome
@@ -122,7 +152,7 @@ final class ScreenshotTests: XCTestCase {
     func test_02_CardList() {
         guard shouldGenerate else { return }
 
-        let store = Store(
+        let store = Store<WalletPassList.State, WalletPassList.Action>(
             initialState: WalletPassList.State(
                 wPassLocal: demoWPassLocal
             )
@@ -139,7 +169,7 @@ final class ScreenshotTests: XCTestCase {
     func test_03_CardDetail() {
         guard shouldGenerate else { return }
 
-        let store = Store(
+        let store = Store<WalletPassDetails.State, WalletPassDetails.Action>(
             initialState: WalletPassDetails.State.demoAlif
         ) {
             EmptyReducer()
@@ -154,12 +184,12 @@ final class ScreenshotTests: XCTestCase {
     func test_04_CreateCardForm() {
         guard shouldGenerate else { return }
 
-        let store = Store(
+        let store = Store<GenericPassForm.State, GenericPassForm.Action>(
             initialState: GenericPassForm.State(
                 storeKitState: .demoProducts,
-                vCard: .demo,
-                telephone: .demo,
-                email: "demogood@mail.com"
+                vCard: .demoAlif,
+                telephone: .init(type: .work, number: "+8801712345678"),
+                email: "alif@ecardify.app"
             )
         ) {
             EmptyReducer()
@@ -174,7 +204,7 @@ final class ScreenshotTests: XCTestCase {
     func test_05_CreateCardFormCustom() {
         guard shouldGenerate else { return }
 
-        let store = Store(
+        let store = Store<GenericPassForm.State, GenericPassForm.Action>(
             initialState: GenericPassForm.State(
                 storeKitState: .demoProductsCustom,
                 vCard: .demoSarah,
@@ -194,7 +224,7 @@ final class ScreenshotTests: XCTestCase {
     func test_06_Settings() {
         guard shouldGenerate else { return }
 
-        let store = Store(
+        let store = Store<Settings.State, Settings.Action>(
             initialState: Settings.State(
                 currentUser: .demoScreenshot
             )
@@ -213,7 +243,7 @@ final class ScreenshotTests: XCTestCase {
     func test_07_Login() {
         guard shouldGenerate else { return }
 
-        let store = Store(
+        let store = Store<Login.State, Login.Action>(
             initialState: Login.State()
         ) {
             EmptyReducer()
@@ -228,7 +258,7 @@ final class ScreenshotTests: XCTestCase {
     func test_08_EmptyState() {
         guard shouldGenerate else { return }
 
-        let store = Store(
+        let store = Store<WalletPassList.State, WalletPassList.Action>(
             initialState: WalletPassList.State()
         ) {
             EmptyReducer()

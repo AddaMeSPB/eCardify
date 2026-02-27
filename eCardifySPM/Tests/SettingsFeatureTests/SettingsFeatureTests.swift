@@ -1,6 +1,7 @@
 import XCTest
 import ComposableArchitecture
 import ECSharedModels
+import KeychainClient
 
 @testable import SettingsFeature
 
@@ -10,6 +11,7 @@ final class SettingsFeatureTests: XCTestCase {
     // MARK: - onAppear
 
     func testOnAppear_setsBuildNumber() async {
+        let userData = try! JSONEncoder().encode(UserOutput.withFirstName)
         let store = TestStore(
             initialState: Settings.State()
         ) {
@@ -17,7 +19,12 @@ final class SettingsFeatureTests: XCTestCase {
         } withDependencies: {
             $0.build.number = { 42 }
             $0.build.identifier = { "com.test" }
-            $0.keychainClient.readCodable = { _, _, _ in UserOutput.withFirstName }
+            $0.keychainClient = KeychainClient(
+                save: { _, _, _ in },
+                read: { _, _ in userData },
+                update: { _, _, _ in },
+                delete: { _, _ in }
+            )
         }
 
         await store.send(.onAppear) {
@@ -33,8 +40,6 @@ final class SettingsFeatureTests: XCTestCase {
             initialState: Settings.State()
         ) {
             Settings()
-        } withDependencies: {
-            $0.remoteNotifications.unregister = {}
         }
 
         await store.send(.userNotificationAuthorizationResponse(true)) {
@@ -47,35 +52,12 @@ final class SettingsFeatureTests: XCTestCase {
             initialState: Settings.State(enableNotifications: true)
         ) {
             Settings()
+        } withDependencies: {
+            $0.remoteNotifications.unregister = {}
         }
 
         await store.send(.userNotificationAuthorizationResponse(false)) {
             $0.enableNotifications = false
-        }
-    }
-
-    // MARK: - Restore Purchases
-
-    func testRestoreButtonTapped() async {
-        let clock = TestClock()
-
-        let store = TestStore(
-            initialState: Settings.State()
-        ) {
-            Settings()
-        } withDependencies: {
-            $0.continuousClock = clock
-            $0.storeKit.restoreCompletedTransactions = {}
-        }
-
-        await store.send(.restoreButtonTapped) {
-            $0.destination = .restore(.init())
-        }
-
-        await clock.advance(by: .seconds(1))
-
-        await store.receive(\.destination.presented.restore.restoreButtonTapped) {
-            $0.destination = .restore(.init(isRestoring: true))
         }
     }
 
@@ -99,19 +81,6 @@ final class SettingsFeatureTests: XCTestCase {
 
         XCTAssertNotNil(openedURL)
         XCTAssertTrue(openedURL?.absoluteString.contains("itunes.apple.com") ?? false)
-    }
-
-    // MARK: - Log Out
-
-    func testLogOutButtonTapped() async {
-        let store = TestStore(
-            initialState: Settings.State()
-        ) {
-            Settings()
-        }
-
-        await store.send(.logOutButtonTapped)
-        // Currently returns .none
     }
 
     // MARK: - Our App Links

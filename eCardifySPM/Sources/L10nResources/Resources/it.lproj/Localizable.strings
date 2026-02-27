@@ -105,6 +105,12 @@
 <key>Loading designs...</key><string>Caricamento design...</string>
 <key>Failed to load</key><string>Caricamento fallito</string>
 <key>Try again</key><string>Riprova</string>
+<key>Select card design</key><string>Seleziona design del biglietto</string>
+<key>Close</key><string>Chiudi</string>
+<key>NAME</key><string>NOME</string>
+<key>POSITION</key><string>POSIZIONE</string>
+<key>EMAIL</key><string>E-MAIL</string>
+<key>MOBILE</key><string>CELLULARE</string>
 
 <!-- StoreKitReducer AlertState -->
 <key>Error</key><string>Errore</string>

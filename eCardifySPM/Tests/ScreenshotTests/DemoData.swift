@@ -1,9 +1,9 @@
 import BSON
 import SwiftUI
 import ECSharedModels
-import GenericPassFeature
-import SettingsFeature
-import AuthenticationCore
+@testable import GenericPassFeature
+@testable import SettingsFeature
+@testable import AuthenticationCore
 import ComposableArchitecture
 
 // MARK: - Fixed Date
@@ -14,6 +14,38 @@ let screenshotDate = Date(timeIntervalSince1970: 1736935200)
 // MARK: - Demo VCards
 
 extension VCard {
+    /// Alif Khandoker — CEO & IOS Developer at IT Company Adda.
+    /// Uses empty imageURLs so snapshot tests show placeholder avatar
+    /// instead of a loading spinner (AsyncImage can't fetch in snapshots).
+    static let demoAlif = VCard(
+        contact: .init(lastName: "Khandoker", firstName: "Alif"),
+        formattedName: "Alif Khandoker",
+        organization: "IT Company Adda.",
+        position: "CEO & IOS Developer",
+        addresses: [
+            .init(
+                type: .work,
+                postOfficeAddress: nil,
+                extendedAddress: nil,
+                street: "123 Main Street",
+                locality: "Dhaka",
+                region: "Dhaka",
+                postalCode: "1205",
+                country: "Bangladesh"
+            )
+        ],
+        telephones: [.init(type: .work, number: "+8801712345678")],
+        emails: [.init(text: "alif@ecardify.app")],
+        urls: [URL(string: "https://addame.com")!],
+        notes: [""],
+        website: "https://addame.com",
+        socialMedia: .init(
+            facebook: nil, skype: nil, instagram: nil,
+            linkedIn: "alifkhandoker", twitter: nil,
+            telegram: "alifkhandoker", vk: nil
+        )
+    )
+
     /// Sarah Johnson — Product Manager at TechVentures Inc.
     static let demoSarah = VCard(
         contact: .init(lastName: "Johnson", firstName: "Sarah"),
@@ -84,7 +116,7 @@ extension WalletPass {
     static let demoAlif = WalletPass(
         _id: ObjectId("aaaaaaaaaaaaaaaaaaaaaaaa")!,
         ownerId: ownerIdFixed,
-        vCard: .demo,
+        vCard: .demoAlif,
         colorPalette: .default,
         isPaid: true,
         isDataSavedOnServer: true,
@@ -121,7 +153,7 @@ extension WalletPass {
 
 extension WalletPassDetails.State {
     static let demoAlif = WalletPassDetails.State(
-        wp: .demoAlif, vCard: .demo
+        wp: .demoAlif, vCard: .demoAlif
     )
     static let demoSarah = WalletPassDetails.State(
         wp: .demoSarah, vCard: .demoSarah

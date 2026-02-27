@@ -1,6 +1,7 @@
 import XCTest
 import ComposableArchitecture
 import ECSharedModels
+import APIClient
 
 @testable import AuthenticationCore
 
@@ -14,7 +15,7 @@ final class AuthenticationCoreTests: XCTestCase {
             Login()
         }
 
-        await store.send(.set(\.$email, "user@example.com")) {
+        await store.send(.binding(.set(\.email, "user@example.com"))) {
             $0.email = "user@example.com"
             $0.isEmailValidated = true
         }
@@ -25,7 +26,7 @@ final class AuthenticationCoreTests: XCTestCase {
             Login()
         }
 
-        await store.send(.set(\.$email, "invalid-email")) {
+        await store.send(.binding(.set(\.email, "invalid-email"))) {
             $0.email = "invalid-email"
             $0.isEmailValidated = false
         }
@@ -36,7 +37,7 @@ final class AuthenticationCoreTests: XCTestCase {
             Login()
         }
 
-        await store.send(.set(\.$email, "")) {
+        await store.send(.binding(.set(\.email, ""))) {
             $0.email = ""
             $0.isEmailValidated = false
         }
@@ -45,18 +46,17 @@ final class AuthenticationCoreTests: XCTestCase {
     // MARK: - OTP Send
 
     func testSendOtp_success() async {
-        let store = TestStore(
-            initialState: Login.State()
-        ) {
+        var state = Login.State()
+        state.email = "test@example.com"
+        state.isEmailValidated = true
+
+        let store = TestStore(initialState: state) {
             Login()
         } withDependencies: {
             $0.neuAuthClient.sendOtp = { _ in
                 NeuAuthOtpResponse(message: "Code sent", expiresIn: 900)
             }
         }
-
-        store.state.email = "test@example.com"
-        store.state.isEmailValidated = true
 
         await store.send(.sendEmailButtonTapped) {
             $0.isLoginRequestInFlight = true
@@ -70,18 +70,17 @@ final class AuthenticationCoreTests: XCTestCase {
     }
 
     func testSendOtp_failure() async {
-        let store = TestStore(
-            initialState: Login.State()
-        ) {
+        var state = Login.State()
+        state.email = "test@example.com"
+        state.isEmailValidated = true
+
+        let store = TestStore(initialState: state) {
             Login()
         } withDependencies: {
             $0.neuAuthClient.sendOtp = { _ in
                 throw NeuAuthError.serverError(statusCode: 500, message: "Server error")
             }
         }
-
-        store.state.email = "test@example.com"
-        store.state.isEmailValidated = true
 
         await store.send(.sendEmailButtonTapped) {
             $0.isLoginRequestInFlight = true
@@ -111,9 +110,11 @@ final class AuthenticationCoreTests: XCTestCase {
             tenantId: UUID()
         )
 
-        let store = TestStore(
-            initialState: Login.State()
-        ) {
+        var state = Login.State()
+        state.email = "test@example.com"
+        state.isValidationCodeIsSend = true
+
+        let store = TestStore(initialState: state) {
             Login()
         } withDependencies: {
             $0.neuAuthClient.verifyOtp = { _ in
@@ -123,59 +124,53 @@ final class AuthenticationCoreTests: XCTestCase {
                     user: testUser
                 )
             }
-            $0.keychainClient.saveOrUpdateCodable = { _, _, _ in }
+            $0.keychainClient = .noop
             $0.build.identifier = { "com.test" }
         }
 
-        store.state.email = "test@example.com"
-        store.state.isValidationCodeIsSend = true
-
-        await store.send(.set(\.$code, "123456")) {
+        await store.send(.binding(.set(\.code, "123456"))) {
             $0.code = "123456"
             $0.isLoginRequestInFlight = true
         }
 
         await store.receive(\.verificationSuccess) {
             $0.isLoginRequestInFlight = false
-            $0.isAuthorized = true
-            $0.isUserFirstNameEmpty = false
+            $0.$isAuthorized.withLock { $0 = true }
+            $0.$isUserFirstNameEmpty.withLock { $0 = false }
         }
     }
 
     func testCodeVerification_shortCode_noRequest() async {
-        let store = TestStore(
-            initialState: Login.State()
-        ) {
+        var state = Login.State()
+        state.isValidationCodeIsSend = true
+
+        let store = TestStore(initialState: state) {
             Login()
         }
 
-        store.state.isValidationCodeIsSend = true
-
-        await store.send(.set(\.$code, "123")) {
+        await store.send(.binding(.set(\.code, "123"))) {
             $0.code = "123"
         }
         // No effect — code is too short
     }
 
     func testCodeVerification_notYetSent_noRequest() async {
-        let store = TestStore(
-            initialState: Login.State()
-        ) {
+        let store = TestStore(initialState: Login.State()) {
             Login()
         }
 
-        store.state.isValidationCodeIsSend = false
-
-        await store.send(.set(\.$code, "123456")) {
+        await store.send(.binding(.set(\.code, "123456"))) {
             $0.code = "123456"
         }
         // No effect — OTP was never sent
     }
 
     func testCodeVerification_failure() async {
-        let store = TestStore(
-            initialState: Login.State()
-        ) {
+        var state = Login.State()
+        state.email = "test@example.com"
+        state.isValidationCodeIsSend = true
+
+        let store = TestStore(initialState: state) {
             Login()
         } withDependencies: {
             $0.neuAuthClient.verifyOtp = { _ in
@@ -183,10 +178,7 @@ final class AuthenticationCoreTests: XCTestCase {
             }
         }
 
-        store.state.email = "test@example.com"
-        store.state.isValidationCodeIsSend = true
-
-        await store.send(.set(\.$code, "000000")) {
+        await store.send(.binding(.set(\.code, "000000"))) {
             $0.code = "000000"
             $0.isLoginRequestInFlight = true
         }
@@ -224,7 +216,7 @@ final class AuthenticationCoreTests: XCTestCase {
         }
     }
 
-    func testTermsPrivacySheet_nil() async {
+    func testTermsPrivacySheet_none() async {
         let store = TestStore(initialState: Login.State()) {
             Login()
         }

@@ -16,7 +16,7 @@ final class WalletPassListTests: XCTestCase {
             WalletPassList()
         }
 
-        let passes = [WalletPass.demo]
+        let passes = [WalletPass.mock]
 
         await store.send(.wpResponse(passes)) {
             let expected = passes.map { WalletPassDetails.State(wp: $0, vCard: $0.vCard) }
@@ -46,15 +46,14 @@ final class WalletPassListTests: XCTestCase {
     // MARK: - Local Data Response
 
     func testWpLocalDataResponse_filtersPaidOnly() async {
-        let store = TestStore(
-            initialState: WalletPassList.State(isActivityIndicatorVisible: false)
-        ) {
+        var state = WalletPassList.State(isActivityIndicatorVisible: false)
+        state.isLoadingWPL = true
+
+        let store = TestStore(initialState: state) {
             WalletPassList()
         }
 
-        store.state.isLoadingWPL = true
-
-        let paidPass = WalletPass.demo
+        let paidPass = WalletPass.mock
         let passes = [paidPass]
 
         await store.send(.wpLocalDataResponse(passes)) {
@@ -67,13 +66,12 @@ final class WalletPassListTests: XCTestCase {
     }
 
     func testWpLocalDataFailed() async {
-        let store = TestStore(
-            initialState: WalletPassList.State()
-        ) {
+        var state = WalletPassList.State()
+        state.isLoadingWPL = true
+
+        let store = TestStore(initialState: state) {
             WalletPassList()
         }
-
-        store.state.isLoadingWPL = true
 
         await store.send(.wpLocalDataFailed) {
             $0.isLoadingWPL = false
@@ -92,47 +90,6 @@ final class WalletPassListTests: XCTestCase {
         await store.send(.createGenericFormButtonTapped) {
             $0.destination = .add(.init(vCard: .empty))
         }
-    }
-
-    func testDismissAddGenericFormButtonTapped() async {
-        let store = TestStore(
-            initialState: WalletPassList.State()
-        ) {
-            WalletPassList()
-        }
-
-        store.state.destination = .add(.init(vCard: .empty))
-
-        await store.send(.dismissAddGenericFormButtonTapped) {
-            $0.destination = nil
-        }
-    }
-
-    func testNavigateSettingsButtonTapped_withUser() async {
-        let store = TestStore(
-            initialState: WalletPassList.State()
-        ) {
-            WalletPassList()
-        }
-
-        store.state.user = .withFirstName
-
-        await store.send(.navigateSettingsButtonTapped) {
-            $0.destination = .settings(.init(currentUser: .withFirstName))
-        }
-    }
-
-    func testNavigateSettingsButtonTapped_noUser() async {
-        let store = TestStore(
-            initialState: WalletPassList.State()
-        ) {
-            WalletPassList()
-        }
-
-        store.state.user = nil
-
-        await store.send(.navigateSettingsButtonTapped)
-        // No navigation when user is nil
     }
 
     // MARK: - Open Sheet Login

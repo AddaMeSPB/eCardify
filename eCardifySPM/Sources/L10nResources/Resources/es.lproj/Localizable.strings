@@ -105,6 +105,12 @@
 <key>Loading designs...</key><string>Cargando disenos...</string>
 <key>Failed to load</key><string>Error al cargar</string>
 <key>Try again</key><string>Intentar de nuevo</string>
+<key>Select card design</key><string>Seleccionar diseno de tarjeta</string>
+<key>Close</key><string>Cerrar</string>
+<key>NAME</key><string>NOMBRE</string>
+<key>POSITION</key><string>CARGO</string>
+<key>EMAIL</key><string>CORREO</string>
+<key>MOBILE</key><string>MOVIL</string>
 
 <!-- StoreKitReducer AlertState -->
 <key>Error</key><string>Error</string>

@@ -30,27 +30,46 @@ public func LDynamic(_ key: String) -> String {
     return Bundle.module.localizedString(forKey: key, value: nil, table: nil)
 }
 
+// MARK: - Screenshot Locale Override
+
+/// Set the active locale for screenshot generation at runtime.
+/// Call before capturing each locale's screenshots.
+///
+/// - Parameter localeID: Fastlane locale dir name (e.g. "de-DE", "ja", "zh-Hans").
+///   Pass `nil` or `"en-US"` to reset to English (default bundle).
+public func setScreenshotLocale(_ localeID: String?) {
+    guard let localeID, localeID != "en-US" else {
+        _screenshotBundle = nil
+        return
+    }
+    _screenshotBundle = _loadBundle(for: localeID)
+}
+
 // MARK: - Private Helpers
 
-private let _screenshotBundle: Bundle? = {
+private var _screenshotBundle: Bundle? = {
     guard let localeID = ProcessInfo.processInfo.environment["SCREENSHOT_LOCALE"],
           localeID != "en-US" else { return nil }
+    return _loadBundle(for: localeID)
+}()
 
+/// Maps a fastlane locale ID to the corresponding `.lproj` bundle.
+private func _loadBundle(for localeID: String) -> Bundle? {
     let lprojName: String
     switch localeID {
     case "de-DE": lprojName = "de"
     case "fr-FR": lprojName = "fr"
-    case "es-ES": lprojName = "es"
+    case "es-ES", "es-MX": lprojName = "es"
     case "pt-BR": lprojName = "pt-BR"
     case "zh-Hans": lprojName = "zh-Hans"
-    case "ru-RU": lprojName = "ru"
+    case "ru-RU", "ru": lprojName = "ru"
     default: lprojName = localeID
     }
 
     guard let path = Bundle.module.path(forResource: lprojName, ofType: "lproj"),
           let bundle = Bundle(path: path) else { return nil }
     return bundle
-}()
+}
 
 private func _extractStringArguments(from key: String.LocalizationValue) -> [String] {
     let mirror = Mirror(reflecting: key)

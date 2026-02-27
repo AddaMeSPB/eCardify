@@ -43,6 +43,9 @@ let package = Package(
 
         // Phone number field
         .package(url: "https://github.com/MojtabaHs/iPhoneNumberField.git", from: "0.10.0"),
+
+        // Snapshot testing for App Store screenshots
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0"),
     ],
     targets: [
         .target(
@@ -200,6 +203,23 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries")
+            ]
+        ),
+
+        .testTarget(
+            name: "ScreenshotTests",
+            dependencies: [
+                "AppView",
+                "GenericPassFeature",
+                "SettingsFeature",
+                "AuthenticationView",
+                "AuthenticationCore",
+                "DesignSystem",
+                "L10nResources",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
+                .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
             ]
         ),
 

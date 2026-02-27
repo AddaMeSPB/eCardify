@@ -42,9 +42,24 @@ platform :ios do
     match(type: "appstore", force_for_new_devices: true, api_key: api_key)
   end
 
-  desc "Generate new localized screenshots"
+  desc "Generate App Store screenshots (swift-snapshot-testing)"
   lane :screenshots do
-    capture_screenshots(project: XCODE_PROJECT, scheme: "eCardifyUITests")
+    sh("cd .. && chmod +x scripts/generate_screenshots.sh && ./scripts/generate_screenshots.sh --all")
+    UI.success("Screenshots generated in fastlane/screenshots/")
+  end
+
+  desc "Upload screenshots only to App Store Connect"
+  lane :upload_screenshots do
+    key = api_key
+    deliver(
+      api_key: key,
+      skip_binary_upload: true,
+      skip_metadata: true,
+      overwrite_screenshots: true,
+      screenshots_path: "./fastlane/screenshots",
+      force: true,
+      precheck_include_in_app_purchases: false
+    )
   end
 
   desc "Build and upload to TestFlight"

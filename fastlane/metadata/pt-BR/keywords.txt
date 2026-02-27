@@ -1,0 +1,1 @@
+cartão,visita,digital,contato,compartilhar,rede,qr-code,wallet,vcard,scanner,criar,modelo,evento,NFC

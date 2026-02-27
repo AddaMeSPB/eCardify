@@ -1,0 +1,1 @@
+carte,visite,numérique,contact,partager,réseau,qr-code,wallet,vcard,scanner,créer,modèle,salon,NFC

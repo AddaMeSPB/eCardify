@@ -66,7 +66,8 @@ public struct StoreKitReducer {
 
     }
 
-    public enum Action: Equatable {
+    @CasePathable
+    public enum Action {
         case alert(PresentationAction<Alert>)
         case fetchProduct
         case paymentTransaction(StoreKitClient.PaymentTransactionObserverEvent)
@@ -74,7 +75,7 @@ public struct StoreKitReducer {
         case restoreButtonTapped
         case tappedProduct(StoreKitClient.Product)
         case buySuccess
-        
+
         @CasePathable
         public enum Alert: Equatable {
             case backToParent

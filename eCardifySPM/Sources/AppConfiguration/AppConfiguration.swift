@@ -31,6 +31,8 @@ public struct AppConfiguration {
         static let productIds = "Product_IDS"
         static let apiURL = "ROOT_URL"
         static let webSocketUrl = "WEB_SOCKET_URL"
+        static let neuAuthURL = "NEUAUTH_URL"
+        static let neuAuthClientId = "NEUAUTH_CLIENT_ID"
     }
 
     public let appName: String
@@ -40,13 +42,21 @@ public struct AppConfiguration {
     public let apiEnvironment: ApiEnvironment
     public let completeAppVersion: String?
 
+    /// NeuAuth server base URL (e.g. "http://192.168.1.204:8080")
+    public let neuAuthURL: String
+
+    /// NeuAuth tenant client ID from admin dashboard
+    public let neuAuthClientId: String
+
     public init(
         appName: String,
         apiURL: String,
         webSocketUrl: String,
         productIds: String,
         apiEnvironment: ApiEnvironment,
-        completeAppVersion: String?
+        completeAppVersion: String?,
+        neuAuthURL: String = "http://192.168.1.204:8080",
+        neuAuthClientId: String = ""
     ) {
         self.appName = appName
         self.apiURL = apiURL
@@ -54,6 +64,8 @@ public struct AppConfiguration {
         self.productIds = productIds
         self.apiEnvironment = apiEnvironment
         self.completeAppVersion = completeAppVersion
+        self.neuAuthURL = neuAuthURL
+        self.neuAuthClientId = neuAuthClientId
     }
 
 }
@@ -93,6 +105,12 @@ extension AppConfiguration {
         self.webSocketUrl = webSocketURL
         self.apiEnvironment = apiEnvironment
         self.productIds = productIds
+
+        // NeuAuth config — read from Info.plist or use defaults
+        self.neuAuthURL = (bundle.object(forInfoDictionaryKey: Keys.neuAuthURL) as? String)
+            ?? "http://192.168.1.204:8080"
+        self.neuAuthClientId = (bundle.object(forInfoDictionaryKey: Keys.neuAuthClientId) as? String)
+            ?? ""
     }
 
 }
@@ -106,7 +124,9 @@ extension AppConfiguration {
             webSocketUrl: "ws://10.10.18.148:3030/v1/chat",
             productIds: "BasicCard_eCardify_testing FlexiCards_eCardify_testing",
             apiEnvironment: .development,
-            completeAppVersion: "0.0.1 (1)"
+            completeAppVersion: "0.0.1 (1)",
+            neuAuthURL: "http://localhost:8080",
+            neuAuthClientId: "test-client-id"
         )
     }
 

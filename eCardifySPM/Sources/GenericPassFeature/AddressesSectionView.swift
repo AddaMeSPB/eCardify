@@ -1,11 +1,10 @@
 import SwiftUI
 import ECSharedModels
-import iPhoneNumberKit
 import ComposableArchitecture
 
 struct AddressesSectionView: View {
 
-    @Perception.Bindable var store: StoreOf<GenericPassForm>
+    @Bindable var store: StoreOf<GenericPassForm>
     var scrollProxy: ScrollViewProxy
 
     @State private var isPickerPresented = false
@@ -19,8 +18,7 @@ struct AddressesSectionView: View {
     }
 
     var body: some View {
-        WithPerceptionTracking {
-            Section {
+        Section {
                 ForEach($store.vCard.addresses, id: \.id) { $item in
 
                     Picker("Address Type", selection: $item.type) {
@@ -122,19 +120,27 @@ struct AddressesSectionView: View {
                                     .fontWeight(.medium)
 
                                 Spacer()
-                                Image(systemName: "chevron.down") // Adds a downward chevron icon
+                                Image(systemName: "chevron.down")
                                     .foregroundColor(.gray)
                             }
                             .padding(.vertical, 16)
                         }
                         .sheet(isPresented: $isPickerPresented) {
-                            iCountryField(selectedCountry: $item.country, isPresented: $isPickerPresented)
+                            NavigationStack {
+                                List(Locale.Region.isoRegions, id: \.identifier) { region in
+                                    Button {
+                                        item.country = Locale.current.localizedString(forRegionCode: region.identifier) ?? region.identifier
+                                        isPickerPresented = false
+                                    } label: {
+                                        Text(Locale.current.localizedString(forRegionCode: region.identifier) ?? region.identifier)
+                                    }
+                                }
+                                .navigationTitle("Select Country")
+                                .navigationBarTitleDisplayMode(.inline)
+                            }
                         }
                         .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.countryTextFields.rawValue)
                     }
-                    .navigationTitle("Country Picker")
-                    .navigationBarTitleDisplayMode(.inline)
-
 
                     if store.vCard.addresses.count > 1 {
                         HStack {
@@ -200,7 +206,6 @@ struct AddressesSectionView: View {
                     }
                 }
                 .padding(.vertical, 10)
-            }
         }
     }
 

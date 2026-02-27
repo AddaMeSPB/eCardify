@@ -1,4 +1,4 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -7,7 +7,7 @@ let package = Package(
     name: "eCardifySPM",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v16)
+        .iOS(.v17)
     ],
     products: [
         .library(name: "AppView", targets: ["AppView"]),
@@ -21,12 +21,13 @@ let package = Package(
         .library(name: "VNRecognizeFeature", targets: ["VNRecognizeFeature"]),
         .library(name: "LocalDatabaseClient", targets: ["LocalDatabaseClient"]),
         .library(name: "SettingsFeature", targets: ["SettingsFeature"]),
+        .library(name: "UserDefaultsClient", targets: ["UserDefaultsClient"]),
         .library(name: "L10nResources", targets: ["L10nResources"])
     ],
     dependencies: [
         // TCA - NOTE: Version must be compatible with CommonTCALibraries
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.10.0"),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.2.2"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.17.0"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.4.0"),
 
         // Common libraries - using local path for development
         .package(path: "../../../../CommonTCALibraries"),
@@ -38,7 +39,10 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto.git", from: "6.0.0"),
 
         // Local database
-        .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0"),
+        .package(url: "https://github.com/groue/GRDB.swift.git", from: "7.0.0"),
+
+        // Phone number field
+        .package(url: "https://github.com/MojtabaHs/iPhoneNumberField.git", from: "0.10.0"),
     ],
     targets: [
         .target(
@@ -55,7 +59,7 @@ let package = Package(
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 "APIClient", "AttachmentS3Client", "GenericPassFeature",
-                "AuthenticationCore", "SettingsFeature"
+                "AuthenticationCore", "SettingsFeature", "UserDefaultsClient"
             ]
         ),
 
@@ -66,7 +70,7 @@ let package = Package(
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 "AppFeature", "GenericPassFeature", "AuthenticationView", "SettingsFeature",
-                "L10nResources"
+                "UserDefaultsClient", "L10nResources"
             ]
         ),
 
@@ -112,7 +116,7 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
-                "APIClient", "SettingsFeature"
+                "APIClient", "SettingsFeature", "UserDefaultsClient"
             ]
         ),
 
@@ -136,7 +140,7 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
-                "AppConfiguration"
+                "AppConfiguration", "UserDefaultsClient"
             ]
         ),
 
@@ -154,12 +158,20 @@ let package = Package(
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "iPhoneNumberField", package: "iPhoneNumberField"),
                 "ECImagePicker", "VNRecognizeFeature", "AttachmentS3Client", "APIClient",
-                "LocalDatabaseClient", "SettingsFeature", "AppConfiguration"
+                "LocalDatabaseClient", "SettingsFeature", "AppConfiguration", "UserDefaultsClient"
             ]
         ),
         .testTarget(name: "GenericPassFormTests", dependencies: ["GenericPassFeature"]),
         .testTarget(name: "GenericPassFormUITests", dependencies: ["GenericPassFeature"]),
+
+        .target(
+            name: "UserDefaultsClient",
+            dependencies: [
+                .product(name: "Dependencies", package: "swift-dependencies")
+            ]
+        ),
 
         .target(
             name: "LocalDatabaseClient",
@@ -170,5 +182,6 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ]
         )
-    ]
+    ],
+    swiftLanguageModes: [.v5]
 )

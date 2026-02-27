@@ -10,9 +10,9 @@ enum VNRecognizeError: Error {
     case fatalError(String)
 }
 
-public struct VNRecognizeResponse: Codable, Equatable {
+public struct VNRecognizeResponse: Codable, Equatable, Sendable {
 
-    public enum TextType: String, Codable, Equatable {
+    public enum TextType: String, Codable, Equatable, Sendable {
         case plain, vcard
     }
 
@@ -27,12 +27,12 @@ public struct VNRecognizeResponse: Codable, Equatable {
     public var string: String?
     public var textType: TextType
 
-    public static var empty: Self = .init()
-    public static var mock: Self = .init(string: "https://addame.com", textType: .vcard)
-    public static var fullQRString: Self = .init(string: "BEGIN:VCARD\nN:Saroar;Khandoker;\nTEL;TYPE=work,VOICE:+351000000000\nTEL;TYPE=home,VOICE:+79218888888\nEMAIL:fake9@gmail.com\nORG:Addame\nTITLE:IOS Developer\nADR;TYPE=WORK,PREF:;;R. Prof. Bento de Jesus Caraça 52;R/C EQS;1600-605;PORTUGAL\nURL:https://addame.com\nEND:VCARD", textType: .vcard)
+    public static let empty: Self = .init()
+    public static let mock: Self = .init(string: "https://addame.com", textType: .vcard)
+    public static let fullQRString: Self = .init(string: "BEGIN:VCARD\nN:Saroar;Khandoker;\nTEL;TYPE=work,VOICE:+351000000000\nTEL;TYPE=home,VOICE:+79218888888\nEMAIL:fake9@gmail.com\nORG:Addame\nTITLE:IOS Developer\nADR;TYPE=WORK,PREF:;;R. Prof. Bento de Jesus Caraça 52;R/C EQS;1600-605;PORTUGAL\nURL:https://addame.com\nEND:VCARD", textType: .vcard)
 }
 
-public struct VNRecognizeClient {
+public struct VNRecognizeClient: Sendable {
     public typealias RecognizeTextHandler = @Sendable (UIImage) async throws -> VNRecognizeResponse
 
     public let recognizeTextRequest: RecognizeTextHandler

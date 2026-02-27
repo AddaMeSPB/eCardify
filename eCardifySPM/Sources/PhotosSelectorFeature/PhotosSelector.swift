@@ -172,40 +172,34 @@ public struct PhotosSelectorReducer {
 
 public struct PhotosSelectorView: View {
 
-    @Perception.Bindable var store: StoreOf<PhotosSelectorReducer>
+    @Bindable var store: StoreOf<PhotosSelectorReducer>
 
     public init(store: StoreOf<PhotosSelectorReducer>) {
         self.store = store
     }
 
     public var body: some View {
-        WithPerceptionTracking {
-            PhotosPicker(
-                selection: viewStore.binding(
-                    get: \.imageSelections,
-                    send: PhotosSelectorReducer.Action.imageSelections(items:)
-                ),
-                maxSelectionCount: viewStore.maxSelectionCount,
-                matching:  viewStore.phPickerFilter //.any(of: [.images, .not(.videos)])
-            ) {
+        PhotosPicker(
+            selection: $store.imageSelections.sending(\.imageSelections),
+            maxSelectionCount: store.maxSelectionCount,
+            matching: store.phPickerFilter
+        ) {
 
-                Image(systemName: "plus")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(minWidth: 0, maxWidth: .infinity)
-                    .cornerRadius(10)
-                    .padding()
-                    .opacity(viewStore.isLoading ? 0 : 1)
-                    .overlay(alignment: .center) {
-                        VStack {
-                            ProgressView("Loading... please wait!")
-                                .font(.customSubheadline)
-                                .foregroundColor(.nevyDarkLPG)
-                        }
-                        .opacity(viewStore.isLoading ? 1 : 0)
+            Image(systemName: "plus")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(minWidth: 0, maxWidth: .infinity)
+                .cornerRadius(10)
+                .padding()
+                .opacity(store.isLoading ? 0 : 1)
+                .overlay(alignment: .center) {
+                    VStack {
+                        ProgressView("Loading... please wait!")
+                            .font(.customSubheadline)
+                            .foregroundColor(.nevyDarkLPG)
                     }
-
-            }
+                    .opacity(store.isLoading ? 1 : 0)
+                }
 
         }
     }

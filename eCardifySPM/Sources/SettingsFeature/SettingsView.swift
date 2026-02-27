@@ -21,8 +21,7 @@ public struct SettingsView: View {
     }
 
     public var body: some View {
-        WithPerceptionTracking {
-            ScrollView {
+        ScrollView {
                 VStack {
                     Text("Hello, \(store.currentUser.fullName ?? "")")
                         .frame( maxWidth: .infinity, alignment: .leading)
@@ -197,9 +196,8 @@ public struct SettingsView: View {
                 ActivityView(activityItems: [URL(string: "https://apps.apple.com/pt/app/ecardify/id6452084315?l=en-GB")!])
                     .ignoresSafeArea()
             }
-            .padding(.vertical)
-            .frame(maxWidth: .infinity)
-        }
+        .padding(.vertical)
+        .frame(maxWidth: .infinity)
     }
 
 }

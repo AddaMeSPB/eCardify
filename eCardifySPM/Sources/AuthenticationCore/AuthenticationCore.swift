@@ -1,5 +1,4 @@
 import Build
-import Combine
 import SwiftUI
 import APIClient
 import LoggerKit
@@ -53,12 +52,9 @@ public struct Login {
 
         @Presents public var destination: Destination.State?
 
-        public var niceName = ""
         public var email: String = ""
         public var code: String = ""
 
-        public var emailLoginInput: EmailLoginInput?
-        public var emailLoginOutput: EmailLoginOutput?
         public var isValidationCodeIsSend = false
         public var isLoginRequestInFlight = false
         public var isAuthorized: Bool = false
@@ -79,7 +75,7 @@ public struct Login {
         case onAppear
 
         case sendEmailButtonTapped
-        case loginResponse(TaskResult<EmailLoginOutput>)
+        case otpSendResponse(TaskResult<NeuAuthOtpResponse>)
         case verificationResponse(TaskResult<SuccessfulLoginResponse>)
 
 
@@ -94,7 +90,7 @@ public struct Login {
     @Dependency(\.userDefaults) var userDefaults
     @Dependency(\.keychainClient) var keychainClient
     @Dependency(\.build) var build
-    @Dependency(\.apiClient) var apiClient
+    @Dependency(\.neuAuthClient) var neuAuthClient
 
     public init() {}
 
@@ -123,11 +119,6 @@ public struct Login {
 
                 return .none
 
-            case .binding(\.niceName):
-                _ = state.niceName.capitalized
-
-                return .none
-
             case .binding(\.email):
 
                 guard state.email.isEmailValid else {
@@ -140,25 +131,21 @@ public struct Login {
 
             case .sendEmailButtonTapped:
                 state.isLoginRequestInFlight = true
-
                 state.isEmailValidated = true
-                let emailLoginInput = EmailLoginInput(name: state.niceName, email: state.email.lowercased())
-                state.emailLoginInput = emailLoginInput
+
+                let request = NeuAuthOtpRequest(email: state.email.lowercased())
 
                 return .run { send in
-                    await send(.loginResponse(
+                    await send(.otpSendResponse(
                         await TaskResult {
-                            try await apiClient.decodedResponse(
-                                for: .authEngine(.authentication(.loginViaEmail(emailLoginInput))),
-                                as: EmailLoginOutput.self
-                            ).value
+                            try await neuAuthClient.sendOtp(request)
                         }
                     ))
                 }
 
             case .binding(\.code):
 
-                guard let emailLoginOutput = state.emailLoginOutput else {
+                guard state.isValidationCodeIsSend else {
                     return .none
                 }
 
@@ -166,21 +153,17 @@ public struct Login {
 
                     state.isLoginRequestInFlight = true
 
-                    let input = VerifyEmailInput(
-                        niceName: state.niceName,
-                        email: emailLoginOutput.email,
-                        attemptId: emailLoginOutput.attemptId,
+                    let request = NeuAuthOtpVerifyRequest(
+                        email: state.email.lowercased(),
                         code: state.code
                     )
 
                     return .run { send in
                         await send(.verificationResponse(
                             await TaskResult {
-                                try await apiClient.decodedResponse(
-                                    for: .authEngine(.authentication(.verifyEmail(input))),
-                                    as: SuccessfulLoginResponse.self,
-                                    decoder: .iso8601
-                                ).value
+                                let neuAuthResponse = try await neuAuthClient.verifyOtp(request)
+                                // Map NeuAuth response to existing app model
+                                return neuAuthResponse.toSuccessfulLoginResponse()
                             }
                         ))
                     }
@@ -190,15 +173,14 @@ public struct Login {
 
             case .binding:
                 return .none
-                
-            case let .loginResponse(.success(emailLoginOutput)):
+
+            case .otpSendResponse(.success):
                 state.isLoginRequestInFlight = false
                 state.isValidationCodeIsSend = true
-                state.emailLoginOutput = emailLoginOutput
 
                 return .none
 
-            case .loginResponse(.failure(let error)):
+            case .otpSendResponse(.failure(let error)):
                 state.isLoginRequestInFlight = false
                 state.isValidationCodeIsSend = false
                 sharedLogger.logError(error.localizedDescription)
@@ -223,15 +205,15 @@ public struct Login {
                             )
 
                             await self.userDefaults.setBool(
-                                loginRes.user?.fullName == nil ? false : true,
+                                loginRes.user?.fullName != nil,
                                 UserDefaultKey.isUserFirstNameEmpty.rawValue
                             )
                         }
 
                         group.addTask {
                             do {
-                                try await keychainClient.saveCodable(loginRes.user, .user, build.identifier())
-                                try await keychainClient.saveCodable(loginRes.access, .token, build.identifier())
+                                try await keychainClient.saveOrUpdateCodable(loginRes.user, .user, build.identifier())
+                                try await keychainClient.saveOrUpdateCodable(loginRes.access, .token, build.identifier())
                             } catch {
                                 sharedLogger.logError(error.localizedDescription)
                             }

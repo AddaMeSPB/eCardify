@@ -4,7 +4,6 @@ import SwiftUI
 import Foundation
 import ECSharedModels
 import SettingsFeature
-import iPhoneNumberKit
 import ComposableStoreKit
 import ComposableArchitecture
 
@@ -26,7 +25,7 @@ public enum UITestGPFAccessibilityIdentifier: String {
 
 public struct GenericPassFormView: View {
 
-    @Perception.Bindable var store: StoreOf<GenericPassForm>
+    @Bindable var store: StoreOf<GenericPassForm>
 
     public init(store: StoreOf<GenericPassForm>) {
         self.store = store
@@ -39,12 +38,10 @@ public struct GenericPassFormView: View {
 
     // MARK: - BODY
     public var body: some View {
-        WithPerceptionTracking {
-            GeometryReader { proxy in
-                ScrollViewReader { value in
-                    ZStack(alignment: .center) {
-                        WithPerceptionTracking {
-                            Form {
+        GeometryReader { proxy in
+            ScrollViewReader { value in
+                ZStack(alignment: .center) {
+                    Form {
                                 Section {
                                     HStack {
                                         
@@ -96,7 +93,7 @@ public struct GenericPassFormView: View {
 
                                 // MARK: ContactSectionView Body
                                 ContactSectionView(contact: $store.vCard.contact)
-//
+
                                 // MARK: TelephonesSectionView Body
                                 TelephoneSectionView(store: store, value)
 
@@ -235,19 +232,17 @@ public struct GenericPassFormView: View {
                                 content: CardDesignListView.init(store:)
                             )
                             
-                            if store.isActivityIndicatorVisible {
-                                VStack {
-                                    ProgressView()
-                                        .tint(.blue)
-                                        .scaleEffect(4)
-                                        .padding()
-                                        .foregroundColor(Color.white)
-                                    Text("Generating your Digital card! Please wait")
-                                        .font(.system(size: 23, weight: .bold, design: .rounded))
-                                        .padding()
-                                        .foregroundColor(Color.white)
-                                }
-                            }
+                    if store.isActivityIndicatorVisible {
+                        VStack {
+                            ProgressView()
+                                .tint(.blue)
+                                .scaleEffect(4)
+                                .padding()
+                                .foregroundColor(Color.white)
+                            Text("Generating your Digital card! Please wait")
+                                .font(.system(size: 23, weight: .bold, design: .rounded))
+                                .padding()
+                                .foregroundColor(Color.white)
                         }
                     }
                 }
@@ -258,33 +253,31 @@ public struct GenericPassFormView: View {
     // MARK: URLsSectionView func
     @ViewBuilder
     fileprivate func webSiteSectionView() -> some View {
-        WithPerceptionTracking {
-            Section {
-                HStack {
-                    TextField(
-                        "",
-                        text: $store.vCard.website.orEmpty,
-                        prompt: Text("WebSite")
-                            .font(.title2)
-                            .fontWeight(.medium)
-                    )
-                    .keyboardType(.URL)
-                    .textContentType(.URL)
-                    .disableAutocorrection(true)
-                    .font(.title2)
-                    .fontWeight(.medium)
-                    .padding(.vertical, 10)
-
-                }
-
-            } header: {
-                HStack {
-                    Text("Web site ?OPTIONAL")
+        Section {
+            HStack {
+                TextField(
+                    "",
+                    text: $store.vCard.website.orEmpty,
+                    prompt: Text("WebSite")
                         .font(.title2)
                         .fontWeight(.medium)
-                }
+                )
+                .keyboardType(.URL)
+                .textContentType(.URL)
+                .disableAutocorrection(true)
+                .font(.title2)
+                .fontWeight(.medium)
                 .padding(.vertical, 10)
+
             }
+
+        } header: {
+            HStack {
+                Text("Web site ?OPTIONAL")
+                    .font(.title2)
+                    .fontWeight(.medium)
+            }
+            .padding(.vertical, 10)
         }
     }
 
@@ -337,23 +330,3 @@ extension StoreKitClient.Product {
       productIdentifier: "cardify.addame.com.eCardify.FlexiCard.testing"
     )
 }
-
-//extension VCard.Address.AType : AccessibilityRotorContent {
-//    
-//    public var accessibilityDescription: String {
-//        switch self {
-//        case .home:
-//            return "Home Address"
-//        case .work:
-//            return "Work Address"
-//        case .postal:
-//            return "Postal Address"
-//        case .dom:
-//            return "Domestic Address"
-//        case .intl:
-//            return "International Address"
-//        case .parcel:
-//            return "Parcel Address"
-//        }
-//    }
-//}

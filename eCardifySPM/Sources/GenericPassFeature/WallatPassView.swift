@@ -17,8 +17,7 @@ public struct WalletPassView: View {
     ]
 
     public var body: some View {
-        WithPerceptionTracking {
-            ZStack(alignment: .bottomTrailing) {
+        ZStack(alignment: .bottomTrailing) {
                 ScrollView {
                     Group {
                         if store.wPassLocal.count > 0 {
@@ -140,7 +139,6 @@ public struct WalletPassView: View {
                     .padding(32)
                     .accessibility(identifier: "add_card_button")
                 }
-            }
         }
     }
 }

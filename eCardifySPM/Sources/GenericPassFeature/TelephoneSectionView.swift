@@ -1,10 +1,10 @@
 import SwiftUI
 import ECSharedModels
-import iPhoneNumberKit
+import iPhoneNumberField
 import ComposableArchitecture
 
 struct TelephoneSectionView: View {
-    @Perception.Bindable var store: StoreOf<GenericPassForm>
+    @Bindable var store: StoreOf<GenericPassForm>
     let value: ScrollViewProxy
     @State var isEditing: Bool = false
     @State private var isPhoneNumberValid: Bool = false
@@ -18,29 +18,25 @@ struct TelephoneSectionView: View {
     }
 
     var body: some View {
-        WithPerceptionTracking {
-            Section {
+        Section {
 
-                ForEach($store.vCard.telephones, id: \.id) { item in
+            ForEach(store.vCard.telephones.indices, id: \.self) { index in
 
-                    WithPerceptionTracking {
-                        Picker("Device Type", selection: item.type) {
-                            ForEach(VCard.Telephone.TType.allCases) { option in
-                                Text(option.rawValue.uppercased())
-                                    .font(.title2)
-                                    .fontWeight(.medium)
-                                    .padding(.vertical, 10)
-                                    .padding(.horizontal, 6)
+                Picker("Device Type", selection: $store.vCard.telephones[index].type) {
+                    ForEach(VCard.Telephone.TType.allCases) { option in
+                        Text(option.rawValue.uppercased())
+                            .font(.title2)
+                            .fontWeight(.medium)
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 6)
 
-                            }
-                        }
                     }
+                }
 
                     iPhoneNumberField(
                         "+351 (000) 000-0000",
-                        text: item.number,
-                        isEditing: $isEditing,
-                        isPhoneNumberValid: $isPhoneNumberValid
+                        text: $store.vCard.telephones[index].number,
+                        isEditing: $isEditing
                     )
                     .flagHidden(false)
                     .prefixHidden(false)
@@ -51,7 +47,7 @@ struct TelephoneSectionView: View {
                     .onClear { _ in isEditing.toggle() }
                     .padding(.vertical, 16)
                     if !isPhoneNumberValid && isEditing {
-                        Text("Number is invalid!.")
+                        Text("Number is invalid!")
                             .font(.caption2)
                             .foregroundColor(isPhoneNumberValid ? Color.blue : Color.red)
 
@@ -100,7 +96,6 @@ struct TelephoneSectionView: View {
 
                 }
                 .padding(.vertical, 10)
-            }
         }
     }
 
@@ -127,7 +122,3 @@ struct TelephoneSectionView_Previews: PreviewProvider {
         }
     }
 }
-
-
-
-//.phoneTextField.isValidNumber

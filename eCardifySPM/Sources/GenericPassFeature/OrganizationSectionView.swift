@@ -1,11 +1,10 @@
 import SwiftUI
 import ECSharedModels
-import iPhoneNumberKit
 import ComposableArchitecture
 
 struct OrganizationSectionView: View {
 
-    @Perception.Bindable var store: StoreOf<GenericPassForm>
+    @Bindable var store: StoreOf<GenericPassForm>
     var scrollProxy: ScrollViewProxy
     var geoProxy: GeometryProxy
 
@@ -20,9 +19,7 @@ struct OrganizationSectionView: View {
     }
 
     var body: some View {
-        WithPerceptionTracking {
-
-            HStack {
+        HStack {
                 VStack {
                     if store.isCustomProduct {
                         if let uiImage = store.cardImage {
@@ -48,7 +45,6 @@ struct OrganizationSectionView: View {
                                     }
                             }
                             .frame(width: geoProxy.size.width / 2.3,   height: 98)
-                            //.buttonStyle(BorderlessButtonStyle())
 
                         } else {
                             VStack {
@@ -117,7 +113,6 @@ struct OrganizationSectionView: View {
                         if let logoImage = store.logoImage {
                             Image(uiImage: logoImage)
                                 .resizable()
-                                .resizable()
                                 .cornerRadius(15)
                                 .frame(width: geoProxy.size.width / 2.3,   height: 96)
                         } else {
@@ -184,7 +179,6 @@ struct OrganizationSectionView: View {
                     )
                     .buttonStyle(BorderlessButtonStyle())
                 }
-            }
         }
     }
 }

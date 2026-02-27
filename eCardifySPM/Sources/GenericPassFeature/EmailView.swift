@@ -5,7 +5,7 @@ import ComposableArchitecture
 
 struct EmailsSectionView: View {
 
-    @Perception.Bindable var store: StoreOf<GenericPassForm>
+    @Bindable var store: StoreOf<GenericPassForm>
     var scrollProxy: ScrollViewProxy
 
     public init(
@@ -17,8 +17,7 @@ struct EmailsSectionView: View {
     }
 
     var body: some View {
-        WithPerceptionTracking {
-            Section {
+        Section {
                 ForEach($store.vCard.emails, id: \.id) { $email in
                     HStack {
                         TextField(
@@ -47,9 +46,8 @@ struct EmailsSectionView: View {
 
                 }
                 .onDelete(perform: deleteEmails)
-            } header: {
-                headerView
-            }
+        } header: {
+            headerView
         }
     }
 

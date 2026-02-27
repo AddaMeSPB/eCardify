@@ -155,15 +155,14 @@ import SwiftUIExtension
 public struct WalletPassDetailsView: View {
 
     @State var isShareViewPresented = false
-    @Perception.Bindable public var store: StoreOf<WalletPassDetails>
+    @Bindable public var store: StoreOf<WalletPassDetails>
 
     public init(store: StoreOf<WalletPassDetails>) {
         self.store = store
     }
 
     public var body: some View {
-        WithPerceptionTracking {
-            Menu {
+        Menu {
 
                 Button {
                     self.isShareViewPresented.toggle()
@@ -284,7 +283,6 @@ public struct WalletPassDetailsView: View {
                 .overlay {
                     nfcStatusOverlay
                 }
-            }
         }
     }
 

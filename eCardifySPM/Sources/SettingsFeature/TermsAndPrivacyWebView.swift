@@ -64,18 +64,20 @@ public struct WebView: UIViewRepresentable {
     }
 }
 
-public struct TermsAndPrivacy: Reducer {
+@Reducer
+public struct TermsAndPrivacy {
 
+    @ObservableState
     public struct State: Equatable {
 
-        @BindingState public var wbModel: WebViewModel
+        public var wbModel: WebViewModel
 
         public init(wbModel: WebViewModel) {
             self.wbModel = wbModel
         }
     }
 
-
+    @CasePathable
     public enum Action: Equatable, BindableAction {
       case binding(BindingAction<State>)
       case leaveCurrentPageButtonClick
@@ -85,7 +87,7 @@ public struct TermsAndPrivacy: Reducer {
 
     public init() {}
 
-    public var body: some Reducer<State, Action> {
+    public var body: some ReducerOf<Self> {
         BindingReducer()
         Reduce { state, action in
             switch action {
@@ -103,46 +105,35 @@ public struct TermsAndPrivacy: Reducer {
 
 public struct TermsAndPrivacyWebView: View {
 
-
-  public let store: StoreOf<TermsAndPrivacy>
-  @ObservedObject var viewStore: ViewStoreOf<TermsAndPrivacy>
-  @ObservedObject var wbModel: WebViewModel
+    let store: StoreOf<TermsAndPrivacy>
 
     public init(store: StoreOf<TermsAndPrivacy>) {
         self.store = store
-        let viewStore = ViewStore(store, observe: { $0 })
-        self.viewStore = viewStore
-        self.wbModel = viewStore.wbModel
     }
 
-
-  public var body: some View {
-    WithViewStore(self.store, observe: { $0 }) { viewStore in
-
-        WebView(viewModel: viewStore.wbModel)
-                .overlay(
-                    Button(
-                        action: {
-                            viewStore.send(.leaveCurrentPageButtonClick)
-                        },
-                        label: {
-                            Image(systemName: "xmark.circle").font(.title)
-                        }
-                    )
-                    .padding(.bottom, 10)
-                    .padding(),
-
-                    alignment: .bottomTrailing
+    public var body: some View {
+        WebView(viewModel: store.wbModel)
+            .overlay(
+                Button(
+                    action: {
+                        store.send(.leaveCurrentPageButtonClick)
+                    },
+                    label: {
+                        Image(systemName: "xmark.circle").font(.title)
+                    }
                 )
-                .overlay(
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: Color.blue))
-                        .font(.largeTitle)
-                        .opacity(viewStore.wbModel.didFinishLoading ? 1 : 0),
+                .padding(.bottom, 10)
+                .padding(),
 
-                    alignment: .center
-                )
+                alignment: .bottomTrailing
+            )
+            .overlay(
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: Color.blue))
+                    .font(.largeTitle)
+                    .opacity(store.wbModel.didFinishLoading ? 1 : 0),
 
+                alignment: .center
+            )
     }
-  }
 }

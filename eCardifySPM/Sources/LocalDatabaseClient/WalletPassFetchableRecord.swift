@@ -4,7 +4,7 @@ import ECSharedModels
 extension WalletPass: FetchableRecord {
     public static let databaseTableName = collectionName
 
-    enum Columns {
+    public enum Columns {
         static let _id = Column(CodingKeys._id)
         static let ownerId = Column(CodingKeys.ownerId)
         static let vCard = Column(CodingKeys.vCard)

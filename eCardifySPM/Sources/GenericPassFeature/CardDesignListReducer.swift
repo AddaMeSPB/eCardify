@@ -115,9 +115,7 @@ public struct CardDesignListView: View {
     let rows = [GridItem(.flexible())]
 
     public var body: some View {
-
-        WithPerceptionTracking {
-            ZStack(alignment: .bottomLeading) {
+        ZStack(alignment: .bottomLeading) {
 
 
                 VStack {
@@ -168,7 +166,6 @@ public struct CardDesignListView: View {
 
 
 
-            }
         }
 
     }
@@ -322,8 +319,7 @@ public struct CardDesignView: View {
     }
 
     public var body: some View {
-        WithPerceptionTracking {
-            ScrollView {
+        ScrollView {
                 VStack(alignment: .leading) {
                     HStack {
 
@@ -522,9 +518,8 @@ public struct CardDesignView: View {
                     .ignoresSafeArea()
                 }
 
-            }
-            .padding(20)
         }
+        .padding(20)
     }
 }
 

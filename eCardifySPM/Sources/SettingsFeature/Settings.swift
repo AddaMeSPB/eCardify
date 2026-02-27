@@ -42,7 +42,8 @@ public struct Settings {
 
     }
 
-    public enum Action: BindableAction, Equatable {
+    @CasePathable
+    public enum Action: BindableAction {
         case binding(BindingAction<State>)
         case destination(PresentationAction<Destination.Action>)
         case onAppear
@@ -240,7 +241,7 @@ public struct Settings {
         }
 
         @CasePathable
-        public enum Action: Equatable {
+        public enum Action {
             case alert(Alert)
             case termsAndPrivacy(TermsAndPrivacy.Action)
             case restore(StoreKitReducer.Action)

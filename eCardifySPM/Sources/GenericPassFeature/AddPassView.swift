@@ -59,16 +59,14 @@ public struct AddPass {
 
 
 public struct AddPassView: View {
-    @Perception.Bindable public var store: StoreOf<AddPass>
+    @Bindable public var store: StoreOf<AddPass>
 
     public init(store: StoreOf<AddPass>) {
         self.store = store
     }
 
     public var body: some View {
-        WithPerceptionTracking {
-            AddPassRepresentableView(pass: $store.pass)
-        }
+        AddPassRepresentableView(pass: $store.pass)
     }
 }
 

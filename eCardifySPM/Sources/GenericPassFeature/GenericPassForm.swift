@@ -91,7 +91,7 @@ public struct GenericPassForm {
     }
 
     @CasePathable
-    public enum Action: BindableAction, Equatable {
+    public enum Action: BindableAction {
         case alert(PresentationAction<AlertAction>)
         case binding(BindingAction<State>)
         case imagePicker(PresentationAction<ImagePickerReducer.Action>)
@@ -206,7 +206,7 @@ public struct GenericPassForm {
 
         case .isImagePicker(isPresented: let isPresented):
             state.imagePicker = isPresented
-            ? ImagePickerReducer.State(showingImagePicker: true, selectType: .single)
+            ? ImagePickerReducer.State(showingImagePicker: true)
             : nil
 
             return .none
@@ -266,7 +266,7 @@ public struct GenericPassForm {
             sharedLogger.logError(error)
             return .none
 
-        case let .imagePicker(.presented(.picked(result: image))):
+        case let .imagePicker(.presented(.picked(result: .success(image)))):
             state.isUploadingImage = true
             state.imagePicker = nil
 

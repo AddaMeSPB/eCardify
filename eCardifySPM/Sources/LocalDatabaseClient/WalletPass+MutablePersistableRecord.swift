@@ -1,13 +1,9 @@
-import BSON
 import GRDB
 import ECSharedModels
 
-extension WalletPass : MutablePersistableRecord {
-    /// The values persisted in the database
-    // Update auto-incremented id upon successful insertion
-    mutating public func didInsert(_ inserted: InsertionSuccess) {
-        id = inserted.rowIDColumn ?? ObjectId().hexString
-    }
+extension WalletPass: MutablePersistableRecord {
+    // WalletPass uses text-based ObjectId primary keys (not auto-incremented),
+    // so didInsert does not need to update the id.
 }
 
 

@@ -39,7 +39,7 @@ public struct WalletPassList {
 
 
     @CasePathable
-    public enum Action: BindableAction, Equatable {
+    public enum Action: BindableAction {
         case binding(BindingAction<State>)
         case onAppear
         case wPass(id: WalletPassDetails.State.ID, action: WalletPassDetails.Action)
@@ -256,7 +256,7 @@ public struct WalletPassList {
         }
 
         @CasePathable
-        public enum Action: Equatable {
+        public enum Action {
             case addPass(AddPass.Action)
             case digitalCard(CardDesignReducer.Action)
             case add(GenericPassForm.Action)

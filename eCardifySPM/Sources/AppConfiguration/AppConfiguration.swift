@@ -1,9 +1,7 @@
 import Foundation
 import LoggerKit
 
-//private let devDomainName = "10.0.1.4:3030" 
-//"172.20.10.10:3030" //"192.168.1.28:3030" //"10.0.1.4:3030"
-
+// Domain name for development — reads from xcconfig in production
 private let devDomainName = "192.168.1.204:3030"
 public struct AppConfiguration {
 
@@ -42,7 +40,7 @@ public struct AppConfiguration {
     public let apiEnvironment: ApiEnvironment
     public let completeAppVersion: String?
 
-    /// NeuAuth server base URL (e.g. "http://192.168.1.204:8080")
+    /// NeuAuth server base URL (e.g. "https://neuauth.byalif.app")
     public let neuAuthURL: String
 
     /// NeuAuth tenant client ID from admin dashboard
@@ -55,7 +53,7 @@ public struct AppConfiguration {
         productIds: String,
         apiEnvironment: ApiEnvironment,
         completeAppVersion: String?,
-        neuAuthURL: String = "http://192.168.1.204:8080",
+        neuAuthURL: String = "https://neuauth.byalif.app",
         neuAuthClientId: String = ""
     ) {
         self.appName = appName
@@ -108,7 +106,7 @@ extension AppConfiguration {
 
         // NeuAuth config — read from Info.plist or use defaults
         self.neuAuthURL = (bundle.object(forInfoDictionaryKey: Keys.neuAuthURL) as? String)
-            ?? "http://192.168.1.204:8080"
+            ?? "https://neuauth.byalif.app"
         self.neuAuthClientId = (bundle.object(forInfoDictionaryKey: Keys.neuAuthClientId) as? String)
             ?? ""
     }

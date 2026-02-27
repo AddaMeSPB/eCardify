@@ -21,8 +21,6 @@ public struct Login {
         }
 
         public enum Action: Equatable {
-
-            case login(Login.Action)
             case termsAndPrivacy(TermsAndPrivacy.Action)
 
             case alert(Alert)
@@ -45,10 +43,6 @@ public struct Login {
 
         public init() {}
 
-        public static func == (lhs: State, rhs: State) -> Bool {
-            return lhs.isAuthorized == rhs.isAuthorized
-        }
-
         @Presents public var destination: Destination.State?
 
         @Shared(.appStorage("isAuthorized")) public var isAuthorized = false
@@ -66,7 +60,7 @@ public struct Login {
     }
 
     public enum TermsOrPrivacy {
-        case nill, terms, privacy
+        case none, terms, privacy
     }
 
     @CasePathable
@@ -77,17 +71,15 @@ public struct Login {
 
         case sendEmailButtonTapped
         case otpSendSuccess
-        case otpSendFailed
+        case otpSendFailed(String)
         case verificationSuccess(SuccessfulLoginResponse)
-        case verificationFailed
+        case verificationFailed(String)
 
 
         case termsPrivacySheet(isPresented: TermsOrPrivacy)
 
         case moveToTableView
     }
-
-    public enum AlertAction: Equatable {}
 
     @Dependency(\.mainQueue) var mainQueue
     @Dependency(\.keychainClient) var keychainClient
@@ -99,6 +91,9 @@ public struct Login {
     public var body: some Reducer<State, Action> {
         BindingReducer()
         Reduce(self.core)
+            .ifLet(\.$destination, action: \.destination) {
+                Destination()
+            }
     }
 
 
@@ -107,13 +102,6 @@ public struct Login {
         switch action {
 
             case .onAppear:
-                // @Shared properties auto-sync with AppStorage — no manual read needed
-                if state.isAuthorized {
-                    if !state.isAskPermissionCompleted {
-                        return .none
-                    }
-                }
-
                 return .none
 
             case .binding(\.email):
@@ -138,7 +126,24 @@ public struct Login {
                         await send(.otpSendSuccess)
                     } catch {
                         sharedLogger.logError(error.localizedDescription)
-                        await send(.otpSendFailed)
+                        let message: String
+                        if let neuAuthError = error as? NeuAuthError {
+                            switch neuAuthError {
+                            case .rateLimited:
+                                message = "Too many attempts. Please wait and try again."
+                            case .unauthorized(let msg):
+                                message = msg
+                            case .serverError(_, let msg):
+                                message = msg
+                            case .invalidURL:
+                                message = "Invalid server configuration."
+                            case .unknown:
+                                message = "Unable to send verification code. Please check your connection."
+                            }
+                        } else {
+                            message = "Unable to send verification code. Please check your connection."
+                        }
+                        await send(.otpSendFailed(message))
                     }
                 }
 
@@ -162,7 +167,22 @@ public struct Login {
                             let neuAuthResponse = try await neuAuthClient.verifyOtp(request)
                             await send(.verificationSuccess(neuAuthResponse.toSuccessfulLoginResponse()))
                         } catch {
-                            await send(.verificationFailed)
+                            let message: String
+                            if let neuAuthError = error as? NeuAuthError {
+                                switch neuAuthError {
+                                case .rateLimited:
+                                    message = "Too many attempts. Please wait and try again."
+                                case .unauthorized:
+                                    message = "Invalid or expired verification code."
+                                case .serverError(_, let msg):
+                                    message = msg
+                                default:
+                                    message = "Verification failed. Please try again."
+                                }
+                            } else {
+                                message = "Verification failed. Please check your connection."
+                            }
+                            await send(.verificationFailed(message))
                         }
                     }
                 }
@@ -177,9 +197,14 @@ public struct Login {
                 state.isValidationCodeIsSend = true
                 return .none
 
-            case .otpSendFailed:
+            case let .otpSendFailed(message):
                 state.isLoginRequestInFlight = false
                 state.isValidationCodeIsSend = false
+                state.destination = .alert(AlertState {
+                    TextState("Failed to Send Code")
+                } message: {
+                    TextState(message)
+                })
                 return .none
 
             case let .verificationSuccess(loginRes):
@@ -201,8 +226,14 @@ public struct Login {
                     }
                 }
 
-            case .verificationFailed:
+            case let .verificationFailed(message):
                 state.isLoginRequestInFlight = false
+                state.code = ""
+                state.destination = .alert(AlertState {
+                    TextState("Verification Failed")
+                } message: {
+                    TextState(message)
+                })
                 return .none
 
 
@@ -227,7 +258,7 @@ public struct Login {
 
             case .termsPrivacySheet(isPresented: let top):
                 switch top {
-                    case .nill:
+                    case .none:
                         return .none
                     case .terms:
                         state.destination = .termsAndPrivacy(.init(wbModel: .init(link: .terms)))

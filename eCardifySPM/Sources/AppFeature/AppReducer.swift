@@ -171,6 +171,7 @@ public struct AppReducer {
 
         case .tokenRefreshFailed:
             state.walletState.$isAuthorized.withLock { $0 = false }
+            state.authState = .init()  // open login sheet on session expiry
             return .none
 
         case .path:

@@ -91,6 +91,11 @@ final class AuthenticationCoreTests: XCTestCase {
         await store.receive(\.otpSendFailed) {
             $0.isLoginRequestInFlight = false
             $0.isValidationCodeIsSend = false
+            $0.destination = .alert(AlertState {
+                TextState("Failed to Send Code")
+            } message: {
+                TextState("Server error")
+            })
         }
     }
 
@@ -188,6 +193,12 @@ final class AuthenticationCoreTests: XCTestCase {
 
         await store.receive(\.verificationFailed) {
             $0.isLoginRequestInFlight = false
+            $0.code = ""
+            $0.destination = .alert(AlertState {
+                TextState("Verification Failed")
+            } message: {
+                TextState("Invalid or expired verification code.")
+            })
         }
     }
 
@@ -218,7 +229,7 @@ final class AuthenticationCoreTests: XCTestCase {
             Login()
         }
 
-        await store.send(.termsPrivacySheet(isPresented: .nill))
+        await store.send(.termsPrivacySheet(isPresented: .none))
         // No state change
     }
 

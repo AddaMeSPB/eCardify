@@ -14,13 +14,6 @@ import LocalDatabaseClient
 import FoundationExtension
 import ComposableArchitecture
 
-extension String: Identifiable {
-    public typealias ID = Int
-    public var id: Int {
-        return hash
-    }
-}
-
 @Reducer
 public struct GenericPassForm {
 
@@ -307,10 +300,9 @@ public struct GenericPassForm {
             case .card:
                 state.cardImage = image
                 return .run { [imageFor = state.imageFor, cardImage = state.cardImage] send in
-                    if imageFor == .card {
-                        let vnRecognizeResponse = try await vnRecognizeClient.recognizeTextRequest(cardImage!)
-                        await send(.recognizeText(vnRecognizeResponse))
-                    }
+                    guard imageFor == .card, let cardImage else { return }
+                    let vnRecognizeResponse = try await vnRecognizeClient.recognizeTextRequest(cardImage)
+                    await send(.recognizeText(vnRecognizeResponse))
                 }
             }
 
@@ -551,7 +543,7 @@ public struct GenericPassForm {
         )
         var vCardAddress = VCard.Address(
             type: .work,
-            postOfficeAddress: "nil",
+            postOfficeAddress: nil,
             extendedAddress: nil,
             street: "",
             locality: "",
@@ -629,8 +621,8 @@ public struct GenericPassForm {
 
                         vCard.addresses.append(vCardAddress)
 
-                    case let .date(date):
-                        print(date)
+                    case .date:
+                        break
                     case .none:
                         sharedLogger.log("NONE")
                     }

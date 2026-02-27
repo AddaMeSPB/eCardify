@@ -126,10 +126,6 @@ extension VCard {
             vCard.organization = organization
         }
 
-        if let organization = contactProperties["ORG"]?.first {
-            vCard.organization = organization
-        }
-
         return vCard
 
     }
@@ -144,7 +140,7 @@ extension VCard.Address {
         let detector = NSDataDetector(types: .address)
         var vCardAddress = VCard.Address(
             type: type,
-            postOfficeAddress: "nil",
+            postOfficeAddress: nil,
             extendedAddress: nil,
             street: "",
             locality: "",

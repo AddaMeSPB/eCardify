@@ -63,8 +63,7 @@ extension APIClient {
         let (data, response) = try await URLSession.shared.data(for: request)
 
         #if DEBUG
-        sharedLogger.log(String(data: data, encoding: .utf8) .unsafelyUnwrapped)
-        sharedLogger.log(String(data: data, encoding: .utf8) ?? "")
+        sharedLogger.log(String(data: data, encoding: .utf8) ?? "<non-UTF8 data>")
         #endif
 
 

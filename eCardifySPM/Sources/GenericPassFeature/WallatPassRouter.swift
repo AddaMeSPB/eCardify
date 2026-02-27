@@ -185,21 +185,23 @@ public struct WalletPassList {
 
             return .run { send in
                 guard let url = URL(string: passUrl) else {
-                    fatalError("Missing URL")
+                    sharedLogger.logError("Invalid pass URL: \(passUrl)")
+                    return
                 }
 
                 let urlRequest = URLRequest(url: url)
                 let (data, response) = try await URLSession.shared.data(for: urlRequest)
 
-                guard (response as? HTTPURLResponse)?.statusCode == 200
-                else {
-                    fatalError("Error while fetching data")
+                guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+                    let status = (response as? HTTPURLResponse)?.statusCode ?? -1
+                    sharedLogger.logError("Pass download failed with status \(status)")
+                    return
                 }
 
-                let canAddPassResult = await PKAddPassesViewController.canAddPasses ()
+                let canAddPassResult = await PKAddPassesViewController.canAddPasses()
 
-                if (canAddPassResult) {
-                    await send(.sendPass(try PKPass.init (data: data)))
+                if canAddPassResult {
+                    await send(.sendPass(try PKPass(data: data)))
                 }
             }
 
@@ -322,7 +324,7 @@ enum PhoneNumberDetectionError: Error {
 
 extension String {
     func findContactNumber() throws -> String {
-        let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.phoneNumber.rawValue)
+        let detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.phoneNumber.rawValue)
 
         guard let detected = detector.firstMatch(
             in: self, options: [],
@@ -344,7 +346,7 @@ extension String {
         _ = #"[(]\d{3}[)]\s\d{3}[-]\d{4}"#
         var result: [String] = []
 
-        let phoneNumberRegex = try! NSRegularExpression(pattern: "\\+?\\d[\\d -]{8,12}\\d")
+        let phoneNumberRegex = try NSRegularExpression(pattern: "\\+?\\d[\\d -]{8,12}\\d")
         let numbers = phoneNumberRegex.matches(in: self, range: NSRange(self.startIndex..., in: self)).map {
             String(self[Range($0.range, in: self)!])
         }

@@ -82,9 +82,6 @@ public struct Settings {
 
                 switch action {
 
-                    case .binding:
-                        return .none
-
                     case .binding(\.enableNotifications):
                         guard
                             state.enableNotifications,
@@ -95,7 +92,8 @@ public struct Settings {
                             return .none
                         }
 
-                        state.userNotificationSettings?.authorizationStatus = state.enableNotifications == true ? .authorized : .denied
+                        let newStatus: UNAuthorizationStatus = state.enableNotifications ? .authorized : .denied
+                        state.userNotificationSettings?.authorizationStatus = newStatus
                         switch userNotificationSettings.authorizationStatus {
                             case .notDetermined, .provisional:
                                 state.enableNotifications = true
@@ -127,6 +125,9 @@ public struct Settings {
                                 return .none
                         }
 
+                    case .binding:
+                        return .none
+
                     case .onAppear:
                         state.buildNumber = self.build.number()
 
@@ -134,7 +135,7 @@ public struct Settings {
                             state.currentUser = try keychainClient.readCodable(.user, self.build.identifier(), UserOutput.self)
                         } catch {
                             // fatalError("Do soemthing from SettingsFeature!")
-                            logger.error("cant get current user from keychainClient ")
+                            settingsLogger.error("cant get current user from keychainClient ")
                         }
 
                         return .none
@@ -150,10 +151,10 @@ public struct Settings {
                     case let .userNotificationAuthorizationResponse(granted):
                         state.enableNotifications = granted
                         return granted
-                        ?  .run { _ in
+                        ? .none
+                        : .run { _ in
                             await self.unRegisterForRemoteNotifications()
                         }
-                        : .none
 
                     case let .userNotificationSettingsResponse(settings):
                         state.userNotificationSettings = settings
@@ -193,7 +194,8 @@ public struct Settings {
                                 )
                             ]
 
-                            _ = await self.applicationClient.open(components.url!, [:])
+                            guard let mailURL = components.url else { return }
+                            _ = await self.applicationClient.open(mailURL, [:])
                         }
                     case .logOutButtonTapped:
                         state.$isAuthorized.withLock { $0 = false }
@@ -209,14 +211,14 @@ public struct Settings {
                                     NeuAuthRefreshRequest(refreshToken: tokens.refreshToken)
                                 )
                             } catch {
-                                logger.error("Server logout failed: \(error.localizedDescription)")
+                                settingsLogger.error("Server logout failed: \(error.localizedDescription)")
                             }
 
                             // Clear all keychain data
                             do {
                                 try await keychainClient.logout()
                             } catch {
-                                logger.error("Keychain clear failed: \(error.localizedDescription)")
+                                settingsLogger.error("Keychain clear failed: \(error.localizedDescription)")
                             }
                         }
 
@@ -289,4 +291,4 @@ public struct Settings {
 
 }
 
-public let logger = Logger(subsystem: "com.eCardify.AddaMeIOS", category: "settins.reducer")
+let settingsLogger = Logger(subsystem: "com.eCardify.AddaMeIOS", category: "settings.reducer")

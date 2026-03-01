@@ -65,8 +65,8 @@ public struct AuthenticationView: View {
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.isValidationCodeIsSend)
         .alert($store.scope(state: \.destination?.alert, action: \.destination.alert))
         .sheet(
-            store: self.store.scope(
-                state: \.$destination.termsAndPrivacy, action: \.destination.termsAndPrivacy
+            item: $store.scope(
+                state: \.destination?.termsAndPrivacy, action: \.destination.termsAndPrivacy
             )
         ) { store in
             TermsAndPrivacyWebView(store: store)
@@ -106,6 +106,7 @@ public struct AuthenticationView: View {
                 .font(ECTypography.subheadline())
                 .foregroundStyle(ECColors.textSecondary)
         }
+        .frame(maxWidth: .infinity)
     }
 
     // MARK: - Email Input

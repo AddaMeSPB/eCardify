@@ -13,9 +13,9 @@ public class WebViewModel: ObservableObject {
         var urlString: String {
             switch self {
                 case .terms:
-                    return "https://addame.com/terms"
+                    return "https://ecardify.byalif.app/terms"
                 case .privacy:
-                    return "https://addame.com/privacy"
+                    return "https://ecardify.byalif.app/privacy"
             }
         }
     }

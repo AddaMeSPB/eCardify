@@ -6,7 +6,11 @@ import ComposableArchitecture
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     let store = Store(initialState: AppReducer.State()) {
+        #if DEBUG
         AppReducer()._printChanges()
+        #else
+        AppReducer()
+        #endif
     }
 
 
@@ -14,6 +18,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
+    #if DEBUG
+    // Demo mode: skip onboarding so the card list loads immediately
+    if ProcessInfo.processInfo.arguments.contains("-DEMO_MODE") {
+        UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+    }
+    #endif
     self.store.send(.appDelegate(.didFinishLaunching))
     return true
   }

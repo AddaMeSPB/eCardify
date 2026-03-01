@@ -33,7 +33,12 @@ final class AuthenticationCoreTests: XCTestCase {
     }
 
     func testEmailValidation_emptyEmail() async {
-        let store = TestStore(initialState: Login.State()) {
+        // Start with a valid email so clearing it produces a real state change
+        var state = Login.State()
+        state.email = "user@example.com"
+        state.isEmailValidated = true
+
+        let store = TestStore(initialState: state) {
             Login()
         }
 

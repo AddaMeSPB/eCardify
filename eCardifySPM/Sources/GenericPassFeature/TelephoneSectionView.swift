@@ -8,8 +8,6 @@ import ComposableArchitecture
 struct TelephoneSectionView: View {
     @Bindable var store: StoreOf<GenericPassForm>
     let value: ScrollViewProxy
-    @State var isEditing: Bool = false
-    @State private var isPhoneNumberValid: Bool = false
 
     public init(
         store: StoreOf<GenericPassForm>,
@@ -23,33 +21,10 @@ struct TelephoneSectionView: View {
         Section {
 
             ForEach(store.vCard.telephones.indices, id: \.self) { index in
-
-                Picker(L("Device Type"), selection: $store.vCard.telephones[index].type) {
-                    ForEach(VCard.Telephone.TType.allCases) { option in
-                        Text(option.rawValue.uppercased())
-                            .font(ECTypography.body(.medium))
-                    }
-                }
-
-                iPhoneNumberField(
-                    "+351 (000) 000-0000",
-                    text: $store.vCard.telephones[index].number,
-                    isEditing: $isEditing
+                TelephoneRowView(
+                    type: $store.vCard.telephones[index].type,
+                    number: $store.vCard.telephones[index].number
                 )
-                .flagHidden(false)
-                .prefixHidden(false)
-                .font(UIFont(size: 20, weight: .semibold, design: .monospaced))
-                .placeholderColor(ECColors.error.opacity(0.3))
-                .foregroundColor(isPhoneNumberValid ? .label : UIColor.systemRed.withAlphaComponent(0.5))
-                .clearButtonMode(.whileEditing)
-                .onClear { _ in isEditing.toggle() }
-                .padding(.vertical, ECSpacing.md)
-
-                if !isPhoneNumberValid && isEditing {
-                    Text(L("Number is invalid"))
-                        .font(ECTypography.caption())
-                        .foregroundStyle(ECColors.error)
-                }
             }
             .onDelete(perform: deletePhoneNumber)
 
@@ -92,6 +67,47 @@ struct TelephoneSectionView: View {
     func deletePhoneNumber(at offsets: IndexSet) {
         if store.vCard.telephones.count > 1 {
             store.vCard.telephones.remove(atOffsets: offsets)
+        }
+    }
+}
+
+// MARK: - Per-row view with isolated @State
+
+private struct TelephoneRowView: View {
+    @Binding var type: VCard.Telephone.TType
+    @Binding var number: String
+    @State private var isEditing: Bool = false
+    @State private var isPhoneNumberValid: Bool = false
+
+    var body: some View {
+        Picker(L("Device Type"), selection: $type) {
+            ForEach(VCard.Telephone.TType.allCases) { option in
+                Text(LDynamic(option.rawValue.uppercased()))
+                    .font(ECTypography.body(.medium))
+            }
+        }
+
+        iPhoneNumberField(
+            "+351 (000) 000-0000",
+            text: $number,
+            isEditing: $isEditing
+        )
+        .flagHidden(false)
+        .prefixHidden(false)
+        .font(UIFont(size: 20, weight: .semibold, design: .monospaced))
+        .placeholderColor(ECColors.error.opacity(0.3))
+        .foregroundColor(isPhoneNumberValid ? .label : UIColor.systemRed.withAlphaComponent(0.5))
+        .clearButtonMode(.whileEditing)
+        .onClear { _ in isEditing.toggle() }
+        .onNumberChange { phoneNumber in
+            isPhoneNumberValid = phoneNumber != nil
+        }
+        .padding(.vertical, ECSpacing.md)
+
+        if !isPhoneNumberValid && isEditing {
+            Text(L("Number is invalid"))
+                .font(ECTypography.caption())
+                .foregroundStyle(ECColors.error)
         }
     }
 }

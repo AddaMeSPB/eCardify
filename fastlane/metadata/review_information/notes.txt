@@ -1,0 +1,15 @@
+eCardify uses a passwordless OTP (one-time passcode) login. No password is required.
+
+How to test login:
+1. Tap "Login or Register" on the main screen.
+2. Enter any valid email address you can access.
+3. Tap "Continue" — a 6-digit verification code will be sent to that email.
+4. Check your email inbox (also spam/junk folder) for the code from eCardify.
+5. Enter the 6-digit code — login completes automatically.
+
+After login you can:
+- Create digital business cards with contact info, organization, and job title.
+- Generate QR codes for each card to share instantly.
+- View and manage all your cards from the Digital Cards list.
+
+The app can be fully tested without login — you can browse the interface and see the empty state. Login is only required to create and save business cards.

@@ -99,7 +99,7 @@ extension AttachmentS3Client {
             throw UploadError.compressError
         }
 
-        let imageFormat = data.1
+        let _ = data.1
         let imageData = data.0
         let imageKey = buildImageKey(with: options)
 

@@ -48,7 +48,7 @@ struct OnboardingView: View {
                         } label: {
                             Text(L("Skip"))
                                 .font(ECTypography.subheadline(.medium))
-                                .foregroundStyle(ECColors.textSecondary)
+                                .foregroundStyle(Color(.secondaryLabel))
                         }
                         .padding(.trailing, ECSpacing.lg)
                         .padding(.top, ECSpacing.xs)
@@ -111,7 +111,9 @@ private struct OnboardingPageView: View {
     let title: String
     let description: String
 
-    @State private var isAppeared = false
+    // When animations are disabled (e.g. during snapshot tests),
+    // start fully visible so the capture isn't blank.
+    @State private var isAppeared = !UIView.areAnimationsEnabled
 
     var body: some View {
         VStack(spacing: ECSpacing.xl) {
@@ -153,8 +155,9 @@ private struct OnboardingPageView: View {
             // Description
             Text(description)
                 .font(ECTypography.body())
-                .foregroundStyle(ECColors.textSecondary)
+                .foregroundStyle(Color(.secondaryLabel))
                 .multilineTextAlignment(.center)
+                .lineSpacing(4)
                 .padding(.horizontal, ECSpacing.xxl)
                 .offset(y: isAppeared ? 0 : 20)
                 .opacity(isAppeared ? 1.0 : 0.0)
@@ -163,6 +166,7 @@ private struct OnboardingPageView: View {
             Spacer()
             Spacer()
         }
+        .frame(maxWidth: .infinity)
         .onAppear { isAppeared = true }
         .onDisappear { isAppeared = false }
     }

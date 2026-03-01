@@ -33,7 +33,7 @@ public struct AppView: View {
                     store.send(.onAppear)
                 }
                 .fullScreenCover(
-                    store: self.store.scope(state: \.$authState, action: \.auth ),
+                    item: $store.scope(state: \.authState, action: \.auth),
                     content: AuthenticationView.init(store:)
                 )
 

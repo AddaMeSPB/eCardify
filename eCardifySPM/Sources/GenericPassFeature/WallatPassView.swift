@@ -7,7 +7,7 @@ import ComposableArchitecture
 
 public struct WalletPassView: View {
 
-    public let store: StoreOf<WalletPassList>
+    @Bindable public var store: StoreOf<WalletPassList>
 
     public init(store: StoreOf<WalletPassList>) {
         self.store = store
@@ -34,32 +34,32 @@ public struct WalletPassView: View {
             .toolbar { settingsToolbar }
             .onAppear { store.send(.onAppear) }
             .sheet(
-                store: self.store.scope(
-                    state: \.$destination.digitalCard,
+                item: $store.scope(
+                    state: \.destination?.digitalCard,
                     action: \.destination.digitalCard
                 )
             ) { store in
                 CardDesignView(store: store)
             }
             .navigationDestination(
-                store: self.store.scope(
-                    state: \.$destination.add,
+                item: $store.scope(
+                    state: \.destination?.add,
                     action: \.destination.add
                 )
             ) { store in
                 GenericPassFormView(store: store)
             }
             .navigationDestination(
-                store: self.store.scope(
-                    state: \.$destination.settings,
+                item: $store.scope(
+                    state: \.destination?.settings,
                     action: \.destination.settings
                 )
             ) { store in
                 SettingsView(store: store)
             }
             .sheet(
-                store: self.store.scope(
-                    state: \.$destination.addPass,
+                item: $store.scope(
+                    state: \.destination?.addPass,
                     action: \.destination.addPass
                 )
             ) { store in
@@ -96,9 +96,9 @@ public struct WalletPassView: View {
     // MARK: - Card List
 
     private var cardListContent: some View {
-        LazyVStack(spacing: ECSpacing.md) {
-            ForEachStore(
-                self.store.scope(
+        LazyVStack(spacing: ECSpacing.sm) {
+            ForEach(
+                store.scope(
                     state: \.wPassLocal,
                     action: \.wPass
                 )

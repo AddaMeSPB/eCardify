@@ -41,7 +41,7 @@ public struct WalletPassList {
     public enum Action: BindableAction {
         case binding(BindingAction<State>)
         case onAppear
-        case wPass(id: WalletPassDetails.State.ID, action: WalletPassDetails.Action)
+        case wPass(IdentifiedActionOf<WalletPassDetails>)
         case wpResponse([WalletPass])
         case wpResponseFailed
         case wpLocalDataResponse([WalletPass])
@@ -71,10 +71,10 @@ public struct WalletPassList {
         BindingReducer()
 
         Reduce(self.core)
-            .ifLet(\.$destination, action: /Action.destination) {
+            .ifLet(\.$destination, action: \.destination) {
                 Destination()
             }
-            .forEach(\.wPassLocal, action: /Action.wPass(id:action:)) {
+            .forEach(\.wPassLocal, action: \.wPass) {
                 WalletPassDetails()
             }
     }
@@ -87,21 +87,39 @@ public struct WalletPassList {
 
         case .onAppear:
 
+            #if DEBUG
+            // Demo mode: data is already injected by AppReducer — skip API/DB fetch
+            if ProcessInfo.processInfo.arguments.contains("-DEMO_MODE") {
+                return .none
+            }
+            #endif
+
             sharedLogger.log("onAppear get success before login")
             // @Shared(.appStorage) auto-syncs — no manual read needed
 
             do {
                 state.user = try self.keychainClient.readCodable(.user, self.build.identifier(), UserOutput.self)
             } catch {
-                //state.alert = .init(title: TextState("Missing you id! please login again!"))
+                // Keychain user missing — if was authorized, force re-login
+                if state.isAuthorized {
+                    sharedLogger.logError("Keychain user missing but isAuthorized=true — forcing re-login")
+                    state.$isAuthorized.withLock { $0 = false }
+                    return .send(.openSheetLogin(true))
+                }
+                return .none
+            }
+
+            // Skip if already loading (prevents duplicate fetches on rapid nav back)
+            guard !state.isLoadingWPL else {
                 return .none
             }
 
             state.isLoadingWPL = true
             sharedLogger.log("onAppear get success after login")
 
+            // 1. Show cached local data immediately, then refresh from remote
             return .run { send in
-                await send(.getWP)
+                // Show local cache first (fast)
                 do {
                     let wpl = try await localDatabase.find()
                     await send(.wpLocalDataResponse(wpl))
@@ -109,6 +127,8 @@ public struct WalletPassList {
                     sharedLogger.logError("\(#line) cant find any data error:- \(error.localizedDescription)")
                     await send(.wpLocalDataFailed)
                 }
+                // Then fetch remote update (slower, overwrites local)
+                await send(.getWP)
             }
 
 
@@ -134,7 +154,7 @@ public struct WalletPassList {
             state.destination = .addPass(.init(pass: pass))
             return .none
 
-        case .wPass(id: let id, action: let wpaction):
+        case .wPass(.element(id: let id, action: let wpaction)):
             if wpaction == .addPassToWallet {
                 if let pass = state.wPassLocal[id: id] {
                     let url =  "https://ecardify.ams3.cdn.digitaloceanspaces.com/ecardify/uploads/pass/\(pass.wp.ownerId.hexString)/\(pass.id).pkpass"
@@ -217,7 +237,11 @@ public struct WalletPassList {
           return .none
 
         case .createGenericFormButtonTapped:
-            state.destination = .add(.init(vCard: state.vCard ?? .empty))
+            // Gate: must be logged in before entering the form
+            guard state.isAuthorized else {
+                return .send(.openSheetLogin(true))
+            }
+            state.destination = .add(.init(user: state.user, vCard: state.vCard ?? .empty))
             return .none
 
         case .dismissAddGenericFormButtonTapped:
@@ -257,19 +281,19 @@ public struct WalletPassList {
 
         public var body: some Reducer<State, Action> {
 
-            Scope(state: /State.addPass, action: /Action.addPass) {
+            Scope(state: \.addPass, action: \.addPass) {
                 AddPass()
             }
 
-            Scope(state: /State.digitalCard, action: /Action.digitalCard) {
+            Scope(state: \.digitalCard, action: \.digitalCard) {
                 CardDesignReducer()
             }
 
-            Scope(state: /State.add, action: /Action.add) {
+            Scope(state: \.add, action: \.add) {
                 GenericPassForm()
             }
 
-            Scope(state: /State.settings, action: /Action.settings) {
+            Scope(state: \.settings, action: \.settings) {
                 Settings()
             }
         }

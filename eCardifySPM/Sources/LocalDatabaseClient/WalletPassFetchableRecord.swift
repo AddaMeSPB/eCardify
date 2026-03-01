@@ -1,7 +1,7 @@
 import GRDB
 import ECSharedModels
 
-extension WalletPass: FetchableRecord {
+extension WalletPass: @retroactive FetchableRecord {
     public static let databaseTableName = collectionName
 
     public enum Columns {
@@ -16,5 +16,5 @@ extension WalletPass: FetchableRecord {
     }
 }
 
-extension WalletPass.CodingKeys: ColumnExpression {}
+extension WalletPass.CodingKeys: @retroactive ColumnExpression {}
 

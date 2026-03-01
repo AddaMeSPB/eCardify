@@ -8,7 +8,7 @@ import ComposableArchitecture
 
 public struct SettingsView: View {
 
-    let store: StoreOf<Settings>
+    @Bindable var store: StoreOf<Settings>
     @State private var isSharePresented = false
 
     public init(store: StoreOf<Settings>) {
@@ -36,8 +36,8 @@ public struct SettingsView: View {
         .onAppear { store.send(.onAppear) }
         .navigationTitle(L("Settings"))
         .navigationDestination(
-            store: self.store.scope(
-                state: \.$destination.restore,
+            item: $store.scope(
+                state: \.destination?.restore,
                 action: \.destination.restore
             )
         ) { store in
@@ -282,11 +282,10 @@ struct SettingsView_Previews: PreviewProvider {
 // MARK: - Our Apps Data
 
 enum OurApps: String, CaseIterable {
-    case addame, iInterview, notifyWords
+    case iInterview, notifyWords
 
     var displayName: String {
         switch self {
-        case .addame: return "AddaMe"
         case .iInterview: return "iIntrvwBell"
         case .notifyWords: return "NotifyWords"
         }
@@ -294,8 +293,6 @@ enum OurApps: String, CaseIterable {
 
     var urlLink: String {
         switch self {
-        case .addame:
-            return "https://apps.apple.com/pt/app/walk-nearby-neighbours-friends/id1538487173?l=en-GB"
         case .iInterview:
             return "https://apps.apple.com/pt/app/iintrvwbell/id6457363081?l=en-GB"
         case .notifyWords:
@@ -305,8 +302,6 @@ enum OurApps: String, CaseIterable {
 
     var logoImageLink: URL {
         switch self {
-        case .addame:
-            return URL(string: "https://github.com/AddaMeSPB/AddaMeSPB.github.io/assets/8770772/eb00fcf7-65b6-4e64-ab1c-faadfd826944")!
         case .iInterview:
             return URL(string: "https://github.com/AddaMeSPB/AddaMeSPB.github.io/assets/8770772/f832e748-e9f2-4a10-8961-c3f10589ed0c")!
         case .notifyWords:

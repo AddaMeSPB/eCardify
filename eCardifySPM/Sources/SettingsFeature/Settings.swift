@@ -276,13 +276,13 @@ public struct Settings {
 
         public var body: some Reducer<State, Action> {
 
-            Scope(state: /State.alert, action: /Action.alert) {}
+            Scope(state: \.alert, action: \.alert) {}
 
-            Scope(state: /State.termsAndPrivacy, action: /Action.termsAndPrivacy) {
+            Scope(state: \.termsAndPrivacy, action: \.termsAndPrivacy) {
                 TermsAndPrivacy()
             }
 
-            Scope(state: /State.restore, action: /Action.restore) {
+            Scope(state: \.restore, action: \.restore) {
                 StoreKitReducer()
             }
 
@@ -291,4 +291,4 @@ public struct Settings {
 
 }
 
-let settingsLogger = Logger(subsystem: "com.eCardify.AddaMeIOS", category: "settings.reducer")
+let settingsLogger = Logger(subsystem: "cardify.addame.com.eCardify", category: "settings.reducer")

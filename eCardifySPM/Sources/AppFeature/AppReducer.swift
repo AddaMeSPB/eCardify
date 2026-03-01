@@ -13,7 +13,7 @@ import ComposableArchitecture
 @Reducer
 public struct AppReducer {
 
-    @Reducer(state: .equatable)
+    @Reducer
     public enum Path {
         case genericForm(GenericPassForm)
         case settings(Settings)
@@ -46,6 +46,7 @@ public struct AppReducer {
         case auth(PresentationAction<Login.Action>)
         case isSheetLogin(isPresented: Bool)
         case deepLink(URL)
+        case validateSession
         case tokenRefreshFailed
     }
 
@@ -67,13 +68,13 @@ public struct AppReducer {
 //          AppDelegateReducer()
 //      }
 
-        Scope(state: \.walletState, action: /Action.walletAction) {
+        Scope(state: \.walletState, action: \.walletAction) {
             WalletPassList()
         }
 
         Reduce(self.core)
-            .forEach(\.path, action: \.path) 
-            .ifLet(\.$authState, action: /AppReducer.Action.auth) {
+            .forEach(\.path, action: \.path)
+            .ifLet(\.$authState, action: \.auth) {
                 Login()
             }
     }
@@ -85,42 +86,26 @@ public struct AppReducer {
             if ProcessInfo.processInfo.arguments.contains("-UI_TESTING") {
                 state.walletState.$isAuthorized.withLock { $0 = true }
             }
+            if ProcessInfo.processInfo.arguments.contains("-DEMO_MODE") {
+                state.walletState = .demoMode
+                return .none
+            }
             #endif
-            return .none
+
+            // Not logged in → show login sheet on cold launch
+            if !state.walletState.isAuthorized {
+                state.authState = .init()
+                return .none
+            }
+
+            // Logged in → validate token is fresh
+            return .send(.validateSession)
 
         case .appDelegate:
             return .none
 
         case .didChangeScenePhase(.active):
-            return .run { send in
-                // Read current tokens from keychain
-                guard let tokens = try? keychainClient.readCodable(
-                    .token, build.identifier(), RefreshTokenResponse.self
-                ) else { return }
-
-                // Check if access token is expired or near expiry (within 60s)
-                guard isAccessTokenExpired(tokens.accessToken) else { return }
-
-                // Attempt token refresh
-                do {
-                    let response = try await neuAuthClient.refreshToken(
-                        NeuAuthRefreshRequest(refreshToken: tokens.refreshToken)
-                    )
-                    let loginRes = response.toSuccessfulLoginResponse()
-                    guard let newTokens = loginRes.access,
-                          let newUser = loginRes.user else { return }
-                    try await keychainClient.saveOrUpdateCodable(
-                        newTokens, .token, build.identifier()
-                    )
-                    try await keychainClient.saveOrUpdateCodable(
-                        newUser, .user, build.identifier()
-                    )
-                } catch {
-                    // Refresh failed — session expired or revoked, force re-login
-                    await send(.tokenRefreshFailed)
-                }
-            }
-            .cancellable(id: CancelID.tokenRefresh, cancelInFlight: true)
+            return .send(.validateSession)
 
         case .didChangeScenePhase(.background):
             return .none
@@ -144,12 +129,17 @@ public struct AppReducer {
 
         case .auth(.presented(.verificationSuccess)):
             // isAuthorized is @Shared — automatically synced via AppStorage.
-            // The .update(isAuthorized:) action below is redundant for the value itself
-            // but signals GenericPassForm that auth completed (e.g., to proceed with pass creation).
+            // The .update(isAuthorized:) action signals GenericPassForm that auth completed
+            // (e.g., to proceed with pendingSave retry). Only send if the form is presented.
+            let isFormPresented = state.walletState.destination != nil
             return .run { send in
                 try await clock.sleep(for: .seconds(1))
-                await send(.walletAction(.destination(.presented(.add(.update(isAuthorized: true))))))
+                if isFormPresented {
+                    await send(.walletAction(.destination(.presented(.add(.update(isAuthorized: true))))))
+                }
                 await send(.isSheetLogin(isPresented: false))
+                // Refresh wallet pass list after login (handles login from empty state)
+                await send(.walletAction(.onAppear))
             }
 
         case .auth:
@@ -168,6 +158,54 @@ public struct AppReducer {
             print("[DeepLink] Received: \(url.absoluteString)")
             #endif
             return .none
+
+        // MARK: - Session Validation
+
+        /// Centralized token validation — called on cold launch and scene activation.
+        /// 1. If not authorized → nothing to validate
+        /// 2. If authorized but no token in keychain → force re-login
+        /// 3. If token exists but expired → attempt refresh
+        /// 4. If refresh fails → force re-login
+        case .validateSession:
+            return .run { [isAuthorized = state.walletState.isAuthorized] send in
+                // Not logged in — nothing to validate on foreground
+                guard isAuthorized else { return }
+
+                // Check if tokens exist in keychain
+                guard let tokens = try? keychainClient.readCodable(
+                    .token, build.identifier(), RefreshTokenResponse.self
+                ) else {
+                    // isAuthorized persisted via AppStorage but keychain tokens are gone
+                    await send(.tokenRefreshFailed)
+                    return
+                }
+
+                // Token exists and is still valid — nothing to do
+                guard isAccessTokenExpired(tokens.accessToken) else { return }
+
+                // Token expired — attempt refresh
+                do {
+                    let response = try await neuAuthClient.refreshToken(
+                        NeuAuthRefreshRequest(refreshToken: tokens.refreshToken)
+                    )
+                    let loginRes = response.toSuccessfulLoginResponse()
+                    guard let newTokens = loginRes.access,
+                          let newUser = loginRes.user else {
+                        await send(.tokenRefreshFailed)
+                        return
+                    }
+                    try await keychainClient.saveOrUpdateCodable(
+                        newTokens, .token, build.identifier()
+                    )
+                    try await keychainClient.saveOrUpdateCodable(
+                        newUser, .user, build.identifier()
+                    )
+                } catch {
+                    // Refresh failed — session expired or revoked
+                    await send(.tokenRefreshFailed)
+                }
+            }
+            .cancellable(id: CancelID.tokenRefresh, cancelInFlight: true)
 
         case .tokenRefreshFailed:
             state.walletState.$isAuthorized.withLock { $0 = false }
@@ -209,3 +247,7 @@ private func isAccessTokenExpired(_ token: String) -> Bool {
     // Expired if current time >= (exp - 60s buffer)
     return Date().timeIntervalSince1970 >= (exp - 60)
 }
+
+// MARK: - Conformances
+
+extension AppReducer.Path.State: Equatable {}

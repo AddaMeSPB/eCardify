@@ -77,11 +77,11 @@ public struct GenericPassFormView: View {
         .onAppear { store.send(.onAppear) }
         .alert($store.scope(state: \.alert, action: \.alert))
         .sheet(
-            store: store.scope(state: \.$imagePicker, action: \.imagePicker),
+            item: $store.scope(state: \.imagePicker, action: \.imagePicker),
             content: ImagePickerView.init(store:)
         )
         .sheet(
-            store: store.scope(state: \.$digitalCardDesign, action: \.digitalCardDesign),
+            item: $store.scope(state: \.digitalCardDesign, action: \.digitalCardDesign),
             content: CardDesignListView.init(store:)
         )
     }
@@ -160,10 +160,22 @@ public struct GenericPassFormView: View {
 
     private var productTypeSection: some View {
         Section {
-            Picker(L("Product Type"), selection: $store.storeKitState.type) {
-                ForEach(StoreKitReducer.State.ProductType.allCases) { option in
-                    Text(option.rawValue.uppercased())
-                        .font(ECTypography.body(.medium))
+            if store.isEligibleForFreeCard {
+                HStack {
+                    Text(L("Product Type"))
+                    Spacer()
+                    Text(L("BASIC"))
+                        .foregroundStyle(ECColors.textSecondary)
+                }
+                Text(L("Your first card is free with basic templates!"))
+                    .font(ECTypography.caption())
+                    .foregroundStyle(ECColors.primary)
+            } else {
+                Picker(L("Product Type"), selection: $store.storeKitState.type) {
+                    ForEach(StoreKitReducer.State.ProductType.allCases) { option in
+                        Text(LDynamic(option.rawValue.uppercased()))
+                            .font(ECTypography.body(.medium))
+                    }
                 }
             }
         }
@@ -194,9 +206,13 @@ public struct GenericPassFormView: View {
                     }
                 }
             }
-            .disabled(!store.isCustomProduct)
+            .disabled(!store.isCustomProduct || store.isEligibleForFreeCard)
 
-            if !store.isCustomProduct {
+            if store.isEligibleForFreeCard {
+                Text(L("Custom card design is available with paid cards."))
+                    .font(ECTypography.caption())
+                    .foregroundStyle(ECColors.textSecondary)
+            } else if !store.isCustomProduct {
                 Text(L("Change product type to Custom to unlock card design."))
                     .font(ECTypography.caption())
                     .foregroundStyle(ECColors.textSecondary)
@@ -208,7 +224,20 @@ public struct GenericPassFormView: View {
 
     private var paymentSection: some View {
         VStack(alignment: .trailing, spacing: ECSpacing.sm) {
-            if let product = store.storeKitState.product {
+            if store.isEligibleForFreeCard {
+                freeCardButton
+
+                Text(L("Free Card"))
+                    .font(ECTypography.headline())
+                    .foregroundStyle(ECColors.textPrimary)
+
+                Text(L("Your first digital business card is free with basic templates."))
+                    .font(ECTypography.caption())
+                    .foregroundStyle(ECColors.textSecondary)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+
+                legalLinks
+            } else if let product = store.storeKitState.product {
                 payButton(product: product)
 
                 Text(product.localizedTitle)
@@ -219,6 +248,9 @@ public struct GenericPassFormView: View {
                     .font(ECTypography.caption())
                     .foregroundStyle(ECColors.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .trailing)
+
+                // Legal links — Apple 3.1.2 requirement
+                legalLinks
             } else {
                 ProgressView()
                     .tint(ECColors.primary)
@@ -230,6 +262,68 @@ public struct GenericPassFormView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, ECSpacing.sm)
         .id(store.bottomID)
+    }
+
+    // MARK: - Legal Links
+
+    @Environment(\.openURL) private var openURL
+
+    private var legalLinks: some View {
+        HStack(spacing: ECSpacing.md) {
+            Spacer()
+            Button {
+                if let url = URL(string: "https://ecardify.byalif.app/privacy") {
+                    openURL(url)
+                }
+            } label: {
+                Text(L("Privacy Policy"))
+                    .font(ECTypography.caption())
+                    .foregroundStyle(ECColors.primary)
+            }
+            .buttonStyle(.plain)
+            Text("·")
+                .font(ECTypography.caption())
+                .foregroundStyle(ECColors.textSecondary)
+            Button {
+                if let url = URL(string: "https://ecardify.byalif.app/terms") {
+                    openURL(url)
+                }
+            } label: {
+                Text(L("Terms of Use"))
+                    .font(ECTypography.caption())
+                    .foregroundStyle(ECColors.primary)
+            }
+            .buttonStyle(.plain)
+            Spacer()
+        }
+        .padding(.top, ECSpacing.xxs)
+    }
+
+    // MARK: - Free Card Button
+
+    private var freeCardButton: some View {
+        Button {
+            store.send(.createPass)
+        } label: {
+            if store.isActivityIndicatorVisible {
+                ProgressView()
+                    .tint(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(ECSpacing.sm)
+            } else {
+                Text(L("Create Your Free Card"))
+                    .font(ECTypography.headline())
+                    .minimumScaleFactor(0.5)
+                    .frame(maxWidth: .infinity)
+                    .padding(ECSpacing.sm)
+            }
+        }
+        .foregroundStyle(.white)
+        .background(store.isFormValid ? ECColors.primary : ECColors.textSecondary)
+        .clipShape(RoundedRectangle(cornerRadius: ECRadius.md))
+        .disabled(!store.isFormValid || store.isActivityIndicatorVisible)
+        .buttonStyle(.borderless)
+        .accessibilityIdentifier("free_card_button")
     }
 
     @ViewBuilder
@@ -253,7 +347,7 @@ public struct GenericPassFormView: View {
         .foregroundStyle(.white)
         .background(store.isFormValid ? ECColors.primary : ECColors.textSecondary)
         .clipShape(RoundedRectangle(cornerRadius: ECRadius.md))
-        .disabled(!store.isFormValid)
+        .disabled(!store.isFormValid || store.storeKitState.isPurchasing || store.isActivityIndicatorVisible)
         .buttonStyle(.borderless)
         .accessibilityIdentifier("pay_button")
     }
@@ -282,7 +376,7 @@ private func cost(product: StoreKitClient.Product) -> String {
     let formatter = NumberFormatter()
     formatter.numberStyle = .currency
     formatter.locale = product.priceLocale
-    return formatter.string(from: product.price) ?? ""
+    return formatter.string(from: product.price) ?? "$\(product.price)"
 }
 
 extension StoreKitReducer.State {
@@ -295,9 +389,9 @@ extension StoreKitClient.Product {
         downloadContentLengths: [],
         downloadContentVersion: "",
         isDownloadable: false,
-        localizedDescription: "Basic version of product has fixed design!",
-        localizedTitle: "Basic Card!",
-        price: 3,
+        localizedDescription: "Basic digital business card with a fixed design.",
+        localizedTitle: "Basic Card",
+        price: 1.99,
         priceLocale: .init(identifier: "en_US"),
         productIdentifier: "cardify.addame.com.eCardify.BasicCard.testing"
     )
@@ -305,9 +399,9 @@ extension StoreKitClient.Product {
         downloadContentLengths: [],
         downloadContentVersion: "",
         isDownloadable: false,
-        localizedDescription: "Flexibility & Customisation can add multi data",
-        localizedTitle: "FlexiCard!",
-        price: 6,
+        localizedDescription: "Custom card design with flexible data fields.",
+        localizedTitle: "FlexiCard",
+        price: 4.99,
         priceLocale: .init(identifier: "en_US"),
         productIdentifier: "cardify.addame.com.eCardify.FlexiCard.testing"
     )

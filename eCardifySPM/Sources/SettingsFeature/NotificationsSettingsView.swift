@@ -1,4 +1,5 @@
 import SwiftUI
+import L10nResources
 import FoundationExtension
 import ComposableArchitecture
 
@@ -10,16 +11,16 @@ struct NotificationsSettingsView: View {
         SettingsForm {
             SettingsRow {
                 Toggle(
-                    "Enable notifications", isOn: $store.enableNotifications
+                    L("Enable notifications"), isOn: $store.enableNotifications
                 )
                 .font(.system(size: 16, design: .rounded))
-                Text("*** Please don't turn off notification then whole function will be turn off")
+                Text(L("Notification warning"))
                     .font(.system(size: 13, design: .rounded))
                     .foregroundColor(.red)
                     .padding(.top, -20)
             }
         }
-        .navigationTitle("Notifications")
+        .navigationTitle(L("Notifications"))
     }
 }
 

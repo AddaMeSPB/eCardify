@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Foundation
+import L10nResources
 import ECSharedModels
 import ComposableArchitecture
 
@@ -26,6 +27,7 @@ extension CardDesignListReducer.State {
 }
 
 public struct CardDesignListReducer: Reducer {
+    @ObservableState
     public struct State: Equatable {
         public init(
             cardDesigns: IdentifiedArrayOf<CardDesignReducer.State> = .defaultData.cardDesigns,
@@ -46,7 +48,7 @@ public struct CardDesignListReducer: Reducer {
     @CasePathable
     public enum Action: Equatable {
         case onAppear
-        case cardDesigns(id: CardDesignReducer.State.ID, action: CardDesignReducer.Action)
+        case cardDesigns(IdentifiedActionOf<CardDesignReducer>)
         case dismiss
     }
 
@@ -57,7 +59,7 @@ public struct CardDesignListReducer: Reducer {
 
     public var body: some Reducer<State, Action> {
         Reduce(self.core)
-            .forEach(\.cardDesigns, action: /Action.cardDesigns) {
+            .forEach(\.cardDesigns, action: \.cardDesigns) {
                 CardDesignReducer()
             }
     }
@@ -66,7 +68,7 @@ public struct CardDesignListReducer: Reducer {
         switch action {
         case .onAppear:
             return .none
-        case .cardDesigns(id: _, action: let action):
+        case .cardDesigns(.element(id: _, action: let action)):
 
             if case let .selectedDCard(uuid) = action {
 
@@ -121,7 +123,7 @@ public struct CardDesignListView: View {
                 VStack {
 
                     HStack {
-                        Text("Select card design")
+                        Text(L("Select card design"))
                             .font(.title3)
                             .fontWeight(.heavy)
                             .layoutPriority(1)
@@ -133,7 +135,7 @@ public struct CardDesignListView: View {
                         Button {
                             store.send(.dismiss)
                         } label: {
-                            Text("Close")
+                            Text(L("Close"))
                                 .font(.title3)
                                 .fontWeight(.bold)
                                 .padding()
@@ -144,8 +146,8 @@ public struct CardDesignListView: View {
                     .frame(maxWidth: .infinity)
 
                     TabView {
-                        ForEachStore(
-                            self.store.scope(
+                        ForEach(
+                            store.scope(
                                 state: \.cardDesigns,
                                 action: \.cardDesigns
                             )
@@ -159,7 +161,7 @@ public struct CardDesignListView: View {
                     .onAppear {
                         store.send(.onAppear)
                     }
-                    .navigationTitle("Select card design")
+                    .navigationTitle(L("Select card design"))
 
 
                 }
@@ -235,7 +237,7 @@ public struct CardDesignReducer {
             let vCardRepresentation = state.vCard.vCardRepresentation
 
             return .run { send in
-                if let image = await generateQRCode(from: vCardRepresentation) {
+                if let image = generateQRCode(from: vCardRepresentation) {
                     let swiftuiImage = Image(uiImage: image)
                     await send(.qrCode(swiftuiImage))
                 }
@@ -259,35 +261,23 @@ public struct CardDesignReducer {
 
     }
 
-    private func generateQRCode(from string: String) async -> UIImage? {
-        return await withCheckedContinuation { continuation in
-            Task {
-                let data = string.data(using: .utf8) // Change to .utf8
+    private func generateQRCode(from string: String) -> UIImage? {
+        let data = string.data(using: .utf8)
+        guard let filter = CIFilter(name: "CIQRCodeGenerator") else { return nil }
+        filter.setValue(data, forKey: "inputMessage")
+        filter.setValue("H", forKey: "inputCorrectionLevel")
+        guard let outputImage = filter.outputImage else { return nil }
 
-                if let filter = CIFilter(name: "CIQRCodeGenerator") {
-                    filter.setValue(data, forKey: "inputMessage")
-                    filter.setValue("H", forKey: "inputCorrectionLevel") // Add this line to set a higher correction level
+        let transformedImage = outputImage.transformed(
+            by: CGAffineTransform(scaleX: 10, y: 10)
+        )
+        let context = CIContext()
+        guard let cgImage = context.createCGImage(
+            transformedImage,
+            from: transformedImage.extent
+        ) else { return nil }
 
-                    guard let outputImage = filter.outputImage else {
-                        continuation.resume(returning: nil)
-                        return
-                    }
-
-                    let scaleX = 10.0 // scale X by 10 times
-                    let scaleY = 10.0 // scale Y by 10 times
-                    let transformedImage = outputImage.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
-
-                    let context = CIContext()
-                    if let cgImage = context.createCGImage(transformedImage, from: transformedImage.extent) {
-                        continuation.resume(returning: UIImage(cgImage: cgImage))
-                    } else {
-                        continuation.resume(returning: nil)
-                    }
-                } else {
-                    continuation.resume(returning: nil)
-                }
-            }
-        }
+        return UIImage(cgImage: cgImage)
     }
 
 }
@@ -352,7 +342,7 @@ public struct CardDesignView: View {
 
                     HStack(alignment: .top) {
                         VStack(alignment: .leading) {
-                            Text("NAME")
+                            Text(L("NAME"))
                                 .font(.title2)
                                 .fontWeight(.medium)
                                 .foregroundColor(Color(rgbString: store.colorP.labelColor))
@@ -388,7 +378,7 @@ public struct CardDesignView: View {
                     .padding(.top, 10)
 
                     VStack(alignment: .leading) {
-                        Text("POSITION")
+                        Text(L("POSITION"))
                             .font(.title2)
                             .fontWeight(.medium)
                             .foregroundColor(Color(rgbString: store.colorP.labelColor))
@@ -403,7 +393,7 @@ public struct CardDesignView: View {
                     HStack {
                         VStack(alignment: .leading) {
 
-                            Text("EMAIL")
+                            Text(L("EMAIL"))
                                 .font(.title2)
                                 .fontWeight(.medium)
                                 .foregroundColor(Color(rgbString: store.colorP.labelColor))
@@ -421,7 +411,7 @@ public struct CardDesignView: View {
                         Spacer()
 
                         VStack(alignment: .leading) {
-                            Text("MOBILE")
+                            Text(L("MOBILE"))
                                 .font(.title2)
                                 .fontWeight(.medium)
                                 .foregroundColor(Color(rgbString: store.colorP.labelColor))
@@ -496,7 +486,7 @@ public struct CardDesignView: View {
                             Button {
                                 store.send(.dismiss)
                             } label: {
-                                Text("Close")
+                                Text(L("Close"))
                                     .font(.title2)
                                     .fontWeight(.bold)
                             }
@@ -546,7 +536,9 @@ extension Color {
             .compactMap { Int($0.trimmingCharacters(in: .whitespaces)) }
 
         guard components.count == 3 else {
-            fatalError("cant convert color from string")
+            // Fallback to neutral gray instead of crashing
+            self.init(red: 186.0 / 255.0, green: 186.0 / 255.0, blue: 224.0 / 255.0)
+            return
         }
 
         let red = Double(components[0]) / 255.0

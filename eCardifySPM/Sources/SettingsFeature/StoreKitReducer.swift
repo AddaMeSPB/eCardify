@@ -3,6 +3,7 @@
 import StoreKit
 import LoggerKit
 import Foundation
+import L10nResources
 import AppConfiguration
 import ComposableStoreKit
 import ComposableArchitecture
@@ -83,6 +84,8 @@ public struct StoreKitReducer {
         }
     }
 
+    private enum CancelID { case storeKitObserver }
+
     public init() {}
 
     @Dependency(\.dismiss) var dismiss
@@ -121,6 +124,7 @@ public struct StoreKitReducer {
                 }
               }
             }
+            .cancellable(id: CancelID.storeKitObserver, cancelInFlight: true)
 
         case .paymentTransaction(.updatedTransactions(let pt)):
             guard let transactionState = pt.first?.transactionState
@@ -187,7 +191,7 @@ public struct StoreKitReducer {
     }
 }
 
-extension StoreKitClient.Product: Comparable  {
+extension StoreKitClient.Product: @retroactive Comparable {
     public static func < (lhs: StoreKitClient.Product, rhs: StoreKitClient.Product) -> Bool {
         return lhs.price.compare(rhs.price) == .orderedAscending
     }
@@ -201,25 +205,25 @@ extension StoreKitClient.Product: Comparable  {
 // Alert
 extension AlertState where Action == StoreKitReducer.Action.Alert {
   static let restoredPurchasesFailed: Self = .init {
-    TextState("Error")
+    TextState(L("Error"))
   } message: {
-    TextState("We couldn’t restore purchases, please try again.")
+    TextState(L("We couldn't restore purchases, please try again."))
   }
 
   static let restoredPurchases: Self = .init {
-    TextState("Purchase restore.")
-    
+    TextState(L("Purchase restored"))
+
   } actions: {
     ButtonState(role: .destructive, action: .backToParent) {
-      TextState("Back")
+      TextState(L("Back"))
     }
   } message: {
-    TextState("Your purchases was successfully restore.")
+    TextState(L("Your purchases were successfully restored."))
   }
 
   static let noRestoredPurchases: Self = .init {
-    TextState("No Purchases")
+    TextState(L("No Purchases"))
   } message: {
-    TextState("No purchases were found to restore.")
+    TextState(L("No purchases were found to restore."))
   }
 }

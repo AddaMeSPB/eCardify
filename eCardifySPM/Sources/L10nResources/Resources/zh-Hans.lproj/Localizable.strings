@@ -264,5 +264,11 @@
 <key>Your first digital business card is free with basic templates.</key><string>您的第一张数字名片使用基础模板完全免费。</string>
 <key>Custom card design is available with paid cards.</key><string>自定义卡片设计适用于付费卡片。</string>
 
+<!-- ============================================================ -->
+<!-- Connection / Retry                                            -->
+<!-- ============================================================ -->
+<key>Connection Error</key><string>连接错误</string>
+<key>Retry</key><string>重试</string>
+
 </dict>
 </plist>

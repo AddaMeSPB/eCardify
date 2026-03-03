@@ -264,5 +264,11 @@
 <key>Your first digital business card is free with basic templates.</key><string>Your first digital business card is free with basic templates.</string>
 <key>Custom card design is available with paid cards.</key><string>Custom card design is available with paid cards.</string>
 
+<!-- ============================================================ -->
+<!-- Connection / Retry                                            -->
+<!-- ============================================================ -->
+<key>Connection Error</key><string>Connection Error</string>
+<key>Retry</key><string>Retry</string>
+
 </dict>
 </plist>

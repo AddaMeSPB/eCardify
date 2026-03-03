@@ -264,5 +264,11 @@
 <key>Your first digital business card is free with basic templates.</key><string>最初のデジタル名刺はベーシックテンプレートで無料です。</string>
 <key>Custom card design is available with paid cards.</key><string>カスタムカードデザインは有料カードでご利用いただけます。</string>
 
+<!-- ============================================================ -->
+<!-- Connection / Retry                                            -->
+<!-- ============================================================ -->
+<key>Connection Error</key><string>接続エラー</string>
+<key>Retry</key><string>再試行</string>
+
 </dict>
 </plist>

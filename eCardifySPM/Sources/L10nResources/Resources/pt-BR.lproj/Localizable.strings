@@ -264,5 +264,11 @@
 <key>Your first digital business card is free with basic templates.</key><string>Seu primeiro cartão de visita digital é grátis com modelos básicos.</string>
 <key>Custom card design is available with paid cards.</key><string>O design personalizado está disponível nos cartões pagos.</string>
 
+<!-- ============================================================ -->
+<!-- Connection / Retry                                            -->
+<!-- ============================================================ -->
+<key>Connection Error</key><string>Erro de conexão</string>
+<key>Retry</key><string>Tentar novamente</string>
+
 </dict>
 </plist>

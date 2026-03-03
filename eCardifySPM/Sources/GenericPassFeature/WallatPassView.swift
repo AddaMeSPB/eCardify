@@ -69,7 +69,9 @@ public struct WalletPassView: View {
 
     private var scrollContent: some View {
         ScrollView {
-            if !store.wPassLocal.isEmpty {
+            if let errorMessage = store.loadError, store.wPassLocal.isEmpty {
+                errorStateContent(message: errorMessage)
+            } else if !store.wPassLocal.isEmpty {
                 cardListContent
             } else {
                 emptyStateContent
@@ -135,6 +137,25 @@ public struct WalletPassView: View {
                 ) {
                     store.send(.openSheetLogin(true))
                 }
+            }
+
+            Spacer()
+        }
+    }
+
+    // MARK: - Error State
+
+    private func errorStateContent(message: String) -> some View {
+        VStack(spacing: ECSpacing.xxl) {
+            Spacer(minLength: ECSpacing.xxxl)
+
+            ECEmptyState(
+                icon: "exclamationmark.triangle.fill",
+                title: L("Connection Error"),
+                message: message,
+                actionTitle: L("Retry")
+            ) {
+                store.send(.retryButtonTapped)
             }
 
             Spacer()

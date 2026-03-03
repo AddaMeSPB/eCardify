@@ -264,5 +264,11 @@
 <key>Your first digital business card is free with basic templates.</key><string>Ваша первая цифровая визитка бесплатна с базовыми шаблонами.</string>
 <key>Custom card design is available with paid cards.</key><string>Пользовательский дизайн карты доступен в платных картах.</string>
 
+<!-- ============================================================ -->
+<!-- Connection / Retry                                            -->
+<!-- ============================================================ -->
+<key>Connection Error</key><string>Ошибка соединения</string>
+<key>Retry</key><string>Повторить</string>
+
 </dict>
 </plist>

@@ -35,14 +35,18 @@ final class WalletPassListTests: XCTestCase {
     }
 
     func testWpResponseFailed() async {
+        var state = WalletPassList.State()
+        state.isLoadingWPL = true
         let store = TestStore(
-            initialState: WalletPassList.State()
+            initialState: state
         ) {
             WalletPassList()
         }
 
-        await store.send(.wpResponseFailed)
-        // No state change
+        await store.send(.wpResponseFailed("Unable to load cards. Please try again.")) {
+            $0.isLoadingWPL = false
+            $0.loadError = "Unable to load cards. Please try again."
+        }
     }
 
     // MARK: - Local Data Response

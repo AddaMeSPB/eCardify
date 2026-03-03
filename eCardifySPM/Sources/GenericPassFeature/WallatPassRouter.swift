@@ -31,6 +31,7 @@ public struct WalletPassList {
         public var wPassLocal: IdentifiedArrayOf<WalletPassDetails.State> = []
         public var isActivityIndicatorVisible = false
         public var isLoadingWPL: Bool = false
+        public var loadError: String? = nil
         @Shared(.appStorage("isAuthorized")) public var isAuthorized = false
         public var user: UserOutput? = nil
         
@@ -43,10 +44,11 @@ public struct WalletPassList {
         case onAppear
         case wPass(IdentifiedActionOf<WalletPassDetails>)
         case wpResponse([WalletPass])
-        case wpResponseFailed
+        case wpResponseFailed(String)
         case wpLocalDataResponse([WalletPass])
         case wpLocalDataFailed
         case getWP
+        case retryButtonTapped
         case sendPass(PKPass)
         case openSheetLogin(Bool)
         case destination(PresentationAction<Destination.Action>)
@@ -115,6 +117,7 @@ public struct WalletPassList {
             }
 
             state.isLoadingWPL = true
+            state.loadError = nil
             sharedLogger.log("onAppear get success after login")
 
             // 1. Show cached local data immediately, then refresh from remote
@@ -143,8 +146,23 @@ public struct WalletPassList {
                     await send(.wpResponse(wp))
                 } catch {
                     sharedLogger.logError(error)
-                    await send(.wpResponseFailed)
+                    let message: String
+                    if let urlError = error as? URLError {
+                        message = urlError.code == .notConnectedToInternet
+                            ? "No internet connection."
+                            : "Unable to reach the server. Please try again."
+                    } else {
+                        message = "Unable to load cards. Please try again."
+                    }
+                    await send(.wpResponseFailed(message))
                 }
+            }
+
+        case .retryButtonTapped:
+            state.loadError = nil
+            state.isLoadingWPL = true
+            return .run { send in
+                await send(.getWP)
             }
             
         case .openSheetLogin:
@@ -180,13 +198,16 @@ public struct WalletPassList {
             return .none
 
         case .wpResponse(let wp):
+            state.loadError = nil
             let wPassResponse = wp.map { WalletPassDetails.State(wp: $0, vCard: $0.vCard) }
             state.wPass = .init(uniqueElements: wPassResponse)
             return .run { send in
                 await send(.wpLocalDataResponse(wp))
             }
 
-        case .wpResponseFailed:
+        case .wpResponseFailed(let message):
+            state.isLoadingWPL = false
+            state.loadError = message
             return .none
 
         case .wpLocalDataResponse(let wpl):

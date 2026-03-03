@@ -133,6 +133,10 @@ final class AuthenticationCoreTests: XCTestCase {
             $0.build.identifier = { "com.test" }
         }
 
+        // @Shared(.appStorage) mutations may generate internal persistence
+        // effects; use .off to focus on the core verification flow.
+        store.exhaustivity = .off
+
         await store.send(.binding(.set(\.code, "123456"))) {
             $0.code = "123456"
             $0.isLoginRequestInFlight = true
@@ -140,8 +144,11 @@ final class AuthenticationCoreTests: XCTestCase {
 
         await store.receive(\.verificationSuccess) {
             $0.isLoginRequestInFlight = false
-            $0.$isAuthorized.withLock { $0 = true }
             $0.$isUserFirstNameEmpty.withLock { $0 = false }
+        }
+
+        await store.receive(\.moveToTableView) {
+            $0.$isAuthorized.withLock { $0 = true }
         }
     }
 

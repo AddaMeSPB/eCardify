@@ -83,15 +83,29 @@ final class WalletPassListTests: XCTestCase {
     // MARK: - Navigation
 
     func testCreateGenericFormButtonTapped() async {
+        var state = WalletPassList.State()
+        state.$isAuthorized.withLock { $0 = true }
+
+        let store = TestStore(initialState: state) {
+            WalletPassList()
+        }
+
+        await store.send(.createGenericFormButtonTapped) {
+            $0.destination = .add(.init(user: nil, vCard: .empty))
+        }
+    }
+
+    /// When not authorized, tapping create should open login sheet instead.
+    func testCreateGenericFormButtonTapped_notAuthorized_opensLogin() async {
         let store = TestStore(
             initialState: WalletPassList.State()
         ) {
             WalletPassList()
         }
 
-        await store.send(.createGenericFormButtonTapped) {
-            $0.destination = .add(.init(vCard: .empty))
-        }
+        await store.send(.createGenericFormButtonTapped)
+
+        await store.receive(\.openSheetLogin)
     }
 
     // MARK: - Open Sheet Login

@@ -242,4 +242,53 @@ final class AppReducerTests: XCTestCase {
         XCTAssertNotNil(store.state.authState,
             "Login sheet should be presented after tokenRefreshFailed")
     }
+
+    // MARK: - Auth flow routing
+
+    /// Login sheet should only close when AuthenticationCore emits moveToTableView
+    /// (which now happens only after keychain persistence succeeds).
+    func testAuthMoveToTableView_closesLoginSheet() async {
+        let clock = TestClock()
+
+        var state = AppReducer.State()
+        state.authState = .init()
+
+        let store = TestStore(initialState: state) {
+            AppReducer()
+        } withDependencies: {
+            $0.continuousClock = clock
+            $0.keychainClient = .noop
+            $0.build.identifier = { "com.test" }
+        }
+
+        store.exhaustivity = .off
+
+        await store.send(.auth(.presented(.moveToTableView)))
+
+        await clock.advance(by: .seconds(1))
+        await store.receive(\.isSheetLogin) {
+            $0.authState = nil
+        }
+        await store.receive(\.walletAction)
+    }
+
+    /// Regression guard: verificationSuccess alone must not close the login sheet.
+    /// When user/access are nil, Login shows an alert but does NOT dismiss.
+    func testAuthVerificationSuccess_doesNotCloseLoginSheet() async {
+        var state = AppReducer.State()
+        state.authState = .init()
+
+        let store = TestStore(initialState: state) {
+            AppReducer()
+        }
+
+        store.exhaustivity = .off
+
+        let incomplete = SuccessfulLoginResponse(status: "ok", user: nil, access: nil)
+        await store.send(.auth(.presented(.verificationSuccess(incomplete))))
+
+        // Login sheet must stay open — verificationSuccess with nil user/access
+        // shows an alert, it does NOT trigger moveToTableView.
+        XCTAssertNotNil(store.state.authState)
+    }
 }

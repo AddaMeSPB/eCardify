@@ -1,0 +1,3 @@
+- Correção da função de logout
+- Melhoria no tratamento de datas dos cartões
+- Correções de bugs e melhorias de desempenho

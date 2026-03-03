@@ -1,0 +1,3 @@
+- Correction de la déconnexion
+- Amélioration du traitement des dates pour les cartes
+- Corrections de bugs et améliorations des performances

@@ -1,0 +1,3 @@
+- Corretta la funzione di disconnessione
+- Migliorata la gestione delle date per i dati delle carte
+- Correzioni di bug e miglioramenti delle prestazioni

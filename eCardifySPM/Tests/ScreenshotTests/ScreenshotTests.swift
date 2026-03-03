@@ -142,13 +142,19 @@ final class ScreenshotTests: XCTestCase {
     }
 
     /// Resizes a PNG file on disk to the target pixel size if it doesn't match.
+    ///
+    /// UIGraphicsImageRenderer defaults to the screen's native scale (@3x on
+    /// iPhone simulators), which would triple the target dimensions. We force
+    /// scale = 1.0 so that 1 point == 1 pixel in the output.
     private func resizeImageIfNeeded(at path: String, to targetSize: CGSize) {
         guard let image = UIImage(contentsOfFile: path) else { return }
         let currentW = image.size.width * image.scale
         let currentH = image.size.height * image.scale
         guard currentW != targetSize.width || currentH != targetSize.height else { return }
 
-        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1.0  // 1 point = 1 pixel — produces exact targetSize pixels
+        let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
         let resized = renderer.image { _ in
             image.draw(in: CGRect(origin: .zero, size: targetSize))
         }

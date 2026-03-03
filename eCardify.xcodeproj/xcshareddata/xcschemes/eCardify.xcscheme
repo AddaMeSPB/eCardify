@@ -95,6 +95,17 @@
                ReferencedContainer = "container:eCardifySPM">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ScreenshotTests"
+               BuildableName = "ScreenshotTests"
+               BlueprintName = "ScreenshotTests"
+               ReferencedContainer = "container:eCardifySPM">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

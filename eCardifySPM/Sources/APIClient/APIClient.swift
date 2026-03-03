@@ -54,7 +54,7 @@ extension APIClient {
     public func request<Value: Decodable>(
         for route: Route,
         as type: Value.Type = Value.self,
-        decoder: JSONDecoder = .init()
+        decoder: JSONDecoder = .apiDecoder
     ) async throws -> Value {
         guard var request = try? SiteRouter().baseURL(APIClientKey.baseURL).request(for: route)
         else { throw URLError(.badURL) }

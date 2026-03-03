@@ -124,10 +124,20 @@ public struct AppReducer {
                 await send(.isSheetLogin(isPresented: bool))
             }
 
+        // Logout: Settings cleared keychain + AppStorage, now reset the UI
+        case .walletAction(.destination(.presented(.settings(.logOutButtonTapped)))):
+            state.walletState.destination = nil   // dismiss settings sheet
+            state.walletState.wPass = []          // clear wallet data
+            state.walletState.wPassLocal = []
+            state.walletState.user = nil
+            state.path = StackState()             // clear any navigation
+            state.authState = .init()             // show login sheet
+            return .none
+
         case .walletAction:
             return .none
 
-        case .auth(.presented(.verificationSuccess)):
+        case .auth(.presented(.moveToTableView)):
             // isAuthorized is @Shared — automatically synced via AppStorage.
             // The .update(isAuthorized:) action signals GenericPassForm that auth completed
             // (e.g., to proceed with pendingSave retry). Only send if the form is presented.

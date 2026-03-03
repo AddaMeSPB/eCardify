@@ -10,6 +10,8 @@
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow your photo library to add your photo to a digital business card with an avatar for Apple Wallet and app view, enabling others to instantly recognize you.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>eCardify may use your location to enhance your business card with nearby venue information.</string>
 	<key>ACCESS_KEY_ID</key>
 	<string>$(ACCESS_KEY_ID)</string>
 	<key>NSAppTransportSecurity</key>

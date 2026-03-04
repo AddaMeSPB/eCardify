@@ -177,6 +177,26 @@ public struct SettingsView: View {
     private var aboutSection: some View {
         Section {
             Button {
+                store.send(.termsOfUseTapped)
+            } label: {
+                settingsRow(
+                    icon: "doc.text",
+                    iconColor: .blue,
+                    title: L("Terms of Use")
+                )
+            }
+
+            Button {
+                store.send(.privacyPolicyTapped)
+            } label: {
+                settingsRow(
+                    icon: "hand.raised.fill",
+                    iconColor: .blue,
+                    title: L("Privacy Policy")
+                )
+            }
+
+            Button {
                 store.send(.reportABugButtonTapped)
             } label: {
                 settingsRow(

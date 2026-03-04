@@ -59,6 +59,8 @@ public struct Settings {
         case logOutButtonTapped
         case restoreButtonTapped
         case ourAppLinkButtonTapped(String)
+        case termsOfUseTapped
+        case privacyPolicyTapped
     }
 
     @Dependency(\.build) var build
@@ -239,6 +241,18 @@ public struct Settings {
 
                         return .run { _ in
                             _ = await self.applicationClient.open(linkURLFromString, [:])
+                        }
+
+                    case .termsOfUseTapped:
+                        return .run { _ in
+                            guard let url = URL(string: "https://ecardify.byalif.app/terms") else { return }
+                            _ = await self.applicationClient.open(url, [:])
+                        }
+
+                    case .privacyPolicyTapped:
+                        return .run { _ in
+                            guard let url = URL(string: "https://ecardify.byalif.app/privacy") else { return }
+                            _ = await self.applicationClient.open(url, [:])
                         }
 
                 }

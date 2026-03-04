@@ -17,9 +17,7 @@
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-		<key>NSExceptionDomains</key>
-		<dict/>
+		<false/>
 	</dict>
 	<key>Product_IDS</key>
 	<string>$(Product_IDS)</string>

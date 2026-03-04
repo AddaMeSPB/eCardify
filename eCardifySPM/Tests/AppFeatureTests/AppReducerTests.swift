@@ -57,6 +57,7 @@ final class AppReducerTests: XCTestCase {
         } withDependencies: {
             $0.keychainClient = .noop
             $0.build.identifier = { "com.test" }
+            $0.continuousClock = TestClock()
         }
 
         store.exhaustivity = .off
@@ -79,6 +80,7 @@ final class AppReducerTests: XCTestCase {
             // .noop read returns empty Data() → decode as RefreshTokenResponse throws
             $0.keychainClient = .noop
             $0.build.identifier = { "com.test" }
+            $0.continuousClock = TestClock()
         }
 
         store.exhaustivity = .off
@@ -97,24 +99,26 @@ final class AppReducerTests: XCTestCase {
     // MARK: - validateSession: Authorized with Valid Token
 
     /// When isAuthorized is true and keychain has a valid (non-expired) token,
-    /// validateSession should do nothing — session is fine.
+    /// validateSession should schedule a proactive refresh timer — session stays alive.
     func testValidateSession_authorizedWithValidToken_noAction() async {
         var state = AppReducer.State()
         state.walletState.$isAuthorized.withLock { $0 = true }
 
         let tokenData = try! JSONEncoder().encode(validTokens)
+        let clock = TestClock()
 
         let store = TestStore(initialState: state) {
             AppReducer()
         } withDependencies: {
             $0.keychainClient = keychainWithTokens(tokenData)
             $0.build.identifier = { "com.test" }
+            $0.continuousClock = clock
         }
 
         store.exhaustivity = .off
 
         await store.send(.validateSession)
-        // No further actions — token is valid, session stays
+        // scheduleTokenRefresh fires and suspends on TestClock — no tokenRefreshFailed
     }
 
     // MARK: - validateSession: Expired Token + Refresh Succeeds
@@ -125,12 +129,14 @@ final class AppReducerTests: XCTestCase {
         state.walletState.$isAuthorized.withLock { $0 = true }
 
         let tokenData = try! JSONEncoder().encode(expiredTokens)
+        let clock = TestClock()
 
         let store = TestStore(initialState: state) {
             AppReducer()
         } withDependencies: {
             $0.keychainClient = keychainWithTokens(tokenData)
             $0.build.identifier = { "com.test" }
+            $0.continuousClock = clock
             // neuAuthClient.refreshToken uses testValue → returns valid tokens
         }
 
@@ -153,12 +159,14 @@ final class AppReducerTests: XCTestCase {
         state.walletState.$isAuthorized.withLock { $0 = true }
 
         let tokenData = try! JSONEncoder().encode(expiredTokens)
+        let clock = TestClock()
 
         let store = TestStore(initialState: state) {
             AppReducer()
         } withDependencies: {
             $0.keychainClient = keychainWithTokens(tokenData)
             $0.build.identifier = { "com.test" }
+            $0.continuousClock = clock
             $0.neuAuthClient.refreshToken = { _ in
                 throw NeuAuthError.unauthorized("Token revoked")
             }
@@ -186,6 +194,7 @@ final class AppReducerTests: XCTestCase {
         } withDependencies: {
             $0.keychainClient = .noop
             $0.build.identifier = { "com.test" }
+            $0.continuousClock = TestClock()
         }
 
         store.exhaustivity = .off
@@ -210,6 +219,7 @@ final class AppReducerTests: XCTestCase {
         } withDependencies: {
             $0.keychainClient = .noop
             $0.build.identifier = { "com.test" }
+            $0.continuousClock = TestClock()
         }
 
         store.exhaustivity = .off
@@ -232,6 +242,7 @@ final class AppReducerTests: XCTestCase {
         } withDependencies: {
             $0.keychainClient = .noop
             $0.build.identifier = { "com.test" }
+            $0.continuousClock = TestClock()
         }
 
         store.exhaustivity = .off

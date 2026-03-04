@@ -243,8 +243,8 @@ public struct AppReducer {
 
                 let secondsUntilRefresh = secondsUntilTokenExpiry(tokens.accessToken, buffer: 120)
                 guard secondsUntilRefresh > 0 else {
-                    // Already near expiry — refresh now
-                    await send(.validateSession)
+                    // Token is already expired or within the buffer window.
+                    // validateSession handles immediate refresh — don't loop back into it.
                     return
                 }
 

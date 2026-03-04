@@ -27,6 +27,7 @@ extension URLRequest {
           forHTTPHeaderField: "User-Agent"
         )
         self.setValue("\(identifierForVendor)", forHTTPHeaderField: "IdentifierForVendor")
+        self.setValue("application/json", forHTTPHeaderField: "Content-Type")
         self.addValue("Bearer " + token, forHTTPHeaderField: "Authorization")
    }
 }

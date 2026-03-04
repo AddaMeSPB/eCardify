@@ -206,6 +206,23 @@ final class AuthenticationCoreTests: XCTestCase {
         }
     }
 
+    func testCodeVerification_duplicateBindingIgnored() async {
+        var state = Login.State()
+        state.email = "test@example.com"
+        state.isValidationCodeIsSend = true
+        state.isLoginRequestInFlight = true // Already verifying
+
+        let store = TestStore(initialState: state) {
+            Login()
+        }
+
+        // Second code binding while in-flight should be ignored
+        await store.send(.binding(.set(\.code, "123456"))) {
+            $0.code = "123456"
+        }
+        // No effect — isLoginRequestInFlight guard prevents duplicate verify
+    }
+
     // MARK: - Terms & Privacy
 
     func testTermsSheet() async {

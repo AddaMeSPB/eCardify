@@ -8,7 +8,9 @@ import FoundationExtension
 import ECSharedModels
 import ComposableArchitecture
 
-public enum VerificationCodeCanceable {}
+private enum CancelID: Hashable {
+    case verifyOtp
+}
 
 @Reducer
 public struct Login {
@@ -149,7 +151,8 @@ public struct Login {
 
             case .binding(\.code):
 
-                guard state.isValidationCodeIsSend else {
+                guard state.isValidationCodeIsSend,
+                      !state.isLoginRequestInFlight else {
                     return .none
                 }
 
@@ -185,6 +188,7 @@ public struct Login {
                             await send(.verificationFailed(message))
                         }
                     }
+                    .cancellable(id: CancelID.verifyOtp, cancelInFlight: true)
                 }
 
                 return .none
@@ -221,6 +225,7 @@ public struct Login {
                 }
 
                 state.isLoginRequestInFlight = false
+                state.destination = nil // Clear any stale alert (e.g. from a race condition)
                 state.$isUserFirstNameEmpty.withLock { $0 = user.fullName == nil }
 
                 return .run { send in

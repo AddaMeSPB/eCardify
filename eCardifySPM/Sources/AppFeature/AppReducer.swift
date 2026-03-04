@@ -47,6 +47,7 @@ public struct AppReducer {
         case isSheetLogin(isPresented: Bool)
         case deepLink(URL)
         case validateSession
+        case scheduleTokenRefresh
         case tokenRefreshFailed
     }
 
@@ -58,7 +59,7 @@ public struct AppReducer {
     @Dependency(\.build) var build
     @Dependency(\.continuousClock) var clock
 
-    private enum CancelID { case tokenRefresh }
+    private enum CancelID { case tokenRefresh, tokenRefreshTimer }
 
     public init() {}
 
@@ -108,7 +109,8 @@ public struct AppReducer {
             return .send(.validateSession)
 
         case .didChangeScenePhase(.background):
-            return .none
+            // Cancel refresh timer while backgrounded; it restarts on .active
+            return .cancel(id: CancelID.tokenRefreshTimer)
 
         case .didChangeScenePhase:
             return .none
@@ -150,6 +152,8 @@ public struct AppReducer {
                 await send(.isSheetLogin(isPresented: false))
                 // Refresh wallet pass list after login (handles login from empty state)
                 await send(.walletAction(.onAppear))
+                // Schedule proactive token refresh so it never expires while the user is active
+                await send(.scheduleTokenRefresh)
             }
 
         case .auth:
@@ -176,51 +180,83 @@ public struct AppReducer {
         /// 2. If authorized but no token in keychain → force re-login
         /// 3. If token exists but expired → attempt refresh
         /// 4. If refresh fails → force re-login
+        /// 5. After success → schedule proactive refresh before next expiry
         case .validateSession:
-            return .run { [isAuthorized = state.walletState.isAuthorized] send in
-                // Not logged in — nothing to validate on foreground
-                guard isAuthorized else { return }
+            return .merge(
+                .run { [isAuthorized = state.walletState.isAuthorized] send in
+                    // Not logged in — nothing to validate on foreground
+                    guard isAuthorized else { return }
 
-                // Check if tokens exist in keychain
-                guard let tokens = try? keychainClient.readCodable(
-                    .token, build.identifier(), RefreshTokenResponse.self
-                ) else {
-                    // isAuthorized persisted via AppStorage but keychain tokens are gone
-                    await send(.tokenRefreshFailed)
-                    return
-                }
-
-                // Token exists and is still valid — nothing to do
-                guard isAccessTokenExpired(tokens.accessToken) else { return }
-
-                // Token expired — attempt refresh
-                do {
-                    let response = try await neuAuthClient.refreshToken(
-                        NeuAuthRefreshRequest(refreshToken: tokens.refreshToken)
-                    )
-                    let loginRes = response.toSuccessfulLoginResponse()
-                    guard let newTokens = loginRes.access,
-                          let newUser = loginRes.user else {
+                    // Check if tokens exist in keychain
+                    guard let tokens = try? keychainClient.readCodable(
+                        .token, build.identifier(), RefreshTokenResponse.self
+                    ) else {
+                        // isAuthorized persisted via AppStorage but keychain tokens are gone
                         await send(.tokenRefreshFailed)
                         return
                     }
-                    try await keychainClient.saveOrUpdateCodable(
-                        newTokens, .token, build.identifier()
-                    )
-                    try await keychainClient.saveOrUpdateCodable(
-                        newUser, .user, build.identifier()
-                    )
-                } catch {
-                    // Refresh failed — session expired or revoked
-                    await send(.tokenRefreshFailed)
+
+                    // Token exists and is still valid — schedule next refresh
+                    guard isAccessTokenExpired(tokens.accessToken) else {
+                        await send(.scheduleTokenRefresh)
+                        return
+                    }
+
+                    // Token expired — attempt refresh
+                    do {
+                        let response = try await neuAuthClient.refreshToken(
+                            NeuAuthRefreshRequest(refreshToken: tokens.refreshToken)
+                        )
+                        let loginRes = response.toSuccessfulLoginResponse()
+                        guard let newTokens = loginRes.access,
+                              let newUser = loginRes.user else {
+                            await send(.tokenRefreshFailed)
+                            return
+                        }
+                        try await keychainClient.saveOrUpdateCodable(
+                            newTokens, .token, build.identifier()
+                        )
+                        try await keychainClient.saveOrUpdateCodable(
+                            newUser, .user, build.identifier()
+                        )
+                        // Schedule next refresh for the fresh token
+                        await send(.scheduleTokenRefresh)
+                    } catch {
+                        // Refresh failed — session expired or revoked
+                        await send(.tokenRefreshFailed)
+                    }
                 }
+                .cancellable(id: CancelID.tokenRefresh, cancelInFlight: true),
+                .cancel(id: CancelID.tokenRefreshTimer) // Cancel any existing timer
+            )
+
+        /// Proactive token refresh: reads the current token's `exp` claim,
+        /// sleeps until 2 minutes before expiry, then triggers `validateSession`
+        /// to refresh the token silently — the user never sees a 401.
+        case .scheduleTokenRefresh:
+            return .run { [isAuthorized = state.walletState.isAuthorized] send in
+                guard isAuthorized else { return }
+
+                guard let tokens = try? keychainClient.readCodable(
+                    .token, build.identifier(), RefreshTokenResponse.self
+                ) else { return }
+
+                let secondsUntilRefresh = secondsUntilTokenExpiry(tokens.accessToken, buffer: 120)
+                guard secondsUntilRefresh > 0 else {
+                    // Already near expiry — refresh now
+                    await send(.validateSession)
+                    return
+                }
+
+                try await clock.sleep(for: .seconds(secondsUntilRefresh))
+                await send(.validateSession)
             }
-            .cancellable(id: CancelID.tokenRefresh, cancelInFlight: true)
+            .cancellable(id: CancelID.tokenRefreshTimer, cancelInFlight: true)
 
         case .tokenRefreshFailed:
             state.walletState.$isAuthorized.withLock { $0 = false }
             state.authState = .init()  // open login sheet on session expiry
-            return .none
+            return .cancel(id: CancelID.tokenRefreshTimer)
 
         case .path:
             return .none
@@ -256,6 +292,31 @@ private func isAccessTokenExpired(_ token: String) -> Bool {
 
     // Expired if current time >= (exp - 60s buffer)
     return Date().timeIntervalSince1970 >= (exp - 60)
+}
+
+/// Returns the number of seconds until the token expires, minus a safety buffer.
+/// Returns 0 if already expired or within the buffer window.
+private func secondsUntilTokenExpiry(_ token: String, buffer: TimeInterval) -> Int {
+    let parts = token.split(separator: ".")
+    guard parts.count == 3 else { return 0 }
+
+    var base64 = String(parts[1])
+        .replacingOccurrences(of: "-", with: "+")
+        .replacingOccurrences(of: "_", with: "/")
+
+    let remainder = base64.count % 4
+    if remainder > 0 {
+        base64 += String(repeating: "=", count: 4 - remainder)
+    }
+
+    guard
+        let data = Data(base64Encoded: base64),
+        let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+        let exp = json["exp"] as? TimeInterval
+    else { return 0 }
+
+    let remaining = (exp - buffer) - Date().timeIntervalSince1970
+    return max(0, Int(remaining))
 }
 
 // MARK: - Conformances

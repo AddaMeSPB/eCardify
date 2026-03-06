@@ -270,5 +270,6 @@
 <key>Connection Error</key><string>连接错误</string>
 <key>Retry</key><string>重试</string>
 
+<key>Delete Account</key><string>删除账户</string>
 </dict>
 </plist>

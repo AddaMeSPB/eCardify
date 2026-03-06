@@ -270,5 +270,6 @@
 <key>Connection Error</key><string>연결 오류</string>
 <key>Retry</key><string>다시 시도</string>
 
+<key>Delete Account</key><string>계정 삭제</string>
 </dict>
 </plist>

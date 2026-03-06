@@ -249,7 +249,25 @@ public struct SettingsView: View {
                 }
                 .padding(.vertical, ECSpacing.xs)
             }
+
+            Button(role: .destructive) {
+                store.send(.deleteAccountButtonTapped)
+            } label: {
+                HStack {
+                    Spacer()
+                    Label {
+                        Text(L("Delete Account"))
+                            .font(ECTypography.headline())
+                    } icon: {
+                        Image(systemName: "trash.fill")
+                    }
+                    .foregroundStyle(ECColors.error)
+                    Spacer()
+                }
+                .padding(.vertical, ECSpacing.xs)
+            }
         }
+        .alert($store.scope(state: \.destination?.alert, action: \.destination.alert))
     }
 
     // MARK: - Helpers

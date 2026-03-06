@@ -270,5 +270,6 @@
 <key>Connection Error</key><string>Errore di connessione</string>
 <key>Retry</key><string>Riprova</string>
 
+<key>Delete Account</key><string>Elimina account</string>
 </dict>
 </plist>

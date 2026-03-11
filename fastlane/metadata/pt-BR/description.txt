@@ -1,6 +1,6 @@
 Seu próximo cartão de visita não precisa de papel. Precisa do eCardify.
 
-eCardify é o app de cartões de visita digitais para iPhone. Crie um cartão de visita virtual profissional em menos de 2 minutos, salve na Apple Wallet para acesso instantâneo e compartilhe com qualquer pessoa por QR code, AirDrop, iMessage ou e-mail. Sem necessidade de app do outro lado.
+eCardify é o app de cartões de visita digitais para iPhone. Crie um cartão de visita virtual profissional em menos de 2 minutos, salve na Wallet para acesso instantâneo e compartilhe com qualquer pessoa por QR code, AirDrop, iMessage ou e-mail. Sem necessidade de app do outro lado.
 
 POR QUE IR PARA O DIGITAL?
 
@@ -11,7 +11,7 @@ Um cartão de visita digital nunca acaba, nunca se perde e atualiza instantaneam
 FUNCIONALIDADES PRINCIPAIS
 
 INTEGRAÇÃO COM APPLE WALLET
-Seu cartão de visita digital fica na Apple Wallet — ao lado de cartões de embarque, cartões de fidelidade e métodos de pagamento. Um deslize da tela de bloqueio e você está pronto para compartilhar.
+Seu cartão de visita digital fica na Wallet — ao lado de cartões de embarque, cartões de fidelidade e métodos de pagamento. Um deslize da tela de bloqueio e você está pronto para compartilhar.
 
 QR CODE — ESCANEIE E COMPARTILHE
 Cada cartão eCardify tem um QR code exclusivo. A pessoa que você encontra escaneia com a câmera do celular — sem necessidade de app — e recebe seus dados de contato instantaneamente.
@@ -34,7 +34,7 @@ Sem necessidade de download de app para os destinatários.
 FUNCIONALIDADES EM RESUMO
 
 - Crie cartões de visita digitais em menos de 2 minutos
-- Salve na Apple Wallet para acesso da tela de bloqueio
+- Salve na Wallet para acesso da tela de bloqueio
 - QR code exclusivo por cartão
 - Scanner de cartões de papel
 - Modelos e temas profissionais

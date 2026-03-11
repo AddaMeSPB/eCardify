@@ -1,6 +1,6 @@
 Il tuo prossimo biglietto da visita non ha bisogno di carta. Ha bisogno di eCardify.
 
-eCardify è l'app per biglietti da visita digitali per iPhone. Crea un biglietto da visita virtuale professionale in meno di 2 minuti, salvalo in Apple Wallet per accesso istantaneo e condividilo con chiunque tramite codice QR, AirDrop, iMessage o email. Nessuna app necessaria dall'altra parte.
+eCardify è l'app per biglietti da visita digitali per iPhone. Crea un biglietto da visita virtuale professionale in meno di 2 minuti, salvalo in Wallet per accesso istantaneo e condividilo con chiunque tramite codice QR, AirDrop, iMessage o email. Nessuna app necessaria dall'altra parte.
 
 PERCHÉ PASSARE AL DIGITALE?
 
@@ -11,7 +11,7 @@ Un biglietto da visita digitale non finisce mai, non si perde mai e si aggiorna 
 FUNZIONALITÀ PRINCIPALI
 
 INTEGRAZIONE APPLE WALLET
-Il tuo biglietto da visita digitale vive in Apple Wallet — accanto a carte d'imbarco, carte fedeltà e metodi di pagamento. Uno swipe dalla schermata di blocco e sei pronto a condividere.
+Il tuo biglietto da visita digitale vive in Wallet — accanto a carte d'imbarco, carte fedeltà e metodi di pagamento. Uno swipe dalla schermata di blocco e sei pronto a condividere.
 
 CODICE QR — SCANSIONA E CONDIVIDI
 Ogni biglietto eCardify ha un codice QR unico. La persona che incontri lo scansiona con la fotocamera del telefono — nessuna app necessaria — e riceve istantaneamente i tuoi dati di contatto.
@@ -34,7 +34,7 @@ Nessun download di app richiesto per i destinatari.
 FUNZIONALITÀ A COLPO D'OCCHIO
 
 - Crea biglietti da visita digitali in meno di 2 minuti
-- Salva in Apple Wallet per accesso dalla schermata di blocco
+- Salva in Wallet per accesso dalla schermata di blocco
 - Codice QR unico per biglietto
 - Scanner biglietti cartacei
 - Modelli e temi professionali

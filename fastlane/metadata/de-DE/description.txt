@@ -1,6 +1,6 @@
 Deine nächste Visitenkarte braucht kein Papier. Sie braucht eCardify.
 
-eCardify ist die App für digitale Visitenkarten auf dem iPhone. Erstelle in unter 2 Minuten eine professionelle virtuelle Visitenkarte, speichere sie in Apple Wallet für sofortigen Zugriff und teile sie mit jedem per QR-Code, AirDrop, iMessage oder E-Mail. Keine App auf der Gegenseite nötig.
+eCardify ist die App für digitale Visitenkarten auf dem iPhone. Erstelle in unter 2 Minuten eine professionelle virtuelle Visitenkarte, speichere sie in Wallet für sofortigen Zugriff und teile sie mit jedem per QR-Code, AirDrop, iMessage oder E-Mail. Keine App auf der Gegenseite nötig.
 
 WARUM DIGITAL?
 
@@ -11,7 +11,7 @@ Eine digitale Visitenkarte geht nie aus, geht nie verloren und ist sofort aktuel
 HAUPTFUNKTIONEN
 
 APPLE WALLET INTEGRATION
-Deine digitale Visitenkarte lebt in Apple Wallet — direkt neben Bordkarten, Kundenkarten und Zahlungsmethoden. Ein Wisch vom Sperrbildschirm und du bist bereit zum Teilen.
+Deine digitale Visitenkarte lebt in Wallet — direkt neben Bordkarten, Kundenkarten und Zahlungsmethoden. Ein Wisch vom Sperrbildschirm und du bist bereit zum Teilen.
 
 QR-CODE — SCANNEN & TEILEN
 Jede eCardify-Karte hat einen einzigartigen QR-Code. Dein Gegenüber scannt ihn mit der Handykamera — keine App nötig — und erhält sofort deine Kontaktdaten.
@@ -34,7 +34,7 @@ Kein App-Download für Empfänger nötig.
 FUNKTIONEN IM ÜBERBLICK
 
 - Erstelle digitale Visitenkarten in unter 2 Minuten
-- Speichere in Apple Wallet für Sperrbildschirm-Zugriff
+- Speichere in Wallet für Sperrbildschirm-Zugriff
 - Einzigartiger QR-Code pro Karte
 - Papier-Visitenkarten-Scanner
 - Professionelle Vorlagen und Themes

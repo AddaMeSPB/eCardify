@@ -1,6 +1,6 @@
 Your next business card doesn't need paper. It needs eCardify.
 
-eCardify is the digital business card app for iPhone. Create a professional virtual business card in under 2 minutes, save it to Apple Wallet for instant access, and share it with anyone via QR code, AirDrop, iMessage, or email. No app needed on the other end.
+eCardify is the digital business card app for iPhone. Create a professional virtual business card in under 2 minutes, save it to Wallet for instant access, and share it with anyone via QR code, AirDrop, iMessage, or email. No app needed on the other end.
 
 WHY GO DIGITAL?
 
@@ -11,7 +11,7 @@ A digital business card never runs out, never gets lost, and updates instantly. 
 KEY FEATURES
 
 APPLE WALLET INTEGRATION
-Your digital business card lives in Apple Wallet — right next to your boarding passes, loyalty cards, and payment methods. One swipe from your lock screen and you're ready to share. No fumbling through apps. No unlocking your phone while someone waits. This is the fastest way to share your contact information on iPhone.
+Your digital business card lives in Wallet — right next to your boarding passes, loyalty cards, and payment methods. One swipe from your lock screen and you're ready to share. No fumbling through apps. No unlocking your phone while someone waits. This is the fastest way to share your contact information on iPhone.
 
 QR CODE — SCAN & SHARE
 Every eCardify card has a unique QR code. The person you're meeting scans it with their phone camera — no app required — and instantly gets your contact details. Works with any phone that has a camera.
@@ -51,7 +51,7 @@ HOW IT WORKS
 1. Open eCardify and tap "Create Card"
 2. Add your contact information and social links
 3. Choose a template and color scheme
-4. Save to Apple Wallet for instant access
+4. Save to Wallet for instant access
 5. Share via QR code, AirDrop, or any messenger
 
 Done. Your digital business card is ready for your next meeting, conference, or coffee chat.
@@ -59,7 +59,7 @@ Done. Your digital business card is ready for your next meeting, conference, or 
 FEATURES AT A GLANCE
 
 - Create digital business cards in under 2 minutes
-- Save to Apple Wallet for lock-screen access
+- Save to Wallet for lock-screen access
 - Unique QR code per card
 - Paper card scanner
 - Professional templates and themes

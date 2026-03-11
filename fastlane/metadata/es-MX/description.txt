@@ -1,6 +1,6 @@
 Tu próxima tarjeta de presentación no necesita papel. Necesita eCardify.
 
-eCardify es la app de tarjetas de presentación digitales para iPhone. Crea una tarjeta virtual profesional en menos de 2 minutos, guárdala en Apple Wallet para acceso instantáneo y compártela con cualquier persona mediante código QR, AirDrop, iMessage o correo electrónico. No necesitan instalar ninguna app.
+eCardify es la app de tarjetas de presentación digitales para iPhone. Crea una tarjeta virtual profesional en menos de 2 minutos, guárdala en Wallet para acceso instantáneo y compártela con cualquier persona mediante código QR, AirDrop, iMessage o correo electrónico. No necesitan instalar ninguna app.
 
 ¿POR QUÉ PASAR A LO DIGITAL?
 
@@ -11,7 +11,7 @@ Una tarjeta digital nunca se acaba, nunca se pierde y se actualiza al instante. 
 FUNCIONES PRINCIPALES
 
 INTEGRACIÓN CON APPLE WALLET
-Tu tarjeta digital vive en Apple Wallet — junto a tus tarjetas de embarque, tarjetas de fidelización y métodos de pago. Un desliz desde la pantalla de bloqueo y estás listo para compartir.
+Tu tarjeta digital vive en Wallet — junto a tus tarjetas de embarque, tarjetas de fidelización y métodos de pago. Un desliz desde la pantalla de bloqueo y estás listo para compartir.
 
 CÓDIGO QR — ESCANEA Y COMPARTE
 Cada tarjeta eCardify tiene un código QR único. La persona que te encuentras lo escanea con la cámara de su teléfono — sin necesidad de app — y recibe tus datos de contacto al instante.
@@ -34,7 +34,7 @@ No se requiere descarga de app para los destinatarios.
 FUNCIONES DE UN VISTAZO
 
 - Crea tarjetas de presentación digitales en menos de 2 minutos
-- Guarda en Apple Wallet para acceso desde pantalla de bloqueo
+- Guarda en Wallet para acceso desde pantalla de bloqueo
 - Código QR único por tarjeta
 - Escáner de tarjetas de papel
 - Plantillas y temas profesionales

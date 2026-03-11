@@ -1,6 +1,6 @@
 Votre prochaine carte de visite n'a pas besoin de papier. Elle a besoin d'eCardify.
 
-eCardify est l'application de cartes de visite numériques pour iPhone. Créez une carte de visite virtuelle professionnelle en moins de 2 minutes, enregistrez-la dans Apple Wallet pour un accès instantané et partagez-la avec n'importe qui par code QR, AirDrop, iMessage ou e-mail. Aucune application requise de l'autre côté.
+eCardify est l'application de cartes de visite numériques pour iPhone. Créez une carte de visite virtuelle professionnelle en moins de 2 minutes, enregistrez-la dans Wallet pour un accès instantané et partagez-la avec n'importe qui par code QR, AirDrop, iMessage ou e-mail. Aucune application requise de l'autre côté.
 
 POURQUOI PASSER AU NUMÉRIQUE ?
 
@@ -11,7 +11,7 @@ Une carte de visite numérique ne s'épuise jamais, ne se perd jamais et se met 
 FONCTIONNALITÉS CLÉS
 
 INTÉGRATION APPLE WALLET
-Votre carte de visite numérique vit dans Apple Wallet — juste à côté de vos cartes d'embarquement, cartes de fidélité et moyens de paiement. Un glissement depuis l'écran de verrouillage et vous êtes prêt à partager.
+Votre carte de visite numérique vit dans Wallet — juste à côté de vos cartes d'embarquement, cartes de fidélité et moyens de paiement. Un glissement depuis l'écran de verrouillage et vous êtes prêt à partager.
 
 CODE QR — SCANNER & PARTAGER
 Chaque carte eCardify possède un code QR unique. La personne en face le scanne avec l'appareil photo de son téléphone — aucune application requise — et reçoit instantanément vos coordonnées.
@@ -34,7 +34,7 @@ Aucun téléchargement d'application requis pour les destinataires.
 FONCTIONNALITÉS EN UN COUP D'ŒIL
 
 - Créez des cartes de visite numériques en moins de 2 minutes
-- Enregistrez dans Apple Wallet pour un accès depuis l'écran de verrouillage
+- Enregistrez dans Wallet pour un accès depuis l'écran de verrouillage
 - Code QR unique par carte
 - Scanner de cartes papier
 - Modèles et thèmes professionnels

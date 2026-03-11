@@ -1,1 +1,1 @@
-визитка,цифровая,контакт,qr-код,wallet,vcard,сканер,NFC,Apple,digital
+визитка,цифровая,контакт,qr-код,wallet,vcard,сканер,NFC,digital

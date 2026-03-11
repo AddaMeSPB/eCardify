@@ -1,5 +1,6 @@
 import Build
 import SwiftUI
+import AppPromo
 import DesignSystem
 import L10nResources
 import ECSharedModels
@@ -133,42 +134,7 @@ public struct SettingsView: View {
     // MARK: - Our Apps Section
 
     private var ourAppsSection: some View {
-        Section {
-            ForEach(OurApps.allCases, id: \.self) { app in
-                Button {
-                    store.send(.ourAppLinkButtonTapped(app.urlLink))
-                } label: {
-                    HStack(spacing: ECSpacing.sm) {
-                        AsyncImage(url: app.logoImageLink) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        } placeholder: {
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(ECColors.primary.opacity(0.1))
-                                .overlay {
-                                    ProgressView()
-                                        .tint(ECColors.primary)
-                                }
-                        }
-                        .frame(width: 44, height: 44)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-
-                        Text(app.displayName)
-                            .font(ECTypography.body())
-                            .foregroundStyle(ECColors.textPrimary)
-
-                        Spacer()
-
-                        Image(systemName: "arrow.up.right")
-                            .font(ECTypography.caption())
-                            .foregroundStyle(ECColors.textSecondary)
-                    }
-                }
-            }
-        } header: {
-            Text(L("Our Apps"))
-        }
+        MoreAppsSection(excludingBundleID: "cardify.addame.com.eCardify")
     }
 
     // MARK: - About Section
@@ -317,33 +283,3 @@ struct SettingsView_Previews: PreviewProvider {
 }
 #endif
 
-// MARK: - Our Apps Data
-
-enum OurApps: String, CaseIterable {
-    case iInterview, notifyWords
-
-    var displayName: String {
-        switch self {
-        case .iInterview: return "iIntrvwBell"
-        case .notifyWords: return "NotifyWords"
-        }
-    }
-
-    var urlLink: String {
-        switch self {
-        case .iInterview:
-            return "https://apps.apple.com/pt/app/iintrvwbell/id6457363081?l=en-GB"
-        case .notifyWords:
-            return "https://apps.apple.com/pt/app/new-word-learn-word-vocabulary/id1619504857?l=en-GB"
-        }
-    }
-
-    var logoImageLink: URL {
-        switch self {
-        case .iInterview:
-            return URL(string: "https://github.com/AddaMeSPB/AddaMeSPB.github.io/assets/8770772/f832e748-e9f2-4a10-8961-c3f10589ed0c")!
-        case .notifyWords:
-            return URL(string: "https://github.com/AddaMeSPB/AddaMeSPB.github.io/assets/8770772/85d53768-f9e2-4dbe-aba5-cc9c67ce3258")!
-        }
-    }
-}

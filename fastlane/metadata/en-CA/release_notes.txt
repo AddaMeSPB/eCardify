@@ -1,0 +1,3 @@
+- Fixed logout functionality
+- Improved date handling for card data
+- Bug fixes and performance improvements

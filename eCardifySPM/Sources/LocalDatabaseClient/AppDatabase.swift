@@ -167,10 +167,7 @@ extension AppDatabase: AppDatabaseClient {
 
     public func update(wp: WalletPass) async throws {
         try await dbWriter.write { db in
-            if var wp = try WalletPass.fetchOne(db, id: wp.id) {
-                wp = wp
-                try wp.update(db)
-            }
+            try wp.update(db)
         }
     }
 

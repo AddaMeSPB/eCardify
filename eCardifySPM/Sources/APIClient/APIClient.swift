@@ -54,7 +54,7 @@ extension APIClient {
     public func request<Value: Decodable>(
         for route: Route,
         as type: Value.Type = Value.self,
-        decoder: JSONDecoder = .init()
+        decoder: JSONDecoder = .apiDecoder
     ) async throws -> Value {
         guard var request = try? SiteRouter().baseURL(APIClientKey.baseURL).request(for: route)
         else { throw URLError(.badURL) }
@@ -73,8 +73,12 @@ extension APIClient {
                 return try decoder.decode(Value.self, from: data)
 
             case 400 ..< 500:
-                let payload = try decoder.decode(APIErrorPayload.self, from: data)
-                throw APIError.serviceError(statusCode: statusCode, payload)
+                if let payload = try? decoder.decode(APIErrorPayload.self, from: data) {
+                    throw APIError.serviceError(statusCode: statusCode, payload)
+                }
+                // Server returned non-JSON error (e.g. plain text "Missing authorization bearer header")
+                let reason = String(data: data, encoding: .utf8) ?? "Unknown error"
+                throw APIError.serviceError(statusCode: statusCode, APIErrorPayload(reason: reason))
 
             default:
                 sharedLogger.log("unknown")

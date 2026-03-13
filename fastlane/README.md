@@ -15,13 +15,53 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
+### ios certs
+
+```sh
+[bundle exec] fastlane ios certs
+```
+
+Sync code signing certificates and profiles
+
+### ios regen_profile
+
+```sh
+[bundle exec] fastlane ios regen_profile
+```
+
+Force regenerate provisioning profile (e.g. after adding capabilities)
+
 ### ios screenshots
 
 ```sh
 [bundle exec] fastlane ios screenshots
 ```
 
-Generate new localized screenshots
+Generate App Store screenshots (swift-snapshot-testing)
+
+### ios upload_screenshots
+
+```sh
+[bundle exec] fastlane ios upload_screenshots
+```
+
+Upload screenshots only to App Store Connect
+
+### ios beta
+
+```sh
+[bundle exec] fastlane ios beta
+```
+
+Build and upload to TestFlight
+
+### ios metadata
+
+```sh
+[bundle exec] fastlane ios metadata
+```
+
+Upload metadata only to App Store Connect
 
 ----
 

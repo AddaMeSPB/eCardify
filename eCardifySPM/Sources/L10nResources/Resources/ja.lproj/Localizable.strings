@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 
-<!-- AuthenticationView -->
+<!-- ============================================================ -->
+<!-- AuthenticationView                                            -->
+<!-- ============================================================ -->
 <key>eCardify</key><string>eCardify</string>
 <key>Register Or Login</key><string>登録またはログイン</string>
 <key>Verification Code</key><string>認証コード</string>
@@ -12,91 +14,176 @@
 <key>Check our terms and privacy</key><string>利用規約とプライバシーポリシーをご確認ください</string>
 <key>Terms</key><string>利用規約</string>
 <key>Privacy</key><string>プライバシー</string>
+<key>&amp;</key><string>&amp;</string>
+<key>Your nice Name goes here</key><string>あなたの素敵な名前をここに入力</string>
+<key>Continue</key><string>続ける</string>
+<key>Email</key><string>メール</string>
+<key>your@email.com</key><string>your@email.com</string>
 
-<!-- GenericPassFormView -->
-<key>Org or Company Name</key><string>組織名または会社名</string>
-<key>Organization/Company/self employed</key><string>組織/会社/個人事業主</string>
-<key>Job title</key><string>役職</string>
-<key>Photo description</key><string>写真をデジタル名刺に追加して、プロフェッショナルな印象を与えましょう。鮮明で高画質なヘッドショットをお選びください。</string>
-<key>Organisation &amp; Upload Images!</key><string>組織情報 &amp; 画像アップロード！</string>
-<key>Choice Product Type</key><string>製品タイプを選択</string>
-<key>Pick or Preview</key><string>選択またはプレビュー</string>
+<!-- ============================================================ -->
+<!-- GenericPassFormView                                           -->
+<!-- ============================================================ -->
+<key>Organization or Company</key><string>組織名または会社名</string>
+<key>Organization, company, or self-employed name</key><string>組織、会社、または個人事業主名</string>
+<key>Job Title</key><string>役職</string>
+<key>Photo description</key><string>写真をデジタル名刺に追加して、より個人的で記憶に残る印象を与えましょう。</string>
+<key>Organization &amp; Images</key><string>組織情報と画像</string>
+<key>Product Type</key><string>製品タイプ</string>
+<key>Pick Card Design</key><string>カードデザインを選択</string>
 <key>Your</key><string>あなたの</string>
 <key>Card Design</key><string>カードデザイン</string>
 <key>To activate this function,</key><string>この機能を有効にするには、</string>
 <key>Please change your product type.</key><string>製品タイプを変更してください。</string>
+<key>Change product type</key><string>製品タイプを変更</string>
+<key>Change product type to Custom to unlock card design.</key><string>カードデザインを使うには製品タイプを「カスタム」に変更してください。</string>
 <key>Pay %@ and Create</key><string>%@ を支払って作成</string>
-<key>Generating your Digital card! Please wait</key><string>デジタルカードを生成中！しばらくお待ちください</string>
+<key>Generating your card...</key><string>カードを生成中...</string>
+<key>Create Digital Card</key><string>デジタルカードを作成</string>
+<key>Create Card</key><string>カードを作成</string>
+<key>Upload Logo</key><string>ロゴをアップロード</string>
+<key>Your photo will appear on the Apple Wallet pass, helping others recognize you instantly.</key><string>Apple Walletパスにあなたの写真が表示され、相手がすぐにあなたを認識できます。</string>
+<key>Optional</key><string>任意</string>
+<key>Website</key><string>ウェブサイト</string>
+<key>https://example.com</key><string>https://example.com</string>
+<key>Renews %@</key><string>更新日 %@</string>
+
+<!-- Legacy keys (kept for backward compatibility) -->
+<key>Org or Company Name</key><string>組織名または会社名</string>
+<key>Organization/Company/self employed</key><string>組織、会社、または個人事業主名</string>
+<key>Job title</key><string>役職</string>
+<key>Organisation &amp; Upload Images!</key><string>組織情報と画像</string>
+<key>Choice Product Type</key><string>製品タイプを選択</string>
+<key>Pick or Preview</key><string>選択またはプレビュー</string>
+<key>Generating your Digital card! Please wait</key><string>カードを生成中...</string>
 <key>Create digital card</key><string>デジタルカードを作成</string>
 
-<!-- AddressesSectionView -->
-<key>PostOffice</key><string>私書箱</string>
-<key>Extended address - OPTIONAL</key><string>追加住所 - 任意</string>
+<!-- ============================================================ -->
+<!-- AddressesSectionView                                          -->
+<!-- ============================================================ -->
+<key>Post Office</key><string>私書箱</string>
+<key>Extended Address (Optional)</key><string>追加住所（任意）</string>
 <key>Street</key><string>番地</string>
 <key>City</key><string>市区町村</string>
-<key>Region/State</key><string>都道府県</string>
+<key>Region / State</key><string>都道府県</string>
 <key>Post Code</key><string>郵便番号</string>
 <key>Select Country</key><string>国を選択</string>
-<key>Remove this address</key><string>この住所を削除</string>
+<key>Remove Address</key><string>住所を削除</string>
 <key>Address Type</key><string>住所タイプ</string>
 <key>Address</key><string>住所</string>
 <key>Please change your product type below.</key><string>以下から製品タイプを変更してください。</string>
 <key>click here to change your product type</key><string>こちらをタップして製品タイプを変更</string>
 
-<!-- SettingsView -->
+<!-- Legacy keys -->
+<key>PostOffice</key><string>私書箱</string>
+<key>Extended address - OPTIONAL</key><string>追加住所（任意）</string>
+<key>Region/State</key><string>都道府県</string>
+<key>Remove this address</key><string>住所を削除</string>
+
+<!-- ============================================================ -->
+<!-- SettingsView                                                  -->
+<!-- ============================================================ -->
+<key>Settings</key><string>設定</string>
 <key>Hello, %@</key><string>こんにちは、%@</string>
+<key>General</key><string>一般</string>
+<key>Leave a Review</key><string>レビューする</string>
+<key>Share App</key><string>アプリを共有</string>
+<key>Restore Purchases</key><string>購入を復元</string>
+<key>Our Apps</key><string>他のアプリ</string>
+<key>About</key><string>アプリについて</string>
+<key>Report a Bug</key><string>バグを報告</string>
+<key>Log Out</key><string>ログアウト</string>
+<key>User</key><string>ユーザー</string>
+<key>Version</key><string>バージョン</string>
+<key>Build %@</key><string>ビルド %@</string>
+
+<!-- Legacy keys -->
 <key>Support our app</key><string>アプリをサポート</string>
 <key>Review us</key><string>レビューする</string>
-<key>Share</key><string>共有</string>
-<key>Restore</key><string>復元</string>
-<key>Explore our other apps!</key><string>他のアプリもチェック！</string>
-<key>Log out!</key><string>ログアウト！</string>
-<key>Build %@</key><string>ビルド %@</string>
+<key>Share</key><string>アプリを共有</string>
+<key>Restore</key><string>購入を復元</string>
+<key>Explore our other apps!</key><string>他のアプリ</string>
+<key>Log out!</key><string>ログアウト</string>
 <key>Report a bug</key><string>バグを報告</string>
-<key>Settings</key><string>設定</string>
 
-<!-- TelephoneSectionView -->
-<key>Number is invalid!</key><string>番号が無効です！</string>
+<!-- ============================================================ -->
+<!-- TelephoneSectionView                                          -->
+<!-- ============================================================ -->
+<key>Number is invalid</key><string>番号が無効です</string>
 <key>Telephone</key><string>電話</string>
 <key>Device Type</key><string>デバイスタイプ</string>
 
-<!-- OrganizationSectionView -->
+<!-- Legacy key -->
+<key>Number is invalid!</key><string>番号が無効です</string>
+
+<!-- ============================================================ -->
+<!-- OrganizationSectionView                                       -->
+<!-- ============================================================ -->
 <key>Upload old card.</key><string>旧名刺をアップロード。</string>
 <key>Avatar</key><string>アバター</string>
 <key>Upload logo</key><string>ロゴをアップロード</string>
 <key>Upload old card</key><string>旧名刺をアップロード</string>
 
-<!-- ContactSectionView -->
+<!-- ============================================================ -->
+<!-- ContactSectionView                                            -->
+<!-- ============================================================ -->
 <key>Contact</key><string>連絡先</string>
 <key>First Name</key><string>名</string>
 <key>Middle Name</key><string>ミドルネーム</string>
 <key>Last Name</key><string>姓</string>
 
-<!-- EmailView -->
-<key>Email</key><string>メール</string>
+<!-- ============================================================ -->
+<!-- EmailView                                                     -->
+<!-- ============================================================ -->
 <key>Email address</key><string>メールアドレス</string>
 
-<!-- WallatPassDetailsView -->
+<!-- ============================================================ -->
+<!-- WalletPassDetailsView                                         -->
+<!-- ============================================================ -->
 <key>Share card</key><string>カードを共有</string>
 <key>Show card</key><string>カードを表示</string>
 <key>Add to Apple Wallet</key><string>Apple Walletに追加</string>
+<key>View Card</key><string>カードを見る</string>
+<key>Write to NFC Tag</key><string>NFCタグに書き込む</string>
+<key>Write App Link to NFC</key><string>アプリリンクをNFCに書き込む</string>
+<key>Hold near NFC tag...</key><string>NFCタグに近づけてください...</string>
+<key>Written!</key><string>書き込み完了！</string>
 
-<!-- NotificationsSettingsView -->
+<!-- ============================================================ -->
+<!-- NotificationsSettingsView                                     -->
+<!-- ============================================================ -->
 <key>Enable notifications</key><string>通知を有効にする</string>
-<key>Notification warning</key><string>通知をオフにすると、重要なカード更新やリマインダーを受け取れなくなります。</string>
+<key>Notification warning</key><string>通知をオフにしないでください。機能全体がオフになります。</string>
+<key>Please don't turn off notification, the whole function will be turned off</key><string>通知をオフにしないでください。機能全体がオフになります。</string>
 <key>Notifications</key><string>通知</string>
 
-<!-- RestoreNonProductView -->
+<!-- ============================================================ -->
+<!-- RestoreNonProductView                                         -->
+<!-- ============================================================ -->
 <key>Processing...</key><string>処理中...</string>
 <key>Restore!</key><string>復元！</string>
 
-<!-- PhotosSelectorView -->
+<!-- ============================================================ -->
+<!-- PhotosSelectorView                                            -->
+<!-- ============================================================ -->
 <key>Loading... please wait!</key><string>読み込み中...しばらくお待ちください！</string>
 
-<!-- WallatPassView -->
+<!-- ============================================================ -->
+<!-- WalletPassView                                                -->
+<!-- ============================================================ -->
 <key>Digital Cards</key><string>デジタルカード</string>
+<key>No Cards Yet</key><string>カードはまだありません</string>
+<key>Login or Register</key><string>ログインまたは登録</string>
+<key>Login or register to create and manage your digital business cards.</key><string>ログインまたは登録して、デジタル名刺を作成・管理しましょう。</string>
+<key>Create your first digital business card and share it instantly.</key><string>最初のデジタル名刺を作成して、すぐに共有しましょう。</string>
+<key>Country Picker</key><string>国の選択</string>
+<key>Dashboard</key><string>ダッシュボード</string>
 
-<!-- CardDesignListReducer -->
+<!-- Legacy key -->
+<key>Login or Register.</key><string>ログインまたは登録</string>
+
+<!-- ============================================================ -->
+<!-- CardDesignListReducer                                         -->
+<!-- ============================================================ -->
 <key>Card design</key><string>カードデザイン</string>
 <key>Pick a design</key><string>デザインを選択</string>
 <key>Default</key><string>デフォルト</string>
@@ -112,40 +199,45 @@
 <key>EMAIL</key><string>メール</string>
 <key>MOBILE</key><string>携帯電話</string>
 
-<!-- StoreKitReducer AlertState -->
+<!-- ============================================================ -->
+<!-- StoreKitReducer AlertState                                    -->
+<!-- ============================================================ -->
 <key>Error</key><string>エラー</string>
 <key>We couldn't restore purchases, please try again.</key><string>購入の復元に失敗しました。もう一度お試しください。</string>
 <key>Purchase restore.</key><string>購入の復元。</string>
-<key>Your purchases was successfully restore.</key><string>購入が正常に復元されました。</string>
+<key>Purchase restored</key><string>購入が復元されました</string>
+<key>Your purchases were successfully restored.</key><string>購入が正常に復元されました。</string>
 <key>Back</key><string>戻る</string>
 <key>No Purchases</key><string>購入なし</string>
 <key>No purchases were found to restore.</key><string>復元できる購入が見つかりませんでした。</string>
 
-<!-- Enum rawValues for LDynamic -->
-<key>HOME</key><string>HOME</string>
-<key>WORK</key><string>WORK</string>
-<key>CELL</key><string>CELL</string>
-<key>FAX</key><string>FAX</string>
-<key>PAGER</key><string>PAGER</string>
-<key>POSTAL</key><string>POSTAL</string>
-<key>DOM</key><string>DOM</string>
-<key>INTL</key><string>INTL</string>
-<key>PARCEL</key><string>PARCEL</string>
+<!-- GenericPassForm Alerts -->
+<key>Unable to upload image please try again!</key><string>画像のアップロードに失敗しました。もう一度お試しください。</string>
+<key>Please login 1st!</key><string>まずログインしてください。</string>
+
+<!-- Legacy key -->
+<key>Your purchases was successfully restore.</key><string>購入が正常に復元されました。</string>
+
+<!-- ============================================================ -->
+<!-- Enum rawValues for LDynamic                                   -->
+<!-- ============================================================ -->
+<key>HOME</key><string>自宅</string>
+<key>WORK</key><string>勤務先</string>
+<key>CELL</key><string>携帯</string>
+<key>FAX</key><string>ファックス</string>
+<key>PAGER</key><string>ポケベル</string>
+<key>POSTAL</key><string>郵便</string>
+<key>DOM</key><string>国内</string>
+<key>INTL</key><string>国際</string>
+<key>PARCEL</key><string>小包</string>
 <key>BASIC</key><string>ベーシック</string>
 <key>CUSTOM</key><string>カスタム</string>
 <key>basic</key><string>ベーシック</string>
 <key>custom</key><string>カスタム</string>
 
-<!-- New Keys -->
-<key>Login or Register.</key><string>ログインまたは登録。</string>
-<key>Country Picker</key><string>国の選択</string>
-<key>Purchase restored</key><string>購入が復元されました</string>
-<key>Your purchases were successfully restored.</key><string>購入が正常に復元されました。</string>
-<key>Please don't turn off notification, the whole function will be turned off</key><string>通知をオフにしないでください。機能全体がオフになります</string>
-<key>&amp;</key><string>&amp;</string>
-<key>Your nice Name goes here</key><string>あなたの素敵な名前をここに入力</string>
-
-<!-- OnboardingView -->
+<!-- ============================================================ -->
+<!-- OnboardingView                                                -->
+<!-- ============================================================ -->
 <key>Welcome to eCardify</key><string>eCardifyへようこそ</string>
 <key>Create stunning digital business cards</key><string>美しいデジタル名刺を作成</string>
 <key>Design your professional identity with custom templates, colors, and layouts.</key><string>カスタムテンプレート、カラー、レイアウトであなたのプロフェッショナルな名刺をデザイン。</string>
@@ -155,6 +247,29 @@
 <key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>QRコードやリンクで共有。受信者にアプリは不要。</string>
 <key>Get Started</key><string>始める</string>
 <key>Skip</key><string>スキップ</string>
+<key>Next</key><string>次へ</string>
 
+<!-- ============================================================ -->
+<!-- Legal                                                         -->
+<!-- ============================================================ -->
+<key>Privacy Policy</key><string>プライバシーポリシー</string>
+<key>Terms of Use</key><string>利用規約</string>
+
+<!-- ============================================================ -->
+<!-- Free Tier                                                     -->
+<!-- ============================================================ -->
+<key>Free Card</key><string>無料カード</string>
+<key>Create Your Free Card</key><string>無料カードを作成</string>
+<key>Your first card is free with basic templates!</key><string>最初のカードはベーシックテンプレートで無料です！</string>
+<key>Your first digital business card is free with basic templates.</key><string>最初のデジタル名刺はベーシックテンプレートで無料です。</string>
+<key>Custom card design is available with paid cards.</key><string>カスタムカードデザインは有料カードでご利用いただけます。</string>
+
+<!-- ============================================================ -->
+<!-- Connection / Retry                                            -->
+<!-- ============================================================ -->
+<key>Connection Error</key><string>接続エラー</string>
+<key>Retry</key><string>再試行</string>
+
+<key>Delete Account</key><string>アカウントを削除</string>
 </dict>
 </plist>

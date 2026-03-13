@@ -59,6 +59,10 @@ public struct Settings {
         case logOutButtonTapped
         case restoreButtonTapped
         case ourAppLinkButtonTapped(String)
+        case termsOfUseTapped
+        case privacyPolicyTapped
+        case deleteAccountButtonTapped
+        case deleteAccountConfirmed
     }
 
     @Dependency(\.build) var build
@@ -229,6 +233,9 @@ public struct Settings {
                             await send(.destination(.presented(.restore(.restoreButtonTapped))))
                         }
 
+                    case .destination(.presented(.alert(.deleteAccountConfirmed))):
+                        return .send(.deleteAccountConfirmed)
+
                     case .destination:
                         return .none
 
@@ -239,6 +246,54 @@ public struct Settings {
 
                         return .run { _ in
                             _ = await self.applicationClient.open(linkURLFromString, [:])
+                        }
+
+                    case .termsOfUseTapped:
+                        return .run { _ in
+                            guard let url = URL(string: "https://ecardify.byalif.app/terms") else { return }
+                            _ = await self.applicationClient.open(url, [:])
+                        }
+
+                    case .privacyPolicyTapped:
+                        return .run { _ in
+                            guard let url = URL(string: "https://ecardify.byalif.app/privacy") else { return }
+                            _ = await self.applicationClient.open(url, [:])
+                        }
+
+                    case .deleteAccountButtonTapped:
+                        state.destination = .alert(
+                            AlertState {
+                                TextState("Delete Account")
+                            } actions: {
+                                ButtonState(role: .destructive, action: .send(.deleteAccountConfirmed)) {
+                                    TextState("Delete")
+                                }
+                                ButtonState(role: .cancel) {
+                                    TextState("Cancel")
+                                }
+                            } message: {
+                                TextState("This will permanently delete your account and all data. This action cannot be undone.")
+                            }
+                        )
+                        return .none
+
+                    case .deleteAccountConfirmed:
+                        state.$isAuthorized.withLock { $0 = false }
+                        state.$isUserFirstNameEmpty.withLock { $0 = true }
+                        return .run { _ in
+                            do {
+                                let tokens = try keychainClient.readCodable(
+                                    .token, build.identifier(), RefreshTokenResponse.self
+                                )
+                                try await neuAuthClient.deleteAccount(tokens.accessToken)
+                            } catch {
+                                settingsLogger.error("Delete account failed: \(error.localizedDescription)")
+                            }
+                            do {
+                                try await keychainClient.logout()
+                            } catch {
+                                settingsLogger.error("Keychain clear after delete failed: \(error.localizedDescription)")
+                            }
                         }
 
                 }
@@ -271,18 +326,20 @@ public struct Settings {
             case termsAndPrivacy(TermsAndPrivacy.Action)
             case restore(StoreKitReducer.Action)
 
-            public enum Alert: Equatable {}
+            public enum Alert: Equatable {
+                case deleteAccountConfirmed
+            }
         }
 
         public var body: some Reducer<State, Action> {
 
-            Scope(state: /State.alert, action: /Action.alert) {}
+            Scope(state: \.alert, action: \.alert) {}
 
-            Scope(state: /State.termsAndPrivacy, action: /Action.termsAndPrivacy) {
+            Scope(state: \.termsAndPrivacy, action: \.termsAndPrivacy) {
                 TermsAndPrivacy()
             }
 
-            Scope(state: /State.restore, action: /Action.restore) {
+            Scope(state: \.restore, action: \.restore) {
                 StoreKitReducer()
             }
 
@@ -291,4 +348,4 @@ public struct Settings {
 
 }
 
-let settingsLogger = Logger(subsystem: "com.eCardify.AddaMeIOS", category: "settings.reducer")
+let settingsLogger = Logger(subsystem: "cardify.addame.com.eCardify", category: "settings.reducer")

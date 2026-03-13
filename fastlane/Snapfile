@@ -16,7 +16,7 @@ languages([
     "ko",
     ["pt", "pt_BR"],
     "zh-Hans",
-    "ru-RU"
+    "ru"
 ])
 
 # The name of the scheme which contains the UI Tests

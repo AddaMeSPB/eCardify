@@ -1,47 +1,16 @@
-Deine nächste Visitenkarte braucht kein Papier. Sie braucht eCardify.
+eCardify hilft dir, Papier-Visitenkarten durch eine digitale Visitenkarte zu ersetzen, die du auf dem iPhone erstellen, mitnehmen und teilen kannst.
 
-eCardify ist die App für digitale Visitenkarten auf dem iPhone. Erstelle in unter 2 Minuten eine professionelle virtuelle Visitenkarte, speichere sie in Apple Wallet für sofortigen Zugriff und teile sie mit jedem per QR-Code, AirDrop, iMessage oder E-Mail. Keine App auf der Gegenseite nötig.
+Erstelle deine Karte mit Name, Unternehmen, Position, Telefon, E-Mail, Website, Adresse und Social-Links. Füge sie für schnellen Zugriff zu Wallet hinzu und teile sie dann per QR-Code, NFC, AirDrop, Link, iMessage oder E-Mail. Empfänger brauchen keine App, um deine Kontaktdaten zu speichern.
 
-WARUM DIGITAL?
+Warum Nutzer eCardify verwenden:
 
-Papier-Visitenkarten gehen verloren, knicken, bekommen Kaffeeflecken und landen im Müll. Du stehst im schlimmsten Moment ohne da. Bei jedem Jobwechsel oder neuer Nummer druckst du 500 Karten neu.
+- Digitale Visitenkarte in wenigen Minuten erstellen
+- Karte zu Wallet hinzufügen
+- Per QR, NFC-Tags, AirDrop, Link, iMessage oder E-Mail teilen
+- Papier-Visitenkarten in digitale Kontakte scannen
+- Farben, Layout, Logo und Profilfoto anpassen
+- Für Meetings, Events, Konferenzen und Messen immer bereit sein
 
-Eine digitale Visitenkarte geht nie aus, geht nie verloren und ist sofort aktuell. Wenn sich etwas ändert, aktualisierst du deine eCardify-Karte einmal — jeder mit deinem QR-Code bekommt automatisch deine neuesten Daten.
+Ideal für Freelancer, Gründer, Berater, Vertrieb, Recruiting, Immobilienmakler und alle, die oft netzwerken.
 
-HAUPTFUNKTIONEN
-
-APPLE WALLET INTEGRATION
-Deine digitale Visitenkarte lebt in Apple Wallet — direkt neben Bordkarten, Kundenkarten und Zahlungsmethoden. Ein Wisch vom Sperrbildschirm und du bist bereit zum Teilen.
-
-QR-CODE — SCANNEN & TEILEN
-Jede eCardify-Karte hat einen einzigartigen QR-Code. Dein Gegenüber scannt ihn mit der Handykamera — keine App nötig — und erhält sofort deine Kontaktdaten.
-
-PAPIER-VISITENKARTEN-SCANNER
-Sammelst du noch Papier-Visitenkarten auf Events? Scanne sie mit dem integrierten Scanner von eCardify. Die App liest die Karte, extrahiert die Kontaktdaten und erstellt automatisch einen digitalen Kontakt.
-
-PROFESSIONELLE VORLAGEN
-Wähle aus einer Auswahl professionell gestalteter Vorlagen und Farbschemata. Füge Namen, Jobtitel, Firma, Telefonnummer, E-Mail, Website und Links zu LinkedIn, X, Instagram und anderen sozialen Profilen hinzu.
-
-TEILE AUF DEINE ART
-- QR-Code — sie scannen, sie haben deine Daten
-- AirDrop — sofortiges Teilen mit Apple-Geräten in der Nähe
-- iMessage / SMS — als Link senden
-- E-Mail — mit einem Tipp anhängen
-- WhatsApp, Telegram und andere Messenger
-
-Kein App-Download für Empfänger nötig.
-
-FUNKTIONEN IM ÜBERBLICK
-
-- Erstelle digitale Visitenkarten in unter 2 Minuten
-- Speichere in Apple Wallet für Sperrbildschirm-Zugriff
-- Einzigartiger QR-Code pro Karte
-- Papier-Visitenkarten-Scanner
-- Professionelle Vorlagen und Themes
-- Social-Media-Links (LinkedIn, X, Instagram, etc.)
-- Teile per QR, AirDrop, iMessage, E-Mail, Messenger
-- Keine App für Empfänger nötig
-- Kein Konto erforderlich — Privacy-First-Design
-- Kostenlos nutzbar
-
-Papierlos. Professionell. eCardify.
+Keine Papierkarten mehr nachdrucken. Eine Karte erstellen, überall dabeihaben und sofort teilen.

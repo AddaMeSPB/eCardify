@@ -1,0 +1,17 @@
+eCardify uses passwordless email OTP login. There is no static password for review.
+
+Review steps:
+1. Launch the app.
+2. Tap "Login or Register" from the main screen if you want to test card creation.
+3. Enter any email address you can access.
+4. Tap "Continue" to receive a 6-digit verification code by email.
+5. Enter the code to complete login.
+
+After login, the reviewer can:
+- Create a digital business card with contact info, organization, links, and profile image.
+- Generate and view the QR code for the card.
+- Add the card to Wallet.
+- Test NFC write actions on supported iPhone devices with an NFC tag.
+- View and manage saved cards from the Digital Cards list.
+
+The app can also be browsed without login. If the code email is delayed, please wait a few minutes and check the spam or junk folder.

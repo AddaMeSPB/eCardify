@@ -1,0 +1,3 @@
+- Abmeldefunktion behoben
+- Verbesserte Datumsverarbeitung für Kartendaten
+- Fehlerbehebungen und Leistungsverbesserungen

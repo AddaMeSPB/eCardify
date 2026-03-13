@@ -1,1 +1,1 @@
-Escáner QR y Pase de Wallet
+QR, Wallet, NFC y escáner

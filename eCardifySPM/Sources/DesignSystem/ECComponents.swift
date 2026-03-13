@@ -53,6 +53,7 @@ public struct ECEmptyState: View {
                 Text(title)
                     .font(ECTypography.sectionTitle())
                     .foregroundStyle(ECColors.textPrimary)
+                    .multilineTextAlignment(.center)
 
                 Text(message)
                     .font(ECTypography.body())
@@ -66,6 +67,7 @@ public struct ECEmptyState: View {
                     .frame(maxWidth: 240)
             }
         }
+        .frame(maxWidth: .infinity)
         .padding(ECSpacing.xxl)
     }
 }

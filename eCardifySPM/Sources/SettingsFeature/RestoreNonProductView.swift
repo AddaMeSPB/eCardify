@@ -1,6 +1,7 @@
 
 import ComposableArchitecture
 import Foundation
+import L10nResources
 import SwiftUI
 
 public struct RestoreNonProductView: View {
@@ -15,10 +16,10 @@ public struct RestoreNonProductView: View {
 
             if store.isRestoring {
                 ProgressView()
-                Text("Processing...")
+                Text(L("Processing..."))
             }
 
-            Text("Restore!")
+            Text(L("Restore!"))
                 .font(.largeTitle)
                 .fontWeight(.light)
                 .padding()

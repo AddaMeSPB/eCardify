@@ -60,8 +60,8 @@ generate_for_locale() {
     GENERATE_SCREENSHOTS=1 \
     SCREENSHOT_LOCALE="$locale" \
     xcodebuild test \
-        -scheme "eCardify" \
-        -only-testing "ScreenshotTests" \
+        -workspace "$PROJECT_DIR/eCardify.xcworkspace" \
+        -scheme "ScreenshotTests" \
         -destination "platform=iOS Simulator,name=$SIMULATOR" \
         -resultBundlePath "$PROJECT_DIR/.build/screenshots-$locale.xcresult" \
         -quiet \

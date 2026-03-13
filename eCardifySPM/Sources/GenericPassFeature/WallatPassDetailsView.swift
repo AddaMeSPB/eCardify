@@ -48,6 +48,7 @@ public struct WalletPassDetails {
     }
 
     @Dependency(\.nfcCardShareClient) var nfcClient
+    @Dependency(\.continuousClock) var clock
 
     public init() {}
 
@@ -59,10 +60,14 @@ public struct WalletPassDetails {
         switch action {
         case .onAppear:
             state.isNFCAvailable = nfcClient.isAvailable()
+
+            // Skip QR generation if already cached
+            guard state.qrCodeImage == nil else { return .none }
+
             let vCardRepresentation = state.vCard.vCardRepresentation
 
             return .run { [vCardRepresentation] send in
-                if let image = generateQRCode(from: vCardRepresentation) {
+                if let image = Self.generateQRCode(from: vCardRepresentation) {
                     let swiftuiImage = Image(uiImage: image)
                     await send(.qrCode(swiftuiImage))
                 }
@@ -105,7 +110,7 @@ public struct WalletPassDetails {
         case .nfcWriteResult(.success):
             state.nfcWriteStatus = .success
             return .run { send in
-                try await Task.sleep(for: .seconds(2))
+                try await clock.sleep(for: .seconds(2))
                 await send(.dismissNFCStatus)
             }
 
@@ -123,7 +128,10 @@ public struct WalletPassDetails {
         }
     }
 
-    private func generateQRCode(from string: String) -> UIImage? {
+    /// Shared CIContext — creating one per call is expensive.
+    private static let ciContext = CIContext()
+
+    private static func generateQRCode(from string: String) -> UIImage? {
         let data = string.data(using: .utf8)
         guard let filter = CIFilter(name: "CIQRCodeGenerator") else { return nil }
         filter.setValue(data, forKey: "inputMessage")
@@ -133,8 +141,7 @@ public struct WalletPassDetails {
         let transformedImage = outputImage.transformed(
             by: CGAffineTransform(scaleX: 10, y: 10)
         )
-        let context = CIContext()
-        guard let cgImage = context.createCGImage(
+        guard let cgImage = ciContext.createCGImage(
             transformedImage,
             from: transformedImage.extent
         ) else { return nil }
@@ -156,6 +163,10 @@ public struct WalletPassDetailsView: View {
 
     public var body: some View {
         cardContent
+            .contentShape(Rectangle())
+            .onTapGesture {
+                store.send(.viewCardButtonTapped)
+            }
             .contextMenu {
                 contextMenuItems
             }
@@ -175,64 +186,109 @@ public struct WalletPassDetailsView: View {
             }
     }
 
+    // MARK: - Avatar Color Palette
+
+    /// Deterministic color from name — each card gets a unique accent
+    private var avatarGradient: [Color] {
+        let palette: [[Color]] = [
+            [Color(red: 0.14, green: 0.48, blue: 0.57), Color(red: 0.22, green: 0.58, blue: 0.67)], // teal
+            [Color(red: 0.55, green: 0.27, blue: 0.68), Color(red: 0.65, green: 0.38, blue: 0.76)], // purple
+            [Color(red: 0.82, green: 0.47, blue: 0.25), Color(red: 0.90, green: 0.56, blue: 0.35)], // amber
+            [Color(red: 0.22, green: 0.56, blue: 0.42), Color(red: 0.36, green: 0.69, blue: 0.56)], // green
+            [Color(red: 0.20, green: 0.40, blue: 0.70), Color(red: 0.30, green: 0.52, blue: 0.80)], // blue
+            [Color(red: 0.75, green: 0.32, blue: 0.32), Color(red: 0.85, green: 0.42, blue: 0.42)], // rose
+        ]
+        let hash = abs(store.vCard.contact.fullName.hashValue)
+        return palette[hash % palette.count]
+    }
+
+    private var initials: String {
+        let name = store.vCard.contact.fullName
+        guard !name.isEmpty else { return "?" }
+        let parts = name.split(separator: " ")
+        if parts.count >= 2 {
+            return "\(parts[0].prefix(1))\(parts[1].prefix(1))".uppercased()
+        }
+        return String(name.prefix(2)).uppercased()
+    }
+
     // MARK: - Card Content
 
     private var cardContent: some View {
-        HStack(spacing: ECSpacing.sm) {
-            // Thumbnail
-            thumbnailView
+        HStack(spacing: 0) {
+            // Left accent bar
+            RoundedRectangle(cornerRadius: 2)
+                .fill(
+                    LinearGradient(
+                        colors: avatarGradient,
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .frame(width: 4)
+                .padding(.vertical, ECSpacing.sm)
 
-            // Info
-            VStack(alignment: .leading, spacing: ECSpacing.xxs) {
-                // Logo + Name row
-                if let imageUrl = store.vCard.imageURLs.first(where: { $0.type == .icon }) {
-                    AsyncImage(url: URL(string: imageUrl.urlString)) { phase in
-                        if let image = phase.image {
-                            image.resizable().aspectRatio(contentMode: .fit)
-                        } else {
-                            EmptyView()
+            HStack(spacing: ECSpacing.md) {
+                // Avatar
+                thumbnailView
+
+                // Info column
+                VStack(alignment: .leading, spacing: 3) {
+                    // Name — prominent
+                    Text(store.vCard.contact.fullName)
+                        .font(.system(.title3, weight: .semibold))
+                        .foregroundStyle(ECColors.textPrimary)
+                        .lineLimit(1)
+
+                    // Position — readable
+                    if !store.vCard.position.isEmpty {
+                        Text(store.vCard.position)
+                            .font(ECTypography.subheadline())
+                            .foregroundStyle(.gray)
+                            .lineLimit(1)
+                    }
+
+                    // Organization — with icon
+                    if let org = store.vCard.organization, !org.isEmpty {
+                        HStack(spacing: 4) {
+                            Image(systemName: "building.2.fill")
+                                .font(.system(size: 10))
+                                .foregroundStyle(avatarGradient[0].opacity(0.7))
+                            Text(org)
+                                .font(ECTypography.footnote())
+                                .foregroundStyle(Color(.secondaryLabel))
+                                .lineLimit(1)
                         }
                     }
-                    .frame(width: 24, height: 24)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
                 }
 
-                Text(store.vCard.contact.fullName)
-                    .font(ECTypography.headline())
-                    .foregroundStyle(ECColors.textPrimary)
-                    .lineLimit(1)
+                Spacer(minLength: ECSpacing.xxs)
 
-                if !store.vCard.position.isEmpty {
-                    Text(store.vCard.position)
-                        .font(ECTypography.caption())
-                        .foregroundStyle(ECColors.textSecondary)
-                        .lineLimit(1)
-                }
+                // Right side: QR code + chevron
+                HStack(spacing: ECSpacing.sm) {
+                    if let image = store.qrCodeImage {
+                        image
+                            .resizable()
+                            .interpolation(.none)
+                            .aspectRatio(1, contentMode: .fit)
+                            .frame(width: 52, height: 52)
+                            .padding(6)
+                            .background(Color(.systemGray6))
+                            .clipShape(RoundedRectangle(cornerRadius: ECRadius.sm))
+                    }
 
-                if let org = store.vCard.organization, !org.isEmpty {
-                    Text(org)
-                        .font(ECTypography.caption())
-                        .foregroundStyle(ECColors.textSecondary)
-                        .lineLimit(1)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(Color(.tertiaryLabel))
                 }
             }
-
-            Spacer(minLength: ECSpacing.xs)
-
-            // QR Code
-            if let image = store.qrCodeImage {
-                image
-                    .resizable()
-                    .interpolation(.none)
-                    .aspectRatio(1, contentMode: .fit)
-                    .frame(width: 64, height: 64)
-                    .clipShape(RoundedRectangle(cornerRadius: ECRadius.sm))
-            }
+            .padding(.leading, ECSpacing.sm)
+            .padding(.trailing, ECSpacing.md)
         }
-        .padding(ECSpacing.md)
-        .background(.regularMaterial)
+        .padding(.vertical, ECSpacing.sm)
+        .background(ECColors.surface)
         .clipShape(RoundedRectangle(cornerRadius: ECRadius.lg))
-        .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
+        .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 4)
     }
 
     // MARK: - Thumbnail
@@ -246,29 +302,35 @@ public struct WalletPassDetailsView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 } else if phase.error != nil {
-                    placeholderAvatar
+                    initialsAvatar
                 } else {
                     ProgressView()
                         .tint(ECColors.primary)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
-            .frame(width: 72, height: 72)
-            .clipShape(RoundedRectangle(cornerRadius: ECRadius.md))
+            .frame(width: 56, height: 56)
+            .clipShape(Circle())
         } else {
-            placeholderAvatar
+            initialsAvatar
         }
     }
 
-    private var placeholderAvatar: some View {
+    private var initialsAvatar: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: ECRadius.md)
-                .fill(ECColors.primary.opacity(0.12))
-            Image(systemName: "person.crop.rectangle.fill")
-                .font(.title2)
-                .foregroundStyle(ECColors.primary)
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: avatarGradient,
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+            Text(initials)
+                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .foregroundStyle(.white)
         }
-        .frame(width: 72, height: 72)
+        .frame(width: 56, height: 56)
     }
 
     // MARK: - Context Menu

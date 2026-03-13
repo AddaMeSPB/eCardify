@@ -1,0 +1,3 @@
+- Se corrigió la función de cierre de sesión
+- Mejora en el manejo de fechas para datos de tarjetas
+- Correcciones de errores y mejoras de rendimiento

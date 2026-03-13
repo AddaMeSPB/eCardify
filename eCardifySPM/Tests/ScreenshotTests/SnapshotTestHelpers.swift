@@ -36,6 +36,21 @@ enum ScreenshotDevice {
     )
 }
 
+// MARK: - Expected Pixel Dimensions
+
+extension ViewImageConfig {
+    /// The exact pixel dimensions Apple requires for this device class.
+    /// Returns `nil` if no post-processing is needed (e.g. iPhone configs
+    /// render at the correct @3x scale on iPhone simulators).
+    var expectedPixelSize: CGSize? {
+        // iPad Pro 13" must be 2064×2752 @2x but renders at @3x on iPhone sims
+        if self.size == CGSize(width: 1032, height: 1376) {
+            return CGSize(width: 2064, height: 2752)
+        }
+        return nil
+    }
+}
+
 // MARK: - Locale Configuration
 
 /// Maps fastlane locale directory names to Swift Locale identifiers.

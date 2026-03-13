@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA0000022C0E000000000002 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA0000012C0E000000000001 /* PrivacyInfo.xcprivacy */; };
 		C3265A792A7032C7008A8420 /* eCardifyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B189C62A6C549E00EDE004 /* eCardifyUITests.swift */; };
 		C38E320F2A6FCB82009D9DE1 /* GenericPassFeature in Frameworks */ = {isa = PBXBuildFile; productRef = C38E320E2A6FCB82009D9DE1 /* GenericPassFeature */; };
 		C38E32132A6FF1AB009D9DE1 /* AuthenticationView in Frameworks */ = {isa = PBXBuildFile; productRef = C38E32122A6FF1AB009D9DE1 /* AuthenticationView */; };
@@ -47,6 +48,7 @@
 		C3B189C62A6C549E00EDE004 /* eCardifyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eCardifyUITests.swift; sourceTree = "<group>"; };
 		C3B189C82A6C549E00EDE004 /* eCardifyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eCardifyUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C3B189CF2A6E6F4A00EDE004 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
+		AA0000012C0E000000000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C3DEA2802A0E962600EC76C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C3FDFDB72A4F28CE00229340 /* Cards.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cards.storekit; sourceTree = "<group>"; };
 		C3FDFDB82A4F45B100229340 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -109,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				C38FFE2E2A3B3FC300BB3E8C /* Config */,
+				AA0000012C0E000000000001 /* PrivacyInfo.xcprivacy */,
 				C3DEA2802A0E962600EC76C1 /* Info.plist */,
 				C3A4523E2A07F4AC009D8F95 /* eCardifyApp.swift */,
 				C3A4524F2A07F4D7009D8F95 /* Pass.json */,
@@ -242,6 +245,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA0000022C0E000000000002 /* PrivacyInfo.xcprivacy in Resources */,
 				C3FDFDBC2A50022F00229340 /* Production.xcconfig in Resources */,
 				C3A452502A07F4D7009D8F95 /* Pass.json in Resources */,
 				C3A452472A07F4AD009D8F95 /* Preview Assets.xcassets in Resources */,
@@ -408,7 +412,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = eCardify/eCardify.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_ASSET_PATHS = "\"eCardify/Preview Content\"";
 				DEVELOPMENT_TEAM = 6989658CU5;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -430,7 +434,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.7;
+				MARKETING_VERSION = 1.8;
 				PRODUCT_BUNDLE_IDENTIFIER = cardify.addame.com.eCardify;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -451,7 +455,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = eCardify/eCardify.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_ASSET_PATHS = "\"eCardify/Preview Content\"";
 				DEVELOPMENT_TEAM = 6989658CU5;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -473,7 +477,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.7;
+				MARKETING_VERSION = 1.8;
 				PRODUCT_BUNDLE_IDENTIFIER = cardify.addame.com.eCardify;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;

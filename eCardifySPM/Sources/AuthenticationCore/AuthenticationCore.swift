@@ -8,7 +8,9 @@ import FoundationExtension
 import ECSharedModels
 import ComposableArchitecture
 
-public enum VerificationCodeCanceable {}
+private enum CancelID: Hashable {
+    case verifyOtp
+}
 
 @Reducer
 public struct Login {
@@ -149,7 +151,8 @@ public struct Login {
 
             case .binding(\.code):
 
-                guard state.isValidationCodeIsSend else {
+                guard state.isValidationCodeIsSend,
+                      !state.isLoginRequestInFlight else {
                     return .none
                 }
 
@@ -185,6 +188,7 @@ public struct Login {
                             await send(.verificationFailed(message))
                         }
                     }
+                    .cancellable(id: CancelID.verifyOtp, cancelInFlight: true)
                 }
 
                 return .none
@@ -209,20 +213,29 @@ public struct Login {
 
             case let .verificationSuccess(loginRes):
 
-                if loginRes.user == nil || loginRes.access == nil {
+                guard let user = loginRes.user, let tokens = loginRes.access else {
+                    state.isLoginRequestInFlight = false
+                    state.code = ""
+                    state.destination = .alert(AlertState {
+                        TextState("Verification Failed")
+                    } message: {
+                        TextState("Invalid login response. Please try again.")
+                    })
                     return .none
                 }
 
                 state.isLoginRequestInFlight = false
-                state.$isAuthorized.withLock { $0 = true }
-                state.$isUserFirstNameEmpty.withLock { $0 = loginRes.user?.fullName == nil }
+                state.destination = nil // Clear any stale alert (e.g. from a race condition)
+                state.$isUserFirstNameEmpty.withLock { $0 = user.fullName == nil }
 
-                return .run { _ in
+                return .run { send in
                     do {
-                        try await keychainClient.saveOrUpdateCodable(loginRes.user, .user, build.identifier())
-                        try await keychainClient.saveOrUpdateCodable(loginRes.access, .token, build.identifier())
+                        try await keychainClient.saveOrUpdateCodable(user, .user, build.identifier())
+                        try await keychainClient.saveOrUpdateCodable(tokens, .token, build.identifier())
+                        await send(.moveToTableView)
                     } catch {
                         sharedLogger.logError(error.localizedDescription)
+                        await send(.verificationFailed("Unable to save login session. Please try again."))
                     }
                 }
 
@@ -251,6 +264,7 @@ public struct Login {
                 return .none
 
             case .moveToTableView:
+                state.$isAuthorized.withLock { $0 = true }
                 return .none
 
             case .destination:

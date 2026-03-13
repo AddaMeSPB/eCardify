@@ -150,6 +150,7 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
+                .product(name: "AppPromo", package: "CommonTCALibraries"),
                 "AppConfiguration", "APIClient", "DesignSystem", "L10nResources"
             ]
         ),
@@ -173,8 +174,21 @@ let package = Package(
                 "LocalDatabaseClient", "SettingsFeature", "AppConfiguration", "DesignSystem"
             ]
         ),
-        .testTarget(name: "GenericPassFormTests", dependencies: ["GenericPassFeature"]),
+        .testTarget(name: "GenericPassFormTests", dependencies: ["GenericPassFeature", "LocalDatabaseClient"]),
         .testTarget(name: "GenericPassFormUITests", dependencies: ["GenericPassFeature"]),
+
+        .testTarget(
+            name: "AppFeatureTests",
+            dependencies: [
+                "AppFeature",
+                "GenericPassFeature",
+                "APIClient",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "ECSharedModels", package: "ECSharedModels"),
+                .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
+                .product(name: "KeychainClient", package: "CommonTCALibraries")
+            ]
+        ),
 
         .testTarget(
             name: "AuthenticationCoreTests",

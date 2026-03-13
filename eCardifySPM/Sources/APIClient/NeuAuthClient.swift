@@ -14,17 +14,20 @@ public struct NeuAuthClient: Sendable {
     public var verifyOtp: @Sendable (NeuAuthOtpVerifyRequest) async throws -> NeuAuthResponse
     public var refreshToken: @Sendable (NeuAuthRefreshRequest) async throws -> NeuAuthResponse
     public var logout: @Sendable (NeuAuthRefreshRequest) async throws -> Void
+    public var deleteAccount: @Sendable (String) async throws -> Void
 
     public init(
         sendOtp: @escaping @Sendable (NeuAuthOtpRequest) async throws -> NeuAuthOtpResponse,
         verifyOtp: @escaping @Sendable (NeuAuthOtpVerifyRequest) async throws -> NeuAuthResponse,
         refreshToken: @escaping @Sendable (NeuAuthRefreshRequest) async throws -> NeuAuthResponse,
-        logout: @escaping @Sendable (NeuAuthRefreshRequest) async throws -> Void
+        logout: @escaping @Sendable (NeuAuthRefreshRequest) async throws -> Void,
+        deleteAccount: @escaping @Sendable (String) async throws -> Void
     ) {
         self.sendOtp = sendOtp
         self.verifyOtp = verifyOtp
         self.refreshToken = refreshToken
         self.logout = logout
+        self.deleteAccount = deleteAccount
     }
 }
 
@@ -69,6 +72,14 @@ extension NeuAuthClient {
                     path: "/api/v1/auth/logout",
                     body: request,
                     clientId: clientId
+                )
+            },
+            deleteAccount: { accessToken in
+                _ = try await performDeleteRequest(
+                    baseURL: baseURL,
+                    path: "/api/v1/users/me",
+                    clientId: clientId,
+                    accessToken: accessToken
                 )
             }
         )
@@ -127,6 +138,43 @@ private func performRequest<T: Encodable>(
     }
 }
 
+private func performDeleteRequest(
+    baseURL: String,
+    path: String,
+    clientId: String,
+    accessToken: String
+) async throws -> Data {
+    guard let url = URL(string: baseURL + path) else {
+        throw NeuAuthError.invalidURL
+    }
+
+    var request = URLRequest(url: url)
+    request.httpMethod = "DELETE"
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    request.setValue(clientId, forHTTPHeaderField: "X-Client-ID")
+    request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+
+    let (data, response) = try await URLSession.shared.data(for: request)
+
+    guard let httpResponse = response as? HTTPURLResponse else {
+        throw NeuAuthError.unknown
+    }
+
+    switch httpResponse.statusCode {
+    case 200..<300:
+        return data
+    case 401:
+        let errorBody = try? JSONDecoder().decode(NeuAuthErrorResponse.self, from: data)
+        throw NeuAuthError.unauthorized(errorBody?.error ?? "Unauthorized")
+    default:
+        let errorBody = try? JSONDecoder().decode(NeuAuthErrorResponse.self, from: data)
+        throw NeuAuthError.serverError(
+            statusCode: httpResponse.statusCode,
+            message: errorBody?.error ?? "Unknown error"
+        )
+    }
+}
+
 // MARK: - Error Types
 
 public enum NeuAuthError: Error, Equatable {
@@ -174,7 +222,8 @@ private enum NeuAuthClientKey: TestDependencyKey {
                 )
             )
         },
-        logout: { _ in }
+        logout: { _ in },
+        deleteAccount: { _ in }
     )
 }
 

@@ -4,6 +4,7 @@ import SnapshotTesting
 import ComposableArchitecture
 import ECSharedModels
 import L10nResources
+import CoreImage.CIFilterBuiltins
 
 @testable import AppView
 @testable import GenericPassFeature
@@ -20,8 +21,8 @@ import AuthenticationView
 ///
 /// Run manually:
 ///   xcodebuild test \
-///     -scheme eCardifySPM-Package \
-///     -only-testing ScreenshotTests \
+///     -workspace eCardify.xcworkspace \
+///     -scheme ScreenshotTests \
 ///     -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max'
 final class ScreenshotTests: XCTestCase {
 
@@ -57,6 +58,19 @@ final class ScreenshotTests: XCTestCase {
 
     // MARK: - Helpers
 
+    /// Generates a QR code Image synchronously from a string (for snapshot tests).
+    private func generateQRCode(from string: String) -> Image? {
+        guard let data = string.data(using: .utf8),
+              let filter = CIFilter(name: "CIQRCodeGenerator") else { return nil }
+        filter.setValue(data, forKey: "inputMessage")
+        filter.setValue("H", forKey: "inputCorrectionLevel")
+        guard let outputImage = filter.outputImage else { return nil }
+        let scaled = outputImage.transformed(by: CGAffineTransform(scaleX: 10, y: 10))
+        let context = CIContext()
+        guard let cgImage = context.createCGImage(scaled, from: scaled.extent) else { return nil }
+        return Image(uiImage: UIImage(cgImage: cgImage))
+    }
+
     /// Captures a screenshot of a SwiftUI view at the given device config
     /// and saves it to `fastlane/screenshots/{locale}/{filename}`.
     private func captureAndSave<V: View>(
@@ -68,6 +82,11 @@ final class ScreenshotTests: XCTestCase {
         // Switch the L10n bundle to the target locale so L() returns
         // translated strings when the view body is evaluated.
         setScreenshotLocale(locale.fastlaneDir)
+
+        // Disable animations globally so onAppear-driven opacity/scale
+        // changes complete instantly (fixes blank onboarding screenshots).
+        UIView.setAnimationsEnabled(false)
+        defer { UIView.setAnimationsEnabled(true) }
 
         let localizedView = view.environment(
             \.locale,
@@ -111,6 +130,37 @@ final class ScreenshotTests: XCTestCase {
             .appendingPathComponent(filename).path
         try? FileManager.default.removeItem(atPath: finalPath)
         try? FileManager.default.moveItem(atPath: generatedPath, toPath: finalPath)
+
+        // iPad screenshots render at @3x on iPhone simulators (3096×4128)
+        // but Apple requires @2x (2064×2752). Resize if needed.
+        if let expectedSize = config.expectedPixelSize {
+            resizeImageIfNeeded(
+                at: finalPath,
+                to: expectedSize
+            )
+        }
+    }
+
+    /// Resizes a PNG file on disk to the target pixel size if it doesn't match.
+    ///
+    /// UIGraphicsImageRenderer defaults to the screen's native scale (@3x on
+    /// iPhone simulators), which would triple the target dimensions. We force
+    /// scale = 1.0 so that 1 point == 1 pixel in the output.
+    private func resizeImageIfNeeded(at path: String, to targetSize: CGSize) {
+        guard let image = UIImage(contentsOfFile: path) else { return }
+        let currentW = image.size.width * image.scale
+        let currentH = image.size.height * image.scale
+        guard currentW != targetSize.width || currentH != targetSize.height else { return }
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1.0  // 1 point = 1 pixel — produces exact targetSize pixels
+        let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
+        let resized = renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: targetSize))
+        }
+        if let data = resized.pngData() {
+            try? data.write(to: URL(fileURLWithPath: path))
+        }
     }
 
     /// Snapshots a SwiftUI view on both iPhone 6.9" and iPad Pro 13"
@@ -152,30 +202,49 @@ final class ScreenshotTests: XCTestCase {
     func test_02_CardList() {
         guard shouldGenerate else { return }
 
+        // Pre-generate QR codes for each card so they appear in the list
+        var alifState = WalletPassDetails.State.demoAlif
+        alifState.qrCodeImage = generateQRCode(from: VCard.demoAlif.vCardRepresentation)
+        var sarahState = WalletPassDetails.State.demoSarah
+        sarahState.qrCodeImage = generateQRCode(from: VCard.demoSarah.vCardRepresentation)
+        var marcusState = WalletPassDetails.State.demoMarcus
+        marcusState.qrCodeImage = generateQRCode(from: VCard.demoMarcus.vCardRepresentation)
+
         let store = Store<WalletPassList.State, WalletPassList.Action>(
             initialState: WalletPassList.State(
-                wPassLocal: demoWPassLocal
+                wPassLocal: [alifState, sarahState, marcusState]
             )
         ) {
             EmptyReducer()
         }
 
-        let view = WalletPassView(store: store)
+        let view = NavigationStack {
+            WalletPassView(store: store)
+        }
         snapshotAllDevices(view, screenName: "02_card_list")
     }
 
-    // MARK: - 03 Card Detail
+    // MARK: - 03 Card Design (full card view)
 
     func test_03_CardDetail() {
         guard shouldGenerate else { return }
 
-        let store = Store<WalletPassDetails.State, WalletPassDetails.Action>(
-            initialState: WalletPassDetails.State.demoAlif
+        // Use the full CardDesignView (the actual card with QR code, colors, contact info)
+        let qrCode = generateQRCode(from: VCard.demoAlif.vCardRepresentation)
+        var cardState = CardDesignReducer.State(
+            colorP: ColorPalette.colorPalettes[2], // Indigo/gold — looks great
+            vCard: .demoAlif,
+            isRealDataView: true
+        )
+        cardState.qrCodeImage = qrCode
+
+        let store = Store<CardDesignReducer.State, CardDesignReducer.Action>(
+            initialState: cardState
         ) {
             EmptyReducer()
         }
 
-        let view = WalletPassDetailsView(store: store)
+        let view = CardDesignView(store: store)
         snapshotAllDevices(view, screenName: "03_card_detail")
     }
 
@@ -199,24 +268,28 @@ final class ScreenshotTests: XCTestCase {
         snapshotAllDevices(view, screenName: "04_create_card")
     }
 
-    // MARK: - 05 Create Card Form (Custom)
+    // MARK: - 05 Card Design (second palette)
 
     func test_05_CreateCardFormCustom() {
         guard shouldGenerate else { return }
 
-        let store = Store<GenericPassForm.State, GenericPassForm.Action>(
-            initialState: GenericPassForm.State(
-                storeKitState: .demoProductsCustom,
-                vCard: .demoSarah,
-                telephone: .init(type: .work, number: "+12125551234"),
-                email: "sarah.johnson@techventures.io"
-            )
+        // Show a second card design with a different palette and person
+        let qrCode = generateQRCode(from: VCard.demoSarah.vCardRepresentation)
+        var cardState = CardDesignReducer.State(
+            colorP: ColorPalette.colorPalettes[1], // Dark grey/white — elegant
+            vCard: .demoSarah,
+            isRealDataView: true
+        )
+        cardState.qrCodeImage = qrCode
+
+        let store = Store<CardDesignReducer.State, CardDesignReducer.Action>(
+            initialState: cardState
         ) {
             EmptyReducer()
         }
 
-        let view = GenericPassFormView(store: store)
-        snapshotAllDevices(view, screenName: "05_create_card_custom")
+        let view = CardDesignView(store: store)
+        snapshotAllDevices(view, screenName: "05_card_design_dark")
     }
 
     // MARK: - 06 Settings

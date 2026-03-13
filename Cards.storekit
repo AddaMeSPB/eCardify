@@ -5,12 +5,12 @@
   ],
   "products" : [
     {
-      "displayPrice" : "14",
+      "displayPrice" : "1.99",
       "familyShareable" : false,
       "internalID" : "70B4530F",
       "localizations" : [
         {
-          "description" : "Basic version of product has fixed design!",
+          "description" : "Basic digital business card with a fixed design.",
           "displayName" : "Basic Card 🪪",
           "locale" : "en_US"
         }
@@ -20,13 +20,13 @@
       "type" : "NonConsumable"
     },
     {
-      "displayPrice" : "24",
+      "displayPrice" : "4.99",
       "familyShareable" : false,
       "internalID" : "E70B3B6E",
       "localizations" : [
         {
-          "description" : "Flexibility & Customization can add muti data",
-          "displayName" : "Flexi Digital Card.",
+          "description" : "Custom card design with flexible data fields.",
+          "displayName" : "FlexiCard",
           "locale" : "en_US"
         }
       ],

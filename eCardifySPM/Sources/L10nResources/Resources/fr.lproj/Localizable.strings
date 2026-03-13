@@ -3,108 +3,195 @@
 <plist version="1.0">
 <dict>
 
-<!-- AuthenticationView -->
+<!-- ============================================================ -->
+<!-- AuthenticationView                                            -->
+<!-- ============================================================ -->
 <key>eCardify</key><string>eCardify</string>
 <key>Register Or Login</key><string>Inscription ou Connexion</string>
-<key>Verification Code</key><string>Code de verification</string>
+<key>Verification Code</key><string>Code de vérification</string>
 <key>000000</key><string>000000</string>
-<key>Didn't get email? Please check your mail spam folder!</key><string>Vous n'avez pas recu l'e-mail ? Verifiez votre dossier spam !</string>
-<key>Check our terms and privacy</key><string>Consultez nos conditions et notre politique de confidentialite</string>
+<key>Didn't get email? Please check your mail spam folder!</key><string>Vous n'avez pas reçu l'e-mail ? Vérifiez votre dossier spam !</string>
+<key>Check our terms and privacy</key><string>Consultez nos conditions et notre politique de confidentialité</string>
 <key>Terms</key><string>Conditions</string>
-<key>Privacy</key><string>Confidentialite</string>
+<key>Privacy</key><string>Confidentialité</string>
+<key>&amp;</key><string>&amp;</string>
+<key>Your nice Name goes here</key><string>Votre joli nom va ici</string>
+<key>Continue</key><string>Continuer</string>
+<key>Email</key><string>E-mail</string>
+<key>your@email.com</key><string>your@email.com</string>
 
-<!-- GenericPassFormView -->
-<key>Org or Company Name</key><string>Nom de l'organisation ou de l'entreprise</string>
-<key>Organization/Company/self employed</key><string>Organisation/Entreprise/Independant</string>
-<key>Job title</key><string>Titre du poste</string>
-<key>Photo description</key><string>Ajoutez une photo a votre carte de visite numerique pour faire une impression professionnelle. Choisissez un portrait clair et en haute resolution.</string>
-<key>Organisation &amp; Upload Images!</key><string>Organisation &amp; Telecharger des images !</string>
-<key>Choice Product Type</key><string>Choisir le type de produit</string>
-<key>Pick or Preview</key><string>Choisir ou Apercu</string>
+<!-- ============================================================ -->
+<!-- GenericPassFormView                                           -->
+<!-- ============================================================ -->
+<key>Organization or Company</key><string>Organisation ou Entreprise</string>
+<key>Organization, company, or self-employed name</key><string>Organisation, entreprise ou indépendant</string>
+<key>Job Title</key><string>Titre du poste</string>
+<key>Photo description</key><string>Ajoutez une photo à votre carte de visite numérique pour faire une impression professionnelle et mémorable.</string>
+<key>Organization &amp; Images</key><string>Organisation &amp; Images</string>
+<key>Product Type</key><string>Type de produit</string>
+<key>Pick Card Design</key><string>Choisir le design de carte</string>
 <key>Your</key><string>Votre</string>
 <key>Card Design</key><string>Design de carte</string>
 <key>To activate this function,</key><string>Pour activer cette fonction,</string>
 <key>Please change your product type.</key><string>veuillez changer votre type de produit.</string>
-<key>Pay %@ and Create</key><string>Payer %@ et creer</string>
-<key>Generating your Digital card! Please wait</key><string>Generation de votre carte numerique ! Veuillez patienter</string>
-<key>Create digital card</key><string>Creer une carte numerique</string>
+<key>Change product type</key><string>Changer le type de produit</string>
+<key>Change product type to Custom to unlock card design.</key><string>Changez le type de produit en Personnalisé pour débloquer le design de carte.</string>
+<key>Pay %@ and Create</key><string>Payer %@ et créer</string>
+<key>Generating your card...</key><string>Génération de votre carte...</string>
+<key>Create Digital Card</key><string>Créer une carte numérique</string>
+<key>Create Card</key><string>Créer une carte</string>
+<key>Upload Logo</key><string>Télécharger le logo</string>
+<key>Your photo will appear on the Apple Wallet pass, helping others recognize you instantly.</key><string>Votre photo apparaîtra sur le pass Apple Wallet, aidant les autres à vous reconnaître instantanément.</string>
+<key>Optional</key><string>Facultatif</string>
+<key>Website</key><string>Site web</string>
+<key>https://example.com</key><string>https://example.com</string>
+<key>Renews %@</key><string>Renouvellement %@</string>
 
-<!-- AddressesSectionView -->
-<key>PostOffice</key><string>Boite postale</string>
-<key>Extended address - OPTIONAL</key><string>Adresse complementaire - FACULTATIF</string>
+<!-- Legacy keys (kept for backward compatibility) -->
+<key>Org or Company Name</key><string>Organisation ou Entreprise</string>
+<key>Organization/Company/self employed</key><string>Organisation, entreprise ou indépendant</string>
+<key>Job title</key><string>Titre du poste</string>
+<key>Organisation &amp; Upload Images!</key><string>Organisation &amp; Images</string>
+<key>Choice Product Type</key><string>Choisir le type de produit</string>
+<key>Pick or Preview</key><string>Choisir ou Aperçu</string>
+<key>Generating your Digital card! Please wait</key><string>Génération de votre carte...</string>
+<key>Create digital card</key><string>Créer une carte numérique</string>
+
+<!-- ============================================================ -->
+<!-- AddressesSectionView                                          -->
+<!-- ============================================================ -->
+<key>Post Office</key><string>Boîte postale</string>
+<key>Extended Address (Optional)</key><string>Adresse complémentaire (Facultatif)</string>
 <key>Street</key><string>Rue</string>
 <key>City</key><string>Ville</string>
-<key>Region/State</key><string>Region/Departement</string>
+<key>Region / State</key><string>Région / Département</string>
 <key>Post Code</key><string>Code postal</string>
-<key>Select Country</key><string>Selectionner le pays</string>
-<key>Remove this address</key><string>Supprimer cette adresse</string>
+<key>Select Country</key><string>Sélectionner le pays</string>
+<key>Remove Address</key><string>Supprimer l'adresse</string>
 <key>Address Type</key><string>Type d'adresse</string>
 <key>Address</key><string>Adresse</string>
 <key>Please change your product type below.</key><string>Veuillez changer votre type de produit ci-dessous.</string>
 <key>click here to change your product type</key><string>Appuyez ici pour changer votre type de produit</string>
 
-<!-- SettingsView -->
-<key>Hello, %@</key><string>Bonjour, %@</string>
-<key>Support our app</key><string>Soutenez notre application</string>
-<key>Review us</key><string>Laissez un avis</string>
-<key>Share</key><string>Partager</string>
-<key>Restore</key><string>Restaurer</string>
-<key>Explore our other apps!</key><string>Decouvrez nos autres applications !</string>
-<key>Log out!</key><string>Deconnexion !</string>
-<key>Build %@</key><string>Build %@</string>
-<key>Report a bug</key><string>Signaler un bug</string>
-<key>Settings</key><string>Parametres</string>
+<!-- Legacy keys -->
+<key>PostOffice</key><string>Boîte postale</string>
+<key>Extended address - OPTIONAL</key><string>Adresse complémentaire (Facultatif)</string>
+<key>Region/State</key><string>Région / Département</string>
+<key>Remove this address</key><string>Supprimer l'adresse</string>
 
-<!-- TelephoneSectionView -->
-<key>Number is invalid!</key><string>Le numero est invalide !</string>
-<key>Telephone</key><string>Telephone</string>
+<!-- ============================================================ -->
+<!-- SettingsView                                                  -->
+<!-- ============================================================ -->
+<key>Settings</key><string>Paramètres</string>
+<key>Hello, %@</key><string>Bonjour, %@</string>
+<key>General</key><string>Général</string>
+<key>Leave a Review</key><string>Laisser un avis</string>
+<key>Share App</key><string>Partager l'app</string>
+<key>Restore Purchases</key><string>Restaurer les achats</string>
+<key>Our Apps</key><string>Nos applications</string>
+<key>About</key><string>À propos</string>
+<key>Report a Bug</key><string>Signaler un bug</string>
+<key>Log Out</key><string>Déconnexion</string>
+<key>User</key><string>Utilisateur</string>
+<key>Version</key><string>Version</string>
+<key>Build %@</key><string>Build %@</string>
+
+<!-- Legacy keys -->
+<key>Support our app</key><string>Soutenez notre application</string>
+<key>Review us</key><string>Laisser un avis</string>
+<key>Share</key><string>Partager l'app</string>
+<key>Restore</key><string>Restaurer les achats</string>
+<key>Explore our other apps!</key><string>Nos applications</string>
+<key>Log out!</key><string>Déconnexion</string>
+<key>Report a bug</key><string>Signaler un bug</string>
+
+<!-- ============================================================ -->
+<!-- TelephoneSectionView                                          -->
+<!-- ============================================================ -->
+<key>Number is invalid</key><string>Le numéro est invalide</string>
+<key>Telephone</key><string>Téléphone</string>
 <key>Device Type</key><string>Type d'appareil</string>
 
-<!-- OrganizationSectionView -->
-<key>Upload old card.</key><string>Telecharger l'ancienne carte.</string>
-<key>Avatar</key><string>Avatar</string>
-<key>Upload logo</key><string>Telecharger le logo</string>
-<key>Upload old card</key><string>Telecharger l'ancienne carte</string>
+<!-- Legacy key -->
+<key>Number is invalid!</key><string>Le numéro est invalide</string>
 
-<!-- ContactSectionView -->
+<!-- ============================================================ -->
+<!-- OrganizationSectionView                                       -->
+<!-- ============================================================ -->
+<key>Upload old card.</key><string>Télécharger l'ancienne carte.</string>
+<key>Avatar</key><string>Avatar</string>
+<key>Upload logo</key><string>Télécharger le logo</string>
+<key>Upload old card</key><string>Télécharger l'ancienne carte</string>
+
+<!-- ============================================================ -->
+<!-- ContactSectionView                                            -->
+<!-- ============================================================ -->
 <key>Contact</key><string>Contact</string>
-<key>First Name</key><string>Prenom</string>
-<key>Middle Name</key><string>Deuxieme prenom</string>
+<key>First Name</key><string>Prénom</string>
+<key>Middle Name</key><string>Deuxième prénom</string>
 <key>Last Name</key><string>Nom</string>
 
-<!-- EmailView -->
-<key>Email</key><string>E-mail</string>
+<!-- ============================================================ -->
+<!-- EmailView                                                     -->
+<!-- ============================================================ -->
 <key>Email address</key><string>Adresse e-mail</string>
 
-<!-- WallatPassDetailsView -->
+<!-- ============================================================ -->
+<!-- WalletPassDetailsView                                         -->
+<!-- ============================================================ -->
 <key>Share card</key><string>Partager la carte</string>
 <key>Show card</key><string>Afficher la carte</string>
-<key>Add to Apple Wallet</key><string>Ajouter a Apple Wallet</string>
+<key>Add to Apple Wallet</key><string>Ajouter à Apple Wallet</string>
+<key>View Card</key><string>Voir la carte</string>
+<key>Write to NFC Tag</key><string>Écrire sur un tag NFC</string>
+<key>Write App Link to NFC</key><string>Écrire le lien de l'app sur NFC</string>
+<key>Hold near NFC tag...</key><string>Approchez du tag NFC...</string>
+<key>Written!</key><string>Écrit !</string>
 
-<!-- NotificationsSettingsView -->
+<!-- ============================================================ -->
+<!-- NotificationsSettingsView                                     -->
+<!-- ============================================================ -->
 <key>Enable notifications</key><string>Activer les notifications</string>
-<key>Notification warning</key><string>Si vous desactivez les notifications, vous ne recevrez plus les mises a jour importantes de vos cartes ni les rappels.</string>
+<key>Notification warning</key><string>Veuillez ne pas désactiver les notifications, toute la fonction sera désactivée.</string>
+<key>Please don't turn off notification, the whole function will be turned off</key><string>Veuillez ne pas désactiver les notifications, toute la fonction sera désactivée.</string>
 <key>Notifications</key><string>Notifications</string>
 
-<!-- RestoreNonProductView -->
+<!-- ============================================================ -->
+<!-- RestoreNonProductView                                         -->
+<!-- ============================================================ -->
 <key>Processing...</key><string>Traitement en cours...</string>
 <key>Restore!</key><string>Restaurer !</string>
 
-<!-- PhotosSelectorView -->
+<!-- ============================================================ -->
+<!-- PhotosSelectorView                                            -->
+<!-- ============================================================ -->
 <key>Loading... please wait!</key><string>Chargement... veuillez patienter !</string>
 
-<!-- WallatPassView -->
-<key>Digital Cards</key><string>Cartes numeriques</string>
+<!-- ============================================================ -->
+<!-- WalletPassView                                                -->
+<!-- ============================================================ -->
+<key>Digital Cards</key><string>Cartes numériques</string>
+<key>No Cards Yet</key><string>Pas encore de cartes</string>
+<key>Login or Register</key><string>Connexion ou Inscription</string>
+<key>Login or register to create and manage your digital business cards.</key><string>Connectez-vous ou inscrivez-vous pour créer et gérer vos cartes de visite numériques.</string>
+<key>Create your first digital business card and share it instantly.</key><string>Créez votre première carte de visite numérique et partagez-la instantanément.</string>
+<key>Country Picker</key><string>Sélecteur de pays</string>
+<key>Dashboard</key><string>Tableau de bord</string>
 
-<!-- CardDesignListReducer -->
+<!-- Legacy key -->
+<key>Login or Register.</key><string>Connexion ou Inscription</string>
+
+<!-- ============================================================ -->
+<!-- CardDesignListReducer                                         -->
+<!-- ============================================================ -->
 <key>Card design</key><string>Design de carte</string>
 <key>Pick a design</key><string>Choisir un design</string>
-<key>Default</key><string>Par defaut</string>
-<key>Custom</key><string>Personnalise</string>
+<key>Default</key><string>Par défaut</string>
+<key>Custom</key><string>Personnalisé</string>
 <key>Pro designs</key><string>Designs Pro</string>
 <key>Loading designs...</key><string>Chargement des designs...</string>
-<key>Failed to load</key><string>Echec du chargement</string>
-<key>Try again</key><string>Reessayer</string>
+<key>Failed to load</key><string>Échec du chargement</string>
+<key>Try again</key><string>Réessayer</string>
 <key>Select card design</key><string>Choisir un design de carte</string>
 <key>Close</key><string>Fermer</string>
 <key>NAME</key><string>NOM</string>
@@ -112,40 +199,45 @@
 <key>EMAIL</key><string>E-MAIL</string>
 <key>MOBILE</key><string>MOBILE</string>
 
-<!-- StoreKitReducer AlertState -->
+<!-- ============================================================ -->
+<!-- StoreKitReducer AlertState                                    -->
+<!-- ============================================================ -->
 <key>Error</key><string>Erreur</string>
-<key>We couldn't restore purchases, please try again.</key><string>Impossible de restaurer les achats, veuillez reessayer.</string>
+<key>We couldn't restore purchases, please try again.</key><string>Impossible de restaurer les achats, veuillez réessayer.</string>
 <key>Purchase restore.</key><string>Restauration des achats.</string>
-<key>Your purchases was successfully restore.</key><string>Vos achats ont ete restaures avec succes.</string>
+<key>Purchase restored</key><string>Achat restauré</string>
+<key>Your purchases were successfully restored.</key><string>Vos achats ont été restaurés avec succès.</string>
 <key>Back</key><string>Retour</string>
 <key>No Purchases</key><string>Aucun achat</string>
-<key>No purchases were found to restore.</key><string>Aucun achat a restaurer n'a ete trouve.</string>
+<key>No purchases were found to restore.</key><string>Aucun achat à restaurer n'a été trouvé.</string>
 
-<!-- Enum rawValues for LDynamic -->
-<key>HOME</key><string>HOME</string>
-<key>WORK</key><string>WORK</string>
-<key>CELL</key><string>CELL</string>
-<key>FAX</key><string>FAX</string>
-<key>PAGER</key><string>PAGER</string>
-<key>POSTAL</key><string>POSTAL</string>
-<key>DOM</key><string>DOM</string>
-<key>INTL</key><string>INTL</string>
-<key>PARCEL</key><string>PARCEL</string>
+<!-- GenericPassForm Alerts -->
+<key>Unable to upload image please try again!</key><string>Impossible de télécharger l'image, veuillez réessayer.</string>
+<key>Please login 1st!</key><string>Veuillez d'abord vous connecter.</string>
+
+<!-- Legacy key -->
+<key>Your purchases was successfully restore.</key><string>Vos achats ont été restaurés avec succès.</string>
+
+<!-- ============================================================ -->
+<!-- Enum rawValues for LDynamic                                   -->
+<!-- ============================================================ -->
+<key>HOME</key><string>Domicile</string>
+<key>WORK</key><string>Travail</string>
+<key>CELL</key><string>Mobile</string>
+<key>FAX</key><string>Fax</string>
+<key>PAGER</key><string>Pager</string>
+<key>POSTAL</key><string>Postal</string>
+<key>DOM</key><string>National</string>
+<key>INTL</key><string>International</string>
+<key>PARCEL</key><string>Colis</string>
 <key>BASIC</key><string>Basique</string>
-<key>CUSTOM</key><string>Personnalise</string>
+<key>CUSTOM</key><string>Personnalisé</string>
 <key>basic</key><string>Basique</string>
-<key>custom</key><string>Personnalise</string>
+<key>custom</key><string>Personnalisé</string>
 
-<!-- New Keys -->
-<key>Login or Register.</key><string>Connexion ou Inscription.</string>
-<key>Country Picker</key><string>Selecteur de pays</string>
-<key>Purchase restored</key><string>Achat restaure</string>
-<key>Your purchases were successfully restored.</key><string>Vos achats ont ete restaures avec succes.</string>
-<key>Please don't turn off notification, the whole function will be turned off</key><string>Veuillez ne pas desactiver les notifications, toute la fonction sera desactivee</string>
-<key>&amp;</key><string>&amp;</string>
-<key>Your nice Name goes here</key><string>Votre joli nom va ici</string>
-
-<!-- OnboardingView -->
+<!-- ============================================================ -->
+<!-- OnboardingView                                                -->
+<!-- ============================================================ -->
 <key>Welcome to eCardify</key><string>Bienvenue sur eCardify</string>
 <key>Create stunning digital business cards</key><string>Créez de superbes cartes de visite numériques</string>
 <key>Design your professional identity with custom templates, colors, and layouts.</key><string>Concevez votre identité professionnelle avec des modèles, couleurs et mises en page personnalisés.</string>
@@ -155,6 +247,29 @@
 <key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>Partagez via QR code ou lien. Les destinataires n'ont pas besoin de l'app.</string>
 <key>Get Started</key><string>Commencer</string>
 <key>Skip</key><string>Passer</string>
+<key>Next</key><string>Suivant</string>
 
+<!-- ============================================================ -->
+<!-- Legal                                                         -->
+<!-- ============================================================ -->
+<key>Privacy Policy</key><string>Politique de confidentialité</string>
+<key>Terms of Use</key><string>Conditions d'utilisation</string>
+
+<!-- ============================================================ -->
+<!-- Free Tier                                                     -->
+<!-- ============================================================ -->
+<key>Free Card</key><string>Carte Gratuite</string>
+<key>Create Your Free Card</key><string>Créez votre carte gratuite</string>
+<key>Your first card is free with basic templates!</key><string>Votre première carte est gratuite avec des modèles de base !</string>
+<key>Your first digital business card is free with basic templates.</key><string>Votre première carte de visite numérique est gratuite avec des modèles de base.</string>
+<key>Custom card design is available with paid cards.</key><string>Le design personnalisé est disponible avec les cartes payantes.</string>
+
+<!-- ============================================================ -->
+<!-- Connection / Retry                                            -->
+<!-- ============================================================ -->
+<key>Connection Error</key><string>Erreur de connexion</string>
+<key>Retry</key><string>Réessayer</string>
+
+<key>Delete Account</key><string>Supprimer le compte</string>
 </dict>
 </plist>

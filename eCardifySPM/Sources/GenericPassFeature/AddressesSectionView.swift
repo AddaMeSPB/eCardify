@@ -9,8 +9,6 @@ struct AddressesSectionView: View {
     @Bindable var store: StoreOf<GenericPassForm>
     var scrollProxy: ScrollViewProxy
 
-    @State private var isPickerPresented = false
-
     public init(
         store: StoreOf<GenericPassForm>,
         _ scrollProxy: ScrollViewProxy
@@ -25,7 +23,7 @@ struct AddressesSectionView: View {
 
                 Picker(L("Address Type"), selection: $item.type) {
                     ForEach(VCard.Address.AType.allCases, id: \.self) { option in
-                        Text(option.rawValue.uppercased())
+                        Text(LDynamic(option.rawValue.uppercased()))
                             .tag(option)
                     }
                 }
@@ -62,7 +60,7 @@ struct AddressesSectionView: View {
                         .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.postTextFields.rawValue)
                 }
 
-                countryPicker(item: $item)
+                CountryPickerRow(item: $item)
 
                 if store.vCard.addresses.count > 1 {
                     Button(role: .destructive) {
@@ -111,19 +109,31 @@ struct AddressesSectionView: View {
         }
     }
 
-    @ViewBuilder
-    private func countryPicker(item: Binding<VCard.Address>) -> some View {
+    func deleteAddress(at offsets: IndexSet) {
+        if store.vCard.addresses.count > 1 {
+            store.vCard.addresses.remove(atOffsets: offsets)
+        }
+    }
+}
+
+// MARK: - Per-row country picker with isolated @State
+
+private struct CountryPickerRow: View {
+    @Binding var item: VCard.Address
+    @State private var isPickerPresented = false
+
+    var body: some View {
         VStack {
             Button { isPickerPresented = true } label: {
                 HStack {
                     HStack(spacing: ECSpacing.xs) {
                         ECRequiredDot()
-                        Text(item.wrappedValue.country.isEmpty
+                        Text(item.country.isEmpty
                              ? L("Select Country")
-                             : item.wrappedValue.country)
+                             : item.country)
                         .font(ECTypography.body(.medium))
                         .foregroundStyle(
-                            item.wrappedValue.country.isEmpty
+                            item.country.isEmpty
                             ? ECColors.textSecondary
                             : ECColors.textPrimary
                         )
@@ -138,7 +148,7 @@ struct AddressesSectionView: View {
                 NavigationStack {
                     List(Locale.Region.isoRegions, id: \.identifier) { region in
                         Button {
-                            item.wrappedValue.country = Locale.current.localizedString(
+                            item.country = Locale.current.localizedString(
                                 forRegionCode: region.identifier
                             ) ?? region.identifier
                             isPickerPresented = false
@@ -153,12 +163,6 @@ struct AddressesSectionView: View {
                 }
             }
             .accessibilityIdentifier(UITestGPFAccessibilityIdentifier.countryTextFields.rawValue)
-        }
-    }
-
-    func deleteAddress(at offsets: IndexSet) {
-        if store.vCard.addresses.count > 1 {
-            store.vCard.addresses.remove(atOffsets: offsets)
         }
     }
 }

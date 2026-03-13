@@ -10,103 +10,150 @@
 <key>Register Or Login</key><string>Регистрация или Вход</string>
 <key>Verification Code</key><string>Код подтверждения</string>
 <key>000000</key><string>000000</string>
-<key>Didn't get email? Please check your mail spam folder!</key><string>*** Не получили письмо? Проверьте папку «Спам»!</string>
+<key>Didn't get email? Please check your mail spam folder!</key><string>Не получили письмо? Проверьте папку «Спам»!</string>
 <key>Check our terms and privacy</key><string>Ознакомьтесь с условиями и политикой конфиденциальности</string>
 <key>Terms</key><string>Условия</string>
 <key>Privacy</key><string>Конфиденциальность</string>
 <key>&amp;</key><string>&amp;</string>
 <key>Your nice Name goes here</key><string>Введите ваше имя</string>
+<key>Continue</key><string>Продолжить</string>
+<key>Email</key><string>Эл. почта</string>
+<key>your@email.com</key><string>your@email.com</string>
 
 <!-- ============================================================ -->
 <!-- GenericPassFormView                                           -->
 <!-- ============================================================ -->
-<key>Org or Company Name</key><string>***Название организации или компании</string>
-<key>Organization/Company/self employed</key><string>***Организация/Компания/ИП</string>
-<key>Job title</key><string>*Должность</string>
+<key>Organization or Company</key><string>Организация или компания</string>
+<key>Organization, company, or self-employed name</key><string>Организация, компания или ИП</string>
+<key>Job Title</key><string>Должность</string>
 <key>Photo description</key><string>Добавляя фотографию на цифровую визитку, вы создаёте более личное и запоминающееся впечатление.</string>
-<key>Organisation &amp; Upload Images!</key><string>Организация &amp; Загрузка изображений!</string>
-<key>Choice Product Type</key><string>Выберите тип продукта</string>
-<key>Pick or Preview</key><string>Выбрать или просмотреть</string>
+<key>Organization &amp; Images</key><string>Организация и изображения</string>
+<key>Product Type</key><string>Тип продукта</string>
+<key>Pick Card Design</key><string>Выбрать дизайн карты</string>
 <key>Your</key><string>Ваш</string>
 <key>Card Design</key><string>Дизайн карты</string>
 <key>To activate this function,</key><string>Чтобы активировать эту функцию,</string>
 <key>Please change your product type.</key><string>Пожалуйста, измените тип продукта.</string>
+<key>Change product type</key><string>Изменить тип продукта</string>
+<key>Change product type to Custom to unlock card design.</key><string>Измените тип продукта на «Пользовательский», чтобы разблокировать дизайн карты.</string>
 <key>Pay %@ and Create</key><string>Оплатить %@ и создать</string>
-<key>Generating your Digital card! Please wait</key><string>Генерация цифровой визитки! Пожалуйста, подождите</string>
+<key>Generating your card...</key><string>Генерация карты...</string>
+<key>Create Digital Card</key><string>Создать цифровую визитку</string>
+<key>Create Card</key><string>Создать карту</string>
+<key>Upload Logo</key><string>Загрузить логотип</string>
+<key>Your photo will appear on the Apple Wallet pass, helping others recognize you instantly.</key><string>Ваше фото появится на пропуске Apple Wallet, помогая другим мгновенно узнать вас.</string>
+<key>Optional</key><string>Необязательно</string>
+<key>Website</key><string>Веб-сайт</string>
+<key>https://example.com</key><string>https://example.com</string>
+<key>Renews %@</key><string>Продление %@</string>
+
+<!-- Legacy keys (kept for backward compatibility) -->
+<key>Org or Company Name</key><string>Организация или компания</string>
+<key>Organization/Company/self employed</key><string>Организация, компания или ИП</string>
+<key>Job title</key><string>Должность</string>
+<key>Organisation &amp; Upload Images!</key><string>Организация и изображения</string>
+<key>Choice Product Type</key><string>Выберите тип продукта</string>
+<key>Pick or Preview</key><string>Выбрать или просмотреть</string>
+<key>Generating your Digital card! Please wait</key><string>Генерация карты...</string>
 <key>Create digital card</key><string>Создать цифровую визитку</string>
 
 <!-- ============================================================ -->
 <!-- AddressesSectionView                                          -->
 <!-- ============================================================ -->
-<key>PostOffice</key><string>Почтовое отделение</string>
-<key>Extended address - OPTIONAL</key><string>Дополнительный адрес — НЕОБЯЗАТЕЛЬНО</string>
-<key>Street</key><string>*Улица</string>
-<key>City</key><string>*Город</string>
-<key>Region/State</key><string>Регион/Область</string>
-<key>Post Code</key><string>*Почтовый индекс</string>
-<key>Select Country</key><string>* Выберите страну</string>
-<key>Remove this address</key><string>Удалить этот адрес</string>
+<key>Post Office</key><string>Почтовое отделение</string>
+<key>Extended Address (Optional)</key><string>Дополнительный адрес (необязательно)</string>
+<key>Street</key><string>Улица</string>
+<key>City</key><string>Город</string>
+<key>Region / State</key><string>Регион / Область</string>
+<key>Post Code</key><string>Почтовый индекс</string>
+<key>Select Country</key><string>Выберите страну</string>
+<key>Remove Address</key><string>Удалить адрес</string>
 <key>Address Type</key><string>Тип адреса</string>
 <key>Address</key><string>Адрес</string>
 <key>Please change your product type below.</key><string>Пожалуйста, измените тип продукта ниже.</string>
 <key>click here to change your product type</key><string>нажмите здесь, чтобы изменить тип продукта</string>
 
+<!-- Legacy keys -->
+<key>PostOffice</key><string>Почтовое отделение</string>
+<key>Extended address - OPTIONAL</key><string>Дополнительный адрес (необязательно)</string>
+<key>Region/State</key><string>Регион / Область</string>
+<key>Remove this address</key><string>Удалить адрес</string>
+
 <!-- ============================================================ -->
 <!-- SettingsView                                                  -->
 <!-- ============================================================ -->
-<key>Hello, %@</key><string>Привет, %@</string>
-<key>Support our app</key><string>Поддержите приложение</string>
-<key>Review us</key><string>Оценить</string>
-<key>Share</key><string>Поделиться</string>
-<key>Restore</key><string>Восстановить</string>
-<key>Explore our other apps!</key><string>Попробуйте наши другие приложения!</string>
-<key>Log out!</key><string>Выйти!</string>
-<key>Build %@</key><string>Сборка %@</string>
-<key>Report a bug</key><string>Сообщить об ошибке</string>
 <key>Settings</key><string>Настройки</string>
+<key>Hello, %@</key><string>Привет, %@</string>
+<key>General</key><string>Общие</string>
+<key>Leave a Review</key><string>Оставить отзыв</string>
+<key>Share App</key><string>Поделиться приложением</string>
+<key>Restore Purchases</key><string>Восстановить покупки</string>
+<key>Our Apps</key><string>Наши приложения</string>
+<key>About</key><string>О приложении</string>
+<key>Report a Bug</key><string>Сообщить об ошибке</string>
+<key>Log Out</key><string>Выйти</string>
+<key>User</key><string>Пользователь</string>
+<key>Version</key><string>Версия</string>
+<key>Build %@</key><string>Сборка %@</string>
+
+<!-- Legacy keys -->
+<key>Support our app</key><string>Поддержите приложение</string>
+<key>Review us</key><string>Оставить отзыв</string>
+<key>Share</key><string>Поделиться приложением</string>
+<key>Restore</key><string>Восстановить покупки</string>
+<key>Explore our other apps!</key><string>Наши приложения</string>
+<key>Log out!</key><string>Выйти</string>
+<key>Report a bug</key><string>Сообщить об ошибке</string>
 
 <!-- ============================================================ -->
 <!-- TelephoneSectionView                                          -->
 <!-- ============================================================ -->
-<key>Number is invalid!</key><string>Номер недействителен!</string>
+<key>Number is invalid</key><string>Номер недействителен</string>
 <key>Telephone</key><string>Телефон</string>
 <key>Device Type</key><string>Тип устройства</string>
+
+<!-- Legacy key -->
+<key>Number is invalid!</key><string>Номер недействителен</string>
 
 <!-- ============================================================ -->
 <!-- OrganizationSectionView                                       -->
 <!-- ============================================================ -->
 <key>Upload old card.</key><string>Загрузить старую визитку.</string>
-<key>Avatar</key><string>*Аватар</string>
-<key>Upload logo</key><string>*Загрузить логотип</string>
+<key>Avatar</key><string>Аватар</string>
+<key>Upload logo</key><string>Загрузить логотип</string>
 <key>Upload old card</key><string>Загрузить старую визитку</string>
 
 <!-- ============================================================ -->
 <!-- ContactSectionView                                            -->
 <!-- ============================================================ -->
 <key>Contact</key><string>Контакт</string>
-<key>First Name</key><string>*Имя</string>
+<key>First Name</key><string>Имя</string>
 <key>Middle Name</key><string>Отчество</string>
-<key>Last Name</key><string>*Фамилия</string>
+<key>Last Name</key><string>Фамилия</string>
 
 <!-- ============================================================ -->
 <!-- EmailView                                                     -->
 <!-- ============================================================ -->
-<key>Email</key><string>Эл. почта</string>
-<key>Email address</key><string>*Адрес эл. почты</string>
+<key>Email address</key><string>Адрес эл. почты</string>
 
 <!-- ============================================================ -->
-<!-- WallatPassDetailsView                                         -->
+<!-- WalletPassDetailsView                                         -->
 <!-- ============================================================ -->
 <key>Share card</key><string>Поделиться визиткой</string>
 <key>Show card</key><string>Показать визитку</string>
 <key>Add to Apple Wallet</key><string>Добавить в Apple Wallet</string>
+<key>View Card</key><string>Посмотреть карту</string>
+<key>Write to NFC Tag</key><string>Записать на NFC метку</string>
+<key>Write App Link to NFC</key><string>Записать ссылку на NFC</string>
+<key>Hold near NFC tag...</key><string>Поднесите к NFC метке...</string>
+<key>Written!</key><string>Записано!</string>
 
 <!-- ============================================================ -->
 <!-- NotificationsSettingsView                                     -->
 <!-- ============================================================ -->
 <key>Enable notifications</key><string>Включить уведомления</string>
-<key>Notification warning</key><string>*** Пожалуйста, не отключайте уведомления, иначе вся функция будет отключена</string>
-<key>Please don't turn off notification, the whole function will be turned off</key><string>Пожалуйста, не отключайте уведомления, иначе вся функция будет отключена</string>
+<key>Notification warning</key><string>Пожалуйста, не отключайте уведомления, иначе вся функция будет отключена.</string>
+<key>Please don't turn off notification, the whole function will be turned off</key><string>Пожалуйста, не отключайте уведомления, иначе вся функция будет отключена.</string>
 <key>Notifications</key><string>Уведомления</string>
 
 <!-- ============================================================ -->
@@ -121,11 +168,18 @@
 <key>Loading... please wait!</key><string>Загрузка... подождите!</string>
 
 <!-- ============================================================ -->
-<!-- WallatPassView                                                -->
+<!-- WalletPassView                                                -->
 <!-- ============================================================ -->
 <key>Digital Cards</key><string>Цифровые визитки</string>
-<key>Login or Register.</key><string>Войти или зарегистрироваться.</string>
+<key>No Cards Yet</key><string>Пока нет карт</string>
+<key>Login or Register</key><string>Войти или зарегистрироваться</string>
+<key>Login or register to create and manage your digital business cards.</key><string>Войдите или зарегистрируйтесь, чтобы создавать и управлять цифровыми визитками.</string>
+<key>Create your first digital business card and share it instantly.</key><string>Создайте свою первую цифровую визитку и поделитесь ею мгновенно.</string>
 <key>Country Picker</key><string>Выбор страны</string>
+<key>Dashboard</key><string>Панель управления</string>
+
+<!-- Legacy key -->
+<key>Login or Register.</key><string>Войти или зарегистрироваться</string>
 
 <!-- ============================================================ -->
 <!-- CardDesignListReducer                                         -->
@@ -152,28 +206,34 @@
 <key>We couldn't restore purchases, please try again.</key><string>Не удалось восстановить покупки, попробуйте снова.</string>
 <key>Purchase restore.</key><string>Восстановление покупок.</string>
 <key>Purchase restored</key><string>Покупки восстановлены</string>
-<key>Your purchases was successfully restore.</key><string>Ваши покупки были успешно восстановлены.</string>
 <key>Your purchases were successfully restored.</key><string>Ваши покупки были успешно восстановлены.</string>
 <key>Back</key><string>Назад</string>
 <key>No Purchases</key><string>Нет покупок</string>
 <key>No purchases were found to restore.</key><string>Покупки для восстановления не найдены.</string>
 
+<!-- GenericPassForm Alerts -->
+<key>Unable to upload image please try again!</key><string>Не удалось загрузить изображение, попробуйте ещё раз.</string>
+<key>Please login 1st!</key><string>Сначала войдите в аккаунт.</string>
+
+<!-- Legacy key -->
+<key>Your purchases was successfully restore.</key><string>Ваши покупки были успешно восстановлены.</string>
+
 <!-- ============================================================ -->
 <!-- Enum rawValues for LDynamic                                   -->
 <!-- ============================================================ -->
-<key>HOME</key><string>ДОМ</string>
-<key>WORK</key><string>РАБОТА</string>
-<key>CELL</key><string>СОТОВЫЙ</string>
-<key>FAX</key><string>ФАКС</string>
-<key>PAGER</key><string>ПЕЙДЖЕР</string>
-<key>POSTAL</key><string>ПОЧТОВЫЙ</string>
-<key>DOM</key><string>ДОМ</string>
-<key>INTL</key><string>МЕЖДУН.</string>
-<key>PARCEL</key><string>ПОСЫЛКА</string>
-<key>BASIC</key><string>БАЗОВЫЙ</string>
-<key>CUSTOM</key><string>ПОЛЬЗОВАТЕЛЬСКИЙ</string>
-<key>basic</key><string>базовый</string>
-<key>custom</key><string>пользовательский</string>
+<key>HOME</key><string>Дом</string>
+<key>WORK</key><string>Работа</string>
+<key>CELL</key><string>Сотовый</string>
+<key>FAX</key><string>Факс</string>
+<key>PAGER</key><string>Пейджер</string>
+<key>POSTAL</key><string>Почтовый</string>
+<key>DOM</key><string>Домашний</string>
+<key>INTL</key><string>Международный</string>
+<key>PARCEL</key><string>Посылка</string>
+<key>BASIC</key><string>Базовый</string>
+<key>CUSTOM</key><string>Пользовательский</string>
+<key>basic</key><string>Базовый</string>
+<key>custom</key><string>Пользовательский</string>
 
 <!-- ============================================================ -->
 <!-- OnboardingView                                                -->
@@ -187,6 +247,29 @@
 <key>Share via QR code or link. Recipients don't need the app to view your card.</key><string>Делитесь через QR-код или ссылку. Получателям не нужно приложение.</string>
 <key>Get Started</key><string>Начать</string>
 <key>Skip</key><string>Пропустить</string>
+<key>Next</key><string>Далее</string>
 
+<!-- ============================================================ -->
+<!-- Legal                                                         -->
+<!-- ============================================================ -->
+<key>Privacy Policy</key><string>Политика конфиденциальности</string>
+<key>Terms of Use</key><string>Условия использования</string>
+
+<!-- ============================================================ -->
+<!-- Free Tier                                                     -->
+<!-- ============================================================ -->
+<key>Free Card</key><string>Бесплатная карта</string>
+<key>Create Your Free Card</key><string>Создайте бесплатную карту</string>
+<key>Your first card is free with basic templates!</key><string>Ваша первая карта бесплатна с базовыми шаблонами!</string>
+<key>Your first digital business card is free with basic templates.</key><string>Ваша первая цифровая визитка бесплатна с базовыми шаблонами.</string>
+<key>Custom card design is available with paid cards.</key><string>Пользовательский дизайн карты доступен в платных картах.</string>
+
+<!-- ============================================================ -->
+<!-- Connection / Retry                                            -->
+<!-- ============================================================ -->
+<key>Connection Error</key><string>Ошибка соединения</string>
+<key>Retry</key><string>Повторить</string>
+
+<key>Delete Account</key><string>Удалить аккаунт</string>
 </dict>
 </plist>

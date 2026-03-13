@@ -1,5 +1,6 @@
 import BSON
 import SwiftUI
+import StoreKit
 import APIClient
 import LoggerKit
 import Foundation
@@ -13,6 +14,9 @@ import ComposableStoreKit
 import LocalDatabaseClient
 import FoundationExtension
 import ComposableArchitecture
+#if os(iOS)
+import UIKit
+#endif
 
 @Reducer
 public struct GenericPassForm {
@@ -599,13 +603,26 @@ public struct GenericPassForm {
                 return .none
             }
 
-            return .run { send in
+            return .run { [localDatabase] send in
 
                 do {
                     try await localDatabase.update(wp: wp)
                 } catch {
                     sharedLogger.logError("create local database error:- \(error)")
                 }
+
+                // Review prompt: trigger on 2nd card created
+                #if os(iOS)
+                if let cards = try? await localDatabase.find(), cards.count == 2 {
+                    await MainActor.run {
+                        if let scene = UIApplication.shared.connectedScenes
+                            .compactMap({ $0 as? UIWindowScene })
+                            .first(where: { $0.activationState == .foregroundActive }) {
+                            SKStoreReviewController.requestReview(in: scene)
+                        }
+                    }
+                }
+                #endif
 
                 await send(.buildPKPassFrom(url: response.urlString))
                 await self.dismiss()

@@ -50,6 +50,8 @@ public struct GenericPassFormView: View {
 
     // MARK: - Form Content
 
+    @State private var showAdvancedFields = false
+
     @ViewBuilder
     private func formContent(proxy: GeometryProxy, scrollProxy: ScrollViewProxy) -> some View {
         Form {
@@ -61,9 +63,26 @@ public struct GenericPassFormView: View {
 
             EmailsSectionView(store: store, scrollProxy)
 
-            AddressesSectionView(store: store, scrollProxy)
+            // Advanced fields: addresses, website, design — collapsed for free card users
+            if showAdvancedFields || !store.isEligibleForFreeCard {
+                AddressesSectionView(store: store, scrollProxy)
 
-            websiteSection
+                websiteSection
+            } else {
+                Section {
+                    Button {
+                        withAnimation { showAdvancedFields = true }
+                    } label: {
+                        Label {
+                            Text(L("Add Address, Website & More"))
+                                .font(ECTypography.body(.medium))
+                        } icon: {
+                            Image(systemName: "plus.circle.fill")
+                        }
+                        .foregroundStyle(ECColors.primary)
+                    }
+                }
+            }
 
             productTypeSection
 

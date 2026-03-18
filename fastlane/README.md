@@ -63,6 +63,14 @@ Build and upload to TestFlight
 
 Upload metadata only to App Store Connect
 
+### ios upload_cpp_screenshots
+
+```sh
+[bundle exec] fastlane ios upload_cpp_screenshots
+```
+
+Upload screenshots to all Custom Product Pages defined in fastlane/cpp_pages.json
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

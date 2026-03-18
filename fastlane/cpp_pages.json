@@ -1,0 +1,18 @@
+{
+  "app_id": "6452084315",
+  "app_name": "eCardify",
+  "pages": [
+    {
+      "id": "dedc2170-232a-4da1-a588-43cce4054d88",
+      "name": "Networking Card",
+      "audience": "Professionals networking at conferences and events",
+      "keywords": ["networking", "business", "card", "event", "contact"]
+    },
+    {
+      "id": "5097d2df-2994-461b-bc67-f050bf828523",
+      "name": "Paperless Business Card",
+      "audience": "Eco-conscious professionals going paperless",
+      "keywords": ["paperless", "digital", "eco", "sustainable", "card"]
+    }
+  ]
+}

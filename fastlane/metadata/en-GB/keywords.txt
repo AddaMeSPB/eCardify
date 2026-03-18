@@ -1,1 +1,1 @@
-virtual,contact,vcard,networking,conference,airdrop,paper,exchange,share,profile,professional,smart
+networking,contact,vcard,tap,contactless,maker,template,free,link,social,creator,design,professional

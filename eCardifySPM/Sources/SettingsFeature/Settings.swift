@@ -166,10 +166,7 @@ public struct Settings {
                         return .none
 
                     case .leaveUsAReviewButtonTapped:
-
-                        return .run { _ in
-                            _ = await self.applicationClient.open(appStoreReviewUrl, [:])
-                        }
+                        return .none
 
                     case .didBecomeActive:
                         return .run { send in
@@ -304,11 +301,6 @@ public struct Settings {
         }
     }
 
-    private var appStoreReviewUrl: URL {
-        URL(
-            string: "https://itunes.apple.com/us/app/apple-store/id1619504857?mt=8&action=write-review"
-        )!
-    }
 
     @Reducer
     public struct Destination {

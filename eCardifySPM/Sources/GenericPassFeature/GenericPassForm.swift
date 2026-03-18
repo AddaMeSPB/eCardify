@@ -124,6 +124,7 @@ public struct GenericPassForm {
         case addOneMoreAddressSection
         case removeAddressSection(by: UUID)
         case resetFreeCardFlag
+        case showCardCreated(WalletPass)
 
     }
 
@@ -168,8 +169,20 @@ public struct GenericPassForm {
 
             state.isEmailValid = state.vCard.emails.contains { $0.text.isEmailValid }
 
-            let emailValidationCheck = state.vCard.emails.allSatisfy { $0.text.isEmailValid }
-            state.isFormValid = state.vCard.isVCardValid && emailValidationCheck
+            // Simplified validation: require name + role + company + (phone OR email)
+            let hasName = state.vCard.contact.isFormValid
+            let hasRole = !state.vCard.position.isEmpty
+            let hasOrg = !(state.vCard.organization?.isEmpty ?? true)
+            let hasValidEmail = state.vCard.emails.contains { $0.text.isEmailValid }
+            let hasValidPhone = state.vCard.telephones.contains { $0.isTelephoneValied }
+            let hasContactMethod = hasValidEmail || hasValidPhone
+
+            // All non-empty emails must be valid (don't allow saving invalid emails)
+            let emailsAreClean = state.vCard.emails
+                .filter { !$0.text.isEmpty }
+                .allSatisfy { $0.text.isEmailValid }
+
+            state.isFormValid = hasName && hasRole && hasOrg && hasContactMethod && emailsAreClean
 
             return .none
 
@@ -624,6 +637,10 @@ public struct GenericPassForm {
                 }
                 #endif
 
+                // Show the "Card Created" share screen (parent intercepts this)
+                await send(.showCardCreated(wp))
+
+                // Also build the PKPass in background for wallet
                 await send(.buildPKPassFrom(url: response.urlString))
                 await self.dismiss()
 
@@ -668,6 +685,10 @@ public struct GenericPassForm {
             return .none
 
         case .buildPKPassFrom:
+            return .none
+
+        case .showCardCreated:
+            // Delegate action — parent (WalletPassList) handles this
             return .none
 
         case .storeKit:

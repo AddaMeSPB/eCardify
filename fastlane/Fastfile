@@ -90,9 +90,35 @@ platform :ios do
       api_key: key,
       skip_binary_upload: true,
       skip_screenshots: true,
+      skip_app_version_update: true,
+      edit_live: true,
       force: true,
       precheck_include_in_app_purchases: false
     )
+  end
+
+  desc "Upload screenshots to all Custom Product Pages defined in fastlane/cpp_pages.json"
+  lane :upload_cpp_screenshots do |options|
+    key_json = JSON.parse(File.read("../fastlane/api_key.json"))
+    tmp_key = "/tmp/asc_cpp_upload_key.p8"
+    File.write(tmp_key, key_json["key"])
+
+    locale = options[:locale] || "en-GB"
+    cpp_id_flag = options[:cpp_id] ? "--cpp-id #{options[:cpp_id]}" : ""
+    screenshots_dir = options[:screenshots_dir] || "screenshots"
+
+    sh(
+      "python3 upload_cpp_screenshots.py " \
+      "--key-id #{key_json['key_id']} " \
+      "--issuer-id #{key_json['issuer_id']} " \
+      "--private-key-file #{tmp_key} " \
+      "--config cpp_pages.json " \
+      "--screenshots-dir #{screenshots_dir} " \
+      "--locale #{locale} " \
+      "#{cpp_id_flag}"
+    )
+  ensure
+    FileUtils.rm_f("/tmp/asc_cpp_upload_key.p8")
   end
 
 end

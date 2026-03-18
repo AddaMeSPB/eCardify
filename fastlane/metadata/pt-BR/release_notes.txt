@@ -1,3 +1,5 @@
-- Correção da função de logout
-- Melhoria no tratamento de datas dos cartões
-- Correções de bugs e melhorias de desempenho
+• Compartilhe seu cartão com qualquer pessoa — seu cartão de visita digital agora tem uma página web pública com link exclusivo
+• Criação simplificada — crie seu primeiro cartão em menos de 30 segundos com apenas nome, cargo e contato
+• Nova tela após a criação com QR code para compartilhar na hora
+• Experiência de integração renovada
+• Correções de bugs e melhorias de desempenho

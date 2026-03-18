@@ -1,3 +1,5 @@
-- Correction de la déconnexion
-- Amélioration du traitement des dates pour les cartes
-- Corrections de bugs et améliorations des performances
+• Partagez votre carte avec n'importe qui — votre carte de visite numérique dispose maintenant d'une page web publique avec son propre lien unique
+• Création simplifiée — créez votre première carte en moins de 30 secondes avec juste le nom, le titre et les coordonnées
+• Nouvel écran après création avec QR code pour partager instantanément
+• Expérience d'accueil repensée
+• Corrections de bugs et améliorations des performances

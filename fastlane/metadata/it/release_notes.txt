@@ -1,3 +1,5 @@
-- Corretta la funzione di disconnessione
-- Migliorata la gestione delle date per i dati delle carte
-- Correzioni di bug e miglioramenti delle prestazioni
+• Condividi il tuo biglietto con chiunque — il tuo biglietto da visita digitale ora ha una pagina web pubblica con un link unico
+• Creazione semplificata — crea il tuo primo biglietto in meno di 30 secondi con solo nome, ruolo e contatti
+• Nuova schermata post-creazione con QR code per la condivisione immediata
+• Esperienza di benvenuto rinnovata
+• Correzioni di bug e miglioramenti delle prestazioni

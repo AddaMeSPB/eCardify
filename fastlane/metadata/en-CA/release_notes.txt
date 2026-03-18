@@ -1,3 +1,5 @@
-- Fixed logout functionality
-- Improved date handling for card data
-- Bug fixes and performance improvements
+• Share your card with anyone — your digital business card now has a public web page with its own unique link
+• Simplified card creation — create your first card in under 30 seconds with just name, title, and contact info
+• Beautiful post-creation screen with QR code for instant sharing
+• Refreshed onboarding experience
+• Bug fixes and performance improvements

@@ -1,3 +1,5 @@
-- Abmeldefunktion behoben
-- Verbesserte Datumsverarbeitung für Kartendaten
-- Fehlerbehebungen und Leistungsverbesserungen
+• Karte mit allen teilen — deine digitale Visitenkarte hat jetzt eine öffentliche Webseite mit eigenem Link
+• Vereinfachte Kartenerstellung — erstelle deine erste Karte in unter 30 Sekunden mit Name, Titel und Kontaktdaten
+• Neuer Bildschirm nach der Erstellung mit QR-Code zum sofortigen Teilen
+• Überarbeitetes Onboarding-Erlebnis
+• Fehlerbehebungen und Leistungsverbesserungen

@@ -233,7 +233,7 @@ public struct WalletPassList {
             // Delegate to the existing PKPass download flow
             if case let .cardCreated(cardState) = state.destination {
                 let pass = cardState.walletPass
-                let url = "https://ecardify.ams3.cdn.digitaloceanspaces.com/ecardify/uploads/pass/\(pass.ownerId.hexString)/\(pass.id.hexString).pkpass"
+                let url = "https://ecardify.ams3.cdn.digitaloceanspaces.com/ecardify/uploads/pass/\(pass.ownerId.hexString)/\(pass.id).pkpass"
                 return .run { send in
                     await send(.destination(.presented(.add(.buildPKPassFrom(url: url)))))
                 }

@@ -1,1 +1,1 @@
-QR, Wallet, NFC, Scanner
+QR, NFC & Contact Scanner

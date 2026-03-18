@@ -1,4 +1,5 @@
 import Build
+import StoreKit
 import SwiftUI
 import AppPromo
 import DesignSystem
@@ -11,6 +12,7 @@ public struct SettingsView: View {
 
     @Bindable var store: StoreOf<Settings>
     @State private var isSharePresented = false
+    @Environment(\.requestReview) private var requestReview
 
     public init(store: StoreOf<Settings>) {
         self.store = store
@@ -98,7 +100,7 @@ public struct SettingsView: View {
     private var actionsSection: some View {
         Section {
             Button {
-                store.send(.leaveUsAReviewButtonTapped)
+                requestReview()
             } label: {
                 settingsRow(
                     icon: "star.fill",

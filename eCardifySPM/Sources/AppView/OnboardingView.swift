@@ -8,22 +8,22 @@ struct OnboardingView: View {
 
     private let pages: [(icon: String, gradient: [Color], title: String, subtitle: String)] = [
         (
-            "creditcard.and.123",
+            "person.crop.rectangle.fill",
             [Color(red: 0.14, green: 0.48, blue: 0.57), Color(red: 0.22, green: 0.58, blue: 0.67)],
-            "Create stunning digital business cards",
-            "Design your professional identity with custom templates, colors, and layouts."
+            "Share your contact in seconds",
+            "Create a professional digital business card with your name, role, and contact details."
         ),
         (
-            "wallet.pass.fill",
+            "square.stack.3d.up.fill",
             [Color(red: 0.82, green: 0.47, blue: 0.25), Color(red: 0.90, green: 0.56, blue: 0.35)],
-            "Apple Wallet Ready",
-            "Add your card directly to Apple Wallet for instant access anywhere, anytime."
+            "One card, multiple ways to share",
+            "QR code, NFC tap, Apple Wallet, or a custom link. Recipients don't need the app."
         ),
         (
-            "qrcode.viewfinder",
+            "globe",
             [Color(red: 0.22, green: 0.56, blue: 0.42), Color(red: 0.36, green: 0.69, blue: 0.56)],
-            "Share Instantly",
-            "Share via QR code, NFC, or link. Recipients don't need the app to view your card."
+            "Your card lives online",
+            "Get a personal web page for your card. Anyone can view it and save your contact instantly."
         )
     ]
 
@@ -92,7 +92,7 @@ struct OnboardingView: View {
                         }
                     }
                 } label: {
-                    Text(currentPage == pages.count - 1 ? L("Get Started") : L("Next"))
+                    Text(currentPage == pages.count - 1 ? L("Create My Free Card") : L("Next"))
                 }
                 .buttonStyle(.ecPrimary)
                 .padding(.horizontal, ECSpacing.xxl)

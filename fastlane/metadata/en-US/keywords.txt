@@ -1,1 +1,1 @@
-virtual,contact,vcard,networking,conference,airdrop,paper,exchange,share,profile,professional,smart
+digital,business,card,scanner,nfc,qr,reader,virtual,contact,share,wallet,vcard,portfolio,networking

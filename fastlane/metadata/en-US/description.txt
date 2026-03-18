@@ -1,15 +1,21 @@
-eCardify helps you replace paper business cards with a digital business card you can create, carry, and share from iPhone.
+Replace your paper business cards forever.
 
-Build your card with your name, company, job title, phone, email, website, address, and social links. Add it to Wallet for quick access, then share it by QR code, NFC, AirDrop, link, iMessage, or email. Recipients do not need the app to save your details.
+eCardify is the smartest way to create your professional digital business card, share it instantly, and manage the contacts you meet.
 
-Why people use eCardify:
+Create in Seconds
+Build your wallet-ready mobile pass. Add your photo, role, company, and links. No design skills needed—just a clean, premium look.
 
-- Create a digital business card in minutes
-- Add your card to Wallet
-- Share with QR, NFC tags, AirDrop, link, iMessage, or email
-- Scan paper business cards into digital contacts
-- Customize colors, layout, logo, and profile photo
-- Keep your card ready for meetings, events, conferences, and trade shows
+Share Instantly (No App Required for them)
+• QR Share: Let anyone scan your card from your phone screen.
+• Wallet Pass: Save to your Apple Wallet for instant, native access.
+• NFC & AirDrop: Tap or beam your details instantly.
+• Custom Link: Send your public card page via text, email, or social media.
+
+Scan & Save Paper Cards
+Got handed a physical card? Scan it with eCardify's built-in reader and instantly digitize their details into your phone's address book.
+
+Host Your Card Online
+Every eCardify profile comes with a beautiful, mobile-optimized public web page. People can view your details and tap "Save Contact" to directly import your vCard.
 
 Built for freelancers, founders, consultants, sales teams, recruiters, real estate agents, and anyone who networks often.
 

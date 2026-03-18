@@ -5,17 +5,12 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000675">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000703">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: app_store_connect_api_key" time="0.006973">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="2: deliver" time="1362.92598">
+      <testcase classname="fastlane.lanes" name="1: python3 upload_cpp_screenshots.py --key-id V32DT2Q432 --issuer-id fb43cfba-4610-4273-ba22-5d1667d608c7 --private-key-file /tmp/asc_cpp_upload_key.p8 --config cpp_pages.json --screenshots-dir screenshots --locale en-GB " time="67.699553">
         
       </testcase>
     

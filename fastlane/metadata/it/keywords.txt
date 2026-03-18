@@ -1,1 +1,1 @@
-biglietto,visita,digitale,contatto,condividere,rete,qr-code,wallet,vcard,scanner,creare,modello,NFC
+contatto,condividere,rete,qr-code,vcard,scanner,creare,modello,NFC,gratis,tocco,professionale,link

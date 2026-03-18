@@ -65,6 +65,14 @@ public struct WalletPassView: View {
             ) { store in
                 AddPassView(store: store)
             }
+            .sheet(
+                item: $store.scope(
+                    state: \.destination?.cardCreated,
+                    action: \.destination.cardCreated
+                )
+            ) { store in
+                CardCreatedView(store: store)
+            }
     }
 
     private var scrollContent: some View {
@@ -82,6 +90,17 @@ public struct WalletPassView: View {
     @ToolbarContentBuilder
     private var settingsToolbar: some ToolbarContent {
         if store.isAuthorized {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    store.send(.scanCardButtonTapped)
+                } label: {
+                    Image(systemName: "camera.viewfinder")
+                        .font(ECTypography.body())
+                        .foregroundStyle(ECColors.primary)
+                }
+                .accessibilityIdentifier("scan_card_button")
+            }
+
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     store.send(.navigateSettingsButtonTapped)

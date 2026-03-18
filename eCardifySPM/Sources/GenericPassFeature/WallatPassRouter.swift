@@ -55,6 +55,7 @@ public struct WalletPassList {
         case createGenericFormButtonTapped
         case dismissAddGenericFormButtonTapped
         case navigateSettingsButtonTapped
+        case scanCardButtonTapped
 
     }
 
@@ -222,6 +223,36 @@ public struct WalletPassList {
             state.isLoadingWPL = false
             return .none
 
+        // Show CardCreated screen after successful card creation
+        case .destination(.presented(.add(.showCardCreated(let wp)))):
+            state.destination = .cardCreated(.init(walletPass: wp))
+            return .none
+
+        // CardCreated actions
+        case .destination(.presented(.cardCreated(.addToWallet))):
+            // Delegate to the existing PKPass download flow
+            if case let .cardCreated(cardState) = state.destination {
+                let pass = cardState.walletPass
+                let url = "https://ecardify.ams3.cdn.digitaloceanspaces.com/ecardify/uploads/pass/\(pass.ownerId.hexString)/\(pass.id.hexString).pkpass"
+                return .run { send in
+                    await send(.destination(.presented(.add(.buildPKPassFrom(url: url)))))
+                }
+            }
+            return .none
+
+        case .destination(.presented(.cardCreated(.done))):
+            state.destination = nil
+            return .run { send in
+                await send(.getWP)
+            }
+
+        case .destination(.presented(.cardCreated(.shareCard))):
+            // Handled by the view (UIActivityViewController)
+            return .none
+
+        case .destination(.presented(.cardCreated)):
+            return .none
+
         case .destination(.presented(.add(.buildPKPassFrom(url: let passUrl)))):
 
             return .run { send in
@@ -276,7 +307,17 @@ public struct WalletPassList {
 
             state.destination = .settings(.init(currentUser: currentUser))
             return .none
-            
+
+        case .scanCardButtonTapped:
+            // Open the card creation form — the form already has scanner
+            // built-in via the camera button (VNRecognize). Navigate to form
+            // so user can scan a paper card and auto-populate fields.
+            guard state.isAuthorized else {
+                return .send(.openSheetLogin(true))
+            }
+            state.destination = .add(.init(user: state.user, vCard: state.vCard ?? .empty))
+            return .none
+
         }
     }
 
@@ -288,6 +329,7 @@ public struct WalletPassList {
             case digitalCard(CardDesignReducer.State)
             case add(GenericPassForm.State)
             case settings(Settings.State)
+            case cardCreated(CardCreated.State)
         }
 
         @CasePathable
@@ -296,6 +338,7 @@ public struct WalletPassList {
             case digitalCard(CardDesignReducer.Action)
             case add(GenericPassForm.Action)
             case settings(Settings.Action)
+            case cardCreated(CardCreated.Action)
         }
 
         public init() {}
@@ -316,6 +359,10 @@ public struct WalletPassList {
 
             Scope(state: \.settings, action: \.settings) {
                 Settings()
+            }
+
+            Scope(state: \.cardCreated, action: \.cardCreated) {
+                CardCreated()
             }
         }
     }

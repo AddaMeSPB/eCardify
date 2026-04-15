@@ -102,6 +102,8 @@ public struct GenericPassForm {
         case uploadAvatar(_ image: UIImage)
         case createAttachment(_ attachment: AttachmentInOutPut)
         case imageUploadSuccess(String)
+        /// Companion high-res upload for the avatar flow (800×800, web-quality).
+        case avatarHiResUploaded(String)
         case imageUploadFailed
         case attachmentResponse(AttachmentInOutPut)
         case attachmentFailed
@@ -286,6 +288,14 @@ public struct GenericPassForm {
             sharedLogger.log(imageURL)
             return .none
 
+        case .avatarHiResUploaded(let imageURL):
+            // High-resolution companion for web display — only exists for the
+            // avatar picker flow, never replaces wallet-spec thumbnail.
+            state.vCard.imageURLs.removeAll { $0.type == .avatar }
+            state.vCard.imageURLs.append(.init(type: .avatar, urlString: imageURL))
+            sharedLogger.log("avatar hi-res: \(imageURL)")
+            return .none
+
         case .imageUploadFailed:
             state.isUploadingImage = false
             state.alert = AlertState { TextState(L("Error")) } message: { TextState(L("Unable to upload image please try again!")) }
@@ -335,7 +345,9 @@ public struct GenericPassForm {
 
                 return .run { [serialNumber = state.pass.serialNumber] send in
                     do {
-                        let url = try await attachmentS3Client.uploadImageToS3(
+                        // 1) Wallet-spec thumbnail (unchanged) — keeps the
+                        //    existing pkpass generator happy.
+                        let thumbURL = try await attachmentS3Client.uploadImageToS3(
                             image, .init(
                                 passId: serialNumber,
                                 compressionQuality: .lowest,
@@ -344,7 +356,26 @@ public struct GenericPassForm {
                                 userId: currentUserID.hexString
                             )
                         )
-                        await send(.imageUploadSuccess(url))
+                        await send(.imageUploadSuccess(thumbURL))
+
+                        // 2) Hi-res avatar (~800×800, JPEG q=0.75) for the web
+                        //    modal/hero. Uploaded after so a failure here
+                        //    doesn't break the primary save.
+                        do {
+                            let avatarURL = try await attachmentS3Client.uploadImageToS3(
+                                image, .init(
+                                    passId: serialNumber,
+                                    compressionQuality: .high,
+                                    type: .jpeg,
+                                    passImagesType: .avatar,
+                                    userId: currentUserID.hexString
+                                )
+                            )
+                            await send(.avatarHiResUploaded(avatarURL))
+                        } catch {
+                            // Non-fatal: primary upload already succeeded.
+                            sharedLogger.logError(error)
+                        }
                     } catch {
                         sharedLogger.logError(error)
                         await send(.imageUploadFailed)

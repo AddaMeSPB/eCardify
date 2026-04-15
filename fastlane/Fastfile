@@ -74,13 +74,25 @@ platform :ios do
         provisioningProfiles: {
           BUNDLE_ID => "match AppStore #{BUNDLE_ID}"
         },
-        signingCertificate: "Apple Distribution",
+        signingCertificate: "541141AE5BA3C9C6431F7D32B4518C80328AFAAF",
         teamID: TEAM_ID
       },
       xcargs: "DEVELOPMENT_TEAM=#{TEAM_ID}",
       clean: true
     )
-    upload_to_testflight(api_key: key, skip_waiting_for_build_processing: true)
+    upload_to_testflight(
+      api_key: key,
+      # Release to external testers automatically once Apple finishes
+      # processing the binary. Without this the build sits in "Internal
+      # Testing" until someone clicks the external-distribution toggle
+      # in App Store Connect.
+      distribute_external: true,
+      groups: ["External Testers"],
+      changelog: "Sharper card photos on the web directory (higher-resolution avatar uploads). Internal fixes and stability.",
+      # Waiting is required when distribute_external is true so the
+      # external-release call has a processed build to target.
+      skip_waiting_for_build_processing: false
+    )
   end
 
   desc "Upload metadata only to App Store Connect"

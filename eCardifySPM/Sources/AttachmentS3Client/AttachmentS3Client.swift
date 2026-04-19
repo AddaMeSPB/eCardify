@@ -46,7 +46,7 @@ public struct ImageUploadOptions {
 public struct AttachmentS3Client {
 
     public static let bucket = "ecardify"
-    public static var bucketWithEndpoint = "https://ecardify.ams3.digitaloceanspaces.com/"
+    public static var bucketWithEndpoint = "https://ecardify.ams3.cdn.digitaloceanspaces.com/"
 
     static public let client = AWSClient(
         credentialProvider: .static(
@@ -79,14 +79,22 @@ public struct AttachmentS3Client {
 
 extension AttachmentS3Client {
 
-    static public func buildImageKey(with options: ImageUploadOptions) -> String {
+    static public func buildImageKey(with options: ImageUploadOptions, fileExtension: String) -> String {
         let currentTime = Int64(Date().timeIntervalSince1970 * 1000)
-        var imageKey = String(format: "%ld", currentTime) // make it pass id
+        var imageKey = "\(currentTime).\(fileExtension)"
         if let userId = options.userId {
-            imageKey = "uploads/images/\(userId)/\(options.passId)/\(options.passImagesType.rawValue).\(options.type.rawValue)"
+            imageKey = "uploads/images/\(userId)/\(options.passId)/\(options.passImagesType.rawValue).\(fileExtension)"
         }
 
         return imageKey
+    }
+
+    static func contentType(for fileExtension: String) -> String {
+        switch fileExtension.lowercased() {
+        case "jpeg", "jpg": return "image/jpeg"
+        case "heic": return "image/heic"
+        default: return "image/png"
+        }
     }
 
     // upload image to DigitalOcen Spaces
@@ -99,16 +107,17 @@ extension AttachmentS3Client {
             throw UploadError.compressError
         }
 
-        let _ = data.1
         let imageData = data.0
-        let imageKey = buildImageKey(with: options)
+        let fileExtension = data.1
+        let imageKey = buildImageKey(with: options, fileExtension: fileExtension)
 
         do {
             let finalURL = try await awsS3.putObject(
                 data: imageData,
                 bucket: bucket,
                 bucketWithEndpoint: bucketWithEndpoint,
-                key: imageKey
+                key: imageKey,
+                contentType: contentType(for: fileExtension)
             )
 
             
@@ -173,7 +182,8 @@ extension S3 {
         data: Data,
         bucket: String,
         bucketWithEndpoint: String,
-        key: String
+        key: String,
+        contentType: String
     ) async throws -> String {
         let body = AWSPayload.data(data)
         let putObjectRequest = S3.PutObjectRequest(
@@ -181,7 +191,7 @@ extension S3 {
             body: body,
             bucket: bucket,
             contentLength: Int64(data.count),
-            contentType: "image/png",
+            contentType: contentType,
             key: key
         )
 

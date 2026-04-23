@@ -655,9 +655,25 @@ public struct GenericPassForm {
                     sharedLogger.logError("create local database error:- \(error)")
                 }
 
-                // Review prompt: trigger on 2nd card created
+                // Show the "Card Created" share screen FIRST so the user sees
+                // their success state before any prompt (moment of joy).
+                await send(.showCardCreated(wp))
+
+                // Review prompt: trigger on 1st successful card save.
+                //
+                // Why 1, not 2: the free tier caps users at 1 card, so most
+                // never hit card #2. Prompting after card #1 reaches everyone
+                // at their peak satisfaction (card just saved, about to share).
+                //
+                // Apple rate-limits SKStoreReviewController to 3 prompts per
+                // user per 365 days system-wide, so we don't need extra local
+                // throttling — it won't spam even if a user creates 10 cards.
+                //
+                // Small delay so the "Card Created" screen has a moment to
+                // settle before the system alert appears on top of it.
                 #if os(iOS)
-                if let cards = try? await localDatabase.find(), cards.count == 2 {
+                if let cards = try? await localDatabase.find(), cards.count >= 1 {
+                    try? await Task.sleep(nanoseconds: 800_000_000) // 0.8s
                     await MainActor.run {
                         if let scene = UIApplication.shared.connectedScenes
                             .compactMap({ $0 as? UIWindowScene })
@@ -667,9 +683,6 @@ public struct GenericPassForm {
                     }
                 }
                 #endif
-
-                // Show the "Card Created" share screen (parent intercepts this)
-                await send(.showCardCreated(wp))
 
                 // Also build the PKPass in background for wallet
                 await send(.buildPKPassFrom(url: response.urlString))

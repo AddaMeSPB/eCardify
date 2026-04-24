@@ -147,11 +147,11 @@ public struct CardCreatedView: View {
             }
             .shadow(color: ECColors.success.opacity(0.4), radius: 16, y: 4)
 
-            Text(L("Card Created!"))
+            Text(L("Your card is ready! 🎉"))
                 .font(ECTypography.largeTitle())
                 .foregroundStyle(.white)
 
-            Text(L("Your digital business card is ready to share"))
+            Text(L("Beautiful work — time to make an unforgettable first impression."))
                 .font(ECTypography.subheadline())
                 .foregroundStyle(.white.opacity(0.7))
                 .multilineTextAlignment(.center)

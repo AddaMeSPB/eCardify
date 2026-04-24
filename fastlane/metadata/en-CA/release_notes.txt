@@ -1,5 +1,2 @@
-• Share your card with anyone — your digital business card now has a public web page with its own unique link
-• Simplified card creation — create your first card in under 30 seconds with just name, title, and contact info
-• Beautiful post-creation screen with QR code for instant sharing
-• Refreshed onboarding experience
-• Bug fixes and performance improvements
+• Warmer celebration screen after creating your first card.
+• We'll ask for your rating at the perfect moment — not before.

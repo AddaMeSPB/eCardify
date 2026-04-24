@@ -1,5 +1,2 @@
-• Comparte tu tarjeta con cualquiera — tu tarjeta digital ahora tiene una página web pública con su propio enlace único
-• Creación de tarjeta simplificada — crea tu primera tarjeta en menos de 30 segundos con solo nombre, cargo e información de contacto
-• Nueva pantalla tras la creación con código QR para compartir al instante
-• Experiencia de incorporación renovada
-• Correcciones de errores y mejoras de rendimiento
+• Pantalla de celebración más cálida al crear tu primera tarjeta.
+• Te pediremos tu valoración en el momento perfecto, no antes.

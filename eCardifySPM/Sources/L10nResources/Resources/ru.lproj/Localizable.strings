@@ -271,5 +271,9 @@
 <key>Retry</key><string>Повторить</string>
 
 <key>Delete Account</key><string>Удалить аккаунт</string>
+
+<!-- CardCreatedView v1.9.3 -->
+<key>Your card is ready! 🎉</key><string>Ваша карточка готова! 🎉</string>
+<key>Beautiful work — time to make an unforgettable first impression.</key><string>Отличная работа — пора произвести незабываемое первое впечатление.</string>
 </dict>
 </plist>

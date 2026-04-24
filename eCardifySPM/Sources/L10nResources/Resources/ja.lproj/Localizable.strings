@@ -271,5 +271,9 @@
 <key>Retry</key><string>再試行</string>
 
 <key>Delete Account</key><string>アカウントを削除</string>
+
+<!-- CardCreatedView v1.9.3 -->
+<key>Your card is ready! 🎉</key><string>カードが完成しました！🎉</string>
+<key>Beautiful work — time to make an unforgettable first impression.</key><string>素晴らしい出来です — 忘れられない第一印象を残しましょう。</string>
 </dict>
 </plist>

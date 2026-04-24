@@ -271,5 +271,9 @@
 <key>Retry</key><string>Riprova</string>
 
 <key>Delete Account</key><string>Elimina account</string>
+
+<!-- CardCreatedView v1.9.3 -->
+<key>Your card is ready! 🎉</key><string>La tua carta è pronta! 🎉</string>
+<key>Beautiful work — time to make an unforgettable first impression.</key><string>Ottimo lavoro — è il momento di fare una prima impressione indimenticabile.</string>
 </dict>
 </plist>

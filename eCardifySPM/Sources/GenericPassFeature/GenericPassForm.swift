@@ -659,20 +659,25 @@ public struct GenericPassForm {
                 // their success state before any prompt (moment of joy).
                 await send(.showCardCreated(wp))
 
-                // Review prompt: trigger on 1st successful card save.
+                // Review prompt: trigger ONLY on the very first successful
+                // card save (cards.count == 1 after insert).
                 //
-                // Why 1, not 2: the free tier caps users at 1 card, so most
-                // never hit card #2. Prompting after card #1 reaches everyone
-                // at their peak satisfaction (card just saved, about to share).
+                // Why exactly-1: Apple gives us a hard budget of 3 prompts
+                // per user per 365 days. We want to spend one at the peak
+                // emotional moment — the user's first-ever card, moments
+                // after they saved it. Re-prompting on card #2/#3 would
+                // burn the quota on a lower-emotion event and may preempt
+                // future better moments (e.g. post-upgrade).
                 //
-                // Apple rate-limits SKStoreReviewController to 3 prompts per
-                // user per 365 days system-wide, so we don't need extra local
-                // throttling — it won't spam even if a user creates 10 cards.
+                // Edge case (accepted): a user who deletes their only card
+                // and creates a new one will hit `count == 1` a second
+                // time. Apple's 365-day system limit prevents spamming, so
+                // at worst we "waste" one quota slot — benign.
                 //
                 // Small delay so the "Card Created" screen has a moment to
                 // settle before the system alert appears on top of it.
                 #if os(iOS)
-                if let cards = try? await localDatabase.find(), cards.count >= 1 {
+                if let cards = try? await localDatabase.find(), cards.count == 1 {
                     try? await Task.sleep(nanoseconds: 800_000_000) // 0.8s
                     await MainActor.run {
                         if let scene = UIApplication.shared.connectedScenes

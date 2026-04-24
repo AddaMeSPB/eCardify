@@ -1,5 +1,2 @@
-• Karte mit allen teilen — deine digitale Visitenkarte hat jetzt eine öffentliche Webseite mit eigenem Link
-• Vereinfachte Kartenerstellung — erstelle deine erste Karte in unter 30 Sekunden mit Name, Titel und Kontaktdaten
-• Neuer Bildschirm nach der Erstellung mit QR-Code zum sofortigen Teilen
-• Überarbeitetes Onboarding-Erlebnis
-• Fehlerbehebungen und Leistungsverbesserungen
+• Wärmerer Begrüßungsbildschirm nach dem Erstellen deiner ersten Karte.
+• Wir fragen erst nach deiner Bewertung, wenn es wirklich passt.

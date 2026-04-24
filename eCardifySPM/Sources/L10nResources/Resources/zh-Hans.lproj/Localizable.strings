@@ -271,5 +271,9 @@
 <key>Retry</key><string>重试</string>
 
 <key>Delete Account</key><string>删除账户</string>
+
+<!-- CardCreatedView v1.9.3 -->
+<key>Your card is ready! 🎉</key><string>你的名片已就绪！🎉</string>
+<key>Beautiful work — time to make an unforgettable first impression.</key><string>做得很棒——是时候留下难忘的第一印象了。</string>
 </dict>
 </plist>

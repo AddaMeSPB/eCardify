@@ -29,7 +29,7 @@ let package = Package(
     ],
     dependencies: [
         // TCA - NOTE: Version must be compatible with CommonTCALibraries
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.24.0"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.26.0"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.4.0"),
 
         // Common libraries - using local path for development

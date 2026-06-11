@@ -1,2 +1,3 @@
-• Warmer celebration screen after creating your first card.
-• We'll ask for your rating at the perfect moment — not before.
+Sturdier under the hood.
+We refreshed eCardify's foundation to the latest framework so future updates land smoothly on new devices and iOS versions. Your cards, passes, and scans work exactly as before — just steadier.
+Thank you for sharing your business with eCardify.

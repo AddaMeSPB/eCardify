@@ -63,6 +63,14 @@ Build and upload to TestFlight
 
 Upload metadata only to App Store Connect
 
+### ios release
+
+```sh
+[bundle exec] fastlane ios release
+```
+
+Upload metadata for the pending version and submit for review (auto-release)
+
 ### ios upload_cpp_screenshots
 
 ```sh

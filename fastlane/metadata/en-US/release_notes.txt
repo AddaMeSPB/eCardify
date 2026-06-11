@@ -1,2 +1,5 @@
-• Warmer celebration screen after creating your first card.
-• We'll ask for your rating at the perfect moment — not before.
+What's new in 1.9.4:
+
+- Easier to find on the App Store — improved keywords
+- Smoother scan-to-contact flow
+- Bug fixes and reliability improvements

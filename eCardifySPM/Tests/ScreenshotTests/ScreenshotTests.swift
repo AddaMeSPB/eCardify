@@ -9,6 +9,7 @@ import CoreImage.CIFilterBuiltins
 @testable import AppView
 @testable import GenericPassFeature
 @testable import SettingsFeature
+import StoreKitClient
 import AuthenticationView
 @testable import AuthenticationCore
 
@@ -255,7 +256,7 @@ final class ScreenshotTests: XCTestCase {
 
         let store = Store<GenericPassForm.State, GenericPassForm.Action>(
             initialState: GenericPassForm.State(
-                storeKitState: .demoProducts,
+                products: ECProduct.demoProducts,
                 vCard: .demoAlif,
                 telephone: .init(type: .work, number: "+8801712345678"),
                 email: "alif@ecardify.app"

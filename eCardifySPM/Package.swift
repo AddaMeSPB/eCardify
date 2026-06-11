@@ -21,6 +21,9 @@ let package = Package(
         .library(name: "VNRecognizeFeature", targets: ["VNRecognizeFeature"]),
         .library(name: "LocalDatabaseClient", targets: ["LocalDatabaseClient"]),
         .library(name: "SettingsFeature", targets: ["SettingsFeature"]),
+        .library(name: "StoreKitClient", targets: ["StoreKitClient"]),
+        .library(name: "AnalyticsClient", targets: ["AnalyticsClient"]),
+        .library(name: "PaywallFeature", targets: ["PaywallFeature"]),
         .library(name: "DesignSystem", targets: ["DesignSystem"]),
         .library(name: "L10nResources", targets: ["L10nResources"])
     ],
@@ -43,6 +46,9 @@ let package = Package(
 
         // Phone number field
         .package(url: "https://github.com/MojtabaHs/iPhoneNumberField.git", from: "0.10.0"),
+
+        // AlifAnalytics SDK
+        .package(name: "AlifAnalytics", path: "../../../../../../IOSAnalyticsBackend/alif-analytics"),
 
         // Snapshot testing for App Store screenshots
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0"),
@@ -69,7 +75,7 @@ let package = Package(
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 "APIClient", "AttachmentS3Client", "GenericPassFeature",
-                "AuthenticationCore", "SettingsFeature"
+                "AuthenticationCore", "SettingsFeature", "AnalyticsClient", "StoreKitClient"
             ]
         ),
 
@@ -151,7 +157,8 @@ let package = Package(
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
                 .product(name: "AppPromo", package: "CommonTCALibraries"),
-                "AppConfiguration", "APIClient", "DesignSystem", "L10nResources"
+                "AppConfiguration", "APIClient", "StoreKitClient", "AnalyticsClient",
+                "PaywallFeature", "DesignSystem", "L10nResources"
             ]
         ),
 
@@ -171,7 +178,8 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "iPhoneNumberField", package: "iPhoneNumberField"),
                 "ECImagePicker", "VNRecognizeFeature", "AttachmentS3Client", "APIClient",
-                "LocalDatabaseClient", "SettingsFeature", "AppConfiguration", "DesignSystem"
+                "LocalDatabaseClient", "SettingsFeature", "StoreKitClient", "AnalyticsClient",
+                "AppConfiguration", "DesignSystem"
             ]
         ),
         .testTarget(name: "GenericPassFormTests", dependencies: ["GenericPassFeature", "LocalDatabaseClient"]),
@@ -226,6 +234,7 @@ let package = Package(
                 "AppView",
                 "GenericPassFeature",
                 "SettingsFeature",
+                "StoreKitClient",
                 "AuthenticationView",
                 "AuthenticationCore",
                 "DesignSystem",
@@ -234,6 +243,32 @@ let package = Package(
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "ECSharedModels", package: "ECSharedModels"),
                 .product(name: "CommonTCALibraries", package: "CommonTCALibraries"),
+            ]
+        ),
+
+        .target(
+            name: "StoreKitClient",
+            dependencies: [
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                .product(name: "DependenciesMacros", package: "swift-dependencies")
+            ]
+        ),
+
+        .target(
+            name: "AnalyticsClient",
+            dependencies: [
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                .product(name: "AlifAnalytics", package: "AlifAnalytics")
+            ]
+        ),
+
+        .target(
+            name: "PaywallFeature",
+            dependencies: [
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                "StoreKitClient", "AnalyticsClient", "AppConfiguration",
+                "DesignSystem", "L10nResources"
             ]
         ),
 

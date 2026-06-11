@@ -2,6 +2,7 @@ import UIKit
 import SwiftUI
 import AppView
 import AppFeature
+import AlifAnalytics
 import ComposableArchitecture
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
@@ -24,6 +25,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
     }
     #endif
+    // Initialize AlifAnalytics
+    AlifAnalytics.shared.initialize(
+        apiKey: "ecardify-ios",
+        endpoint: "https://api.analytics.byalif.app"
+    )
+
     self.store.send(.appDelegate(.didFinishLaunching))
     return true
   }

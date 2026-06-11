@@ -3,6 +3,8 @@ import Build
 import SwiftUI
 import APIClient
 import KeychainClient
+import StoreKitClient
+import AnalyticsClient
 import SettingsFeature
 import GenericPassFeature
 import AuthenticationCore
@@ -56,6 +58,7 @@ public struct AppReducer {
     @Dependency(\.mainRunLoop) var mainRunLoop
     @Dependency(\.keychainClient) var keychainClient
     @Dependency(\.neuAuthClient) var neuAuthClient
+    @Dependency(\.analyticsClient) var analytics
     @Dependency(\.build) var build
     @Dependency(\.continuousClock) var clock
 
@@ -96,11 +99,14 @@ public struct AppReducer {
             // Not logged in → show login sheet on cold launch
             if !state.walletState.isAuthorized {
                 state.authState = .init()
-                return .none
+                return .run { _ in await analytics.track(.appLaunched) }
             }
 
             // Logged in → validate token is fresh
-            return .send(.validateSession)
+            return .merge(
+                .send(.validateSession),
+                .run { _ in await analytics.track(.appLaunched) }
+            )
 
         case .appDelegate:
             return .none

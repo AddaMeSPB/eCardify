@@ -1,3 +1,5 @@
-Più solida sotto il cofano.
-Abbiamo aggiornato le fondamenta di eCardify all'ultima versione, così i prossimi aggiornamenti arriveranno senza intoppi sui nuovi dispositivi e versioni di iOS. Le tue card, i pass e le scansioni funzionano esattamente come prima — solo in modo più stabile.
+Una rifinitura per le tue schede.
+• Tempistica più intelligente per la richiesta di recensione: ora aspetta il momento giusto invece di interromperti.
+• Pagina App Store rinnovata per far trovare eCardify più facilmente.
+• Piccoli miglioramenti di stabilità.
 Grazie per condividere il tuo business con eCardify.

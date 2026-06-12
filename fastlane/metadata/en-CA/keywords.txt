@@ -1,1 +1,1 @@
-networking,contact,vcard,tap,contactless,maker,template,free,link,social,creator,design,professional
+nfc,wallet,networking,contact,vcard,tap,contactless,share,profile,lead,conference,event,maker,holder

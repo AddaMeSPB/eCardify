@@ -1,1 +1,1 @@
-qr code business card,digital business card maker,digital business card scanner,vcard,networking
+nfc,wallet,networking,contact,vcard,tap,contactless,share,profile,lead,conference,event,maker,holder

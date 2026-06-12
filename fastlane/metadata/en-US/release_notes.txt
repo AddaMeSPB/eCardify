@@ -1,3 +1,5 @@
-Sturdier under the hood.
-We refreshed eCardify's foundation to the latest framework so future updates land smoothly on new devices and iOS versions. Your cards, passes, and scans work exactly as before — just steadier.
+A fresh coat of polish for your cards.
+• Smarter timing for the rate-us prompt — it now waits for the right moment instead of interrupting you.
+• Refreshed App Store page so new people can find eCardify more easily.
+• Small stability improvements under the hood.
 Thank you for sharing your business with eCardify.

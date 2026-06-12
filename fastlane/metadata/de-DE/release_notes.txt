@@ -1,3 +1,5 @@
-Stabiler unter der Haube.
-Wir haben das Fundament von eCardify auf die neueste Version gebracht, damit künftige Updates reibungslos auf neuen Geräten und iOS-Versionen ankommen. Deine Karten, Pässe und Scans funktionieren genau wie zuvor — nur verlässlicher.
+Neuer Feinschliff für deine Karten.
+• Besseres Timing für die Bewertungsanfrage — sie wartet jetzt auf den richtigen Moment, statt dich zu unterbrechen.
+• Aufgefrischte App-Store-Seite, damit neue Nutzer eCardify leichter finden.
+• Kleine Stabilitätsverbesserungen unter der Haube.
 Danke, dass du dein Business mit eCardify teilst.

@@ -7,16 +7,32 @@ Build your wallet-ready mobile pass. Add your photo, role, company, and links. N
 
 Share Instantly (No App Required for them)
 • QR Share: Let anyone scan your card from your phone screen.
-• Wallet Pass: Save to your Apple Wallet for instant, native access.
+• Wallet Pass: Save to your Apple Wallet for instant access right from your lock screen.
 • NFC & AirDrop: Tap or beam your details instantly.
 • Custom Link: Send your public card page via text, email, or social media.
 
-Scan & Save Paper Cards
-Got handed a physical card? Scan it with eCardify's built-in reader and instantly digitize their details into your phone's address book.
+Built-In Business Card Scanner
+Got handed a physical card? Scan it with eCardify's business card scanner and instantly digitize the details into your phone's address book. Every person you meet at a conference or event stays saved and searchable—long after the paper card is gone.
 
 Host Your Card Online
-Every eCardify profile comes with a beautiful, mobile-optimized public web page. People can view your details and tap "Save Contact" to directly import your vCard.
+Every eCardify profile comes with a beautiful, mobile-optimized public web page. People can view your details and tap "Save Contact" to directly import your vCard—it works on iPhone, Android, and desktop, with nothing to install.
 
-Built for freelancers, founders, consultants, sales teams, recruiters, real estate agents, and anyone who networks often.
+One Card, Always Current
+Changed your role, phone number, or company? Update your card once and every link and QR code you have ever shared points to your latest details. The people in your network keep a card that never goes stale.
+
+Made for Real Networking
+• Conferences & events: share with a quick scan while others are still digging for paper.
+• Sales teams & founders: make every introduction count with a card that looks as professional as you are.
+• Freelancers & consultants: your work, links, and portfolio one tap away from every new client.
+• Recruiters, agents & creators: grow your contact list and keep it organized in one place.
+
+Why Go Digital
+• One card, unlimited shares—you will never run out or reprint again.
+• Eco-friendly—save paper, printing costs, and trips to the print shop.
+• Always with you—your card lives in Apple Wallet, ready even when you least expect to need it.
+• First impressions that stick—a tap-to-save card is remembered; a paper card is lost in a pocket.
+
+Your Privacy, Respected
+You decide what goes on your card and who you share it with. Your card is shared only when you choose to share it.
 
 Stop reprinting paper cards. Make one card, carry it everywhere, and share it instantly with eCardify.

@@ -1,1 +1,1 @@
-networking,conference,airdrop,scan,portfolio,resume,meeting,event,contactless,namecard,tap,cardswap
+airdrop,scan,portfolio,resume,meeting,namecard,cardswap,exchange,creator,template,social,job,sales

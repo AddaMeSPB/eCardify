@@ -62,7 +62,7 @@ public struct AppReducer {
     @Dependency(\.build) var build
     @Dependency(\.continuousClock) var clock
 
-    private enum CancelID { case tokenRefresh, tokenRefreshTimer }
+    private enum CancelID { case tokenRefresh, tokenRefreshTimer, reviewPrompt }
 
     public init() {}
 
@@ -112,11 +112,35 @@ public struct AppReducer {
             return .none
 
         case .didChangeScenePhase(.active):
-            return .send(.validateSession)
+            // Second-chance review prompt: requestReview has no callback
+            // when iOS suppresses the dialog, so engaged users who missed
+            // the one first-card prompt would otherwise never be asked
+            // again. Gated on being logged in with a card (never prompt
+            // over the login/empty state), plus ReviewPromptGate's own
+            // gates (>=5 sessions, >=7 days since first launch, >=60 days
+            // between attempts). Short delay so the prompt never lands on
+            // the launch transition; tokenRefreshFailed cancels it so it
+            // never lands on the login sheet either.
+            let canPrompt = state.walletState.isAuthorized
+                && (!state.walletState.wPass.isEmpty
+                    || !state.walletState.wPassLocal.isEmpty)
+            return .merge(
+                .send(.validateSession),
+                .run { _ in
+                    try await self.clock.sleep(for: .seconds(2))
+                    await ReviewPromptGate.registerSessionAndRequestIfEligible(hasCards: canPrompt)
+                }
+                // cancelInFlight — re-snapshots hasCards on rapid scene-active events
+                .cancellable(id: CancelID.reviewPrompt, cancelInFlight: true)
+            )
 
         case .didChangeScenePhase(.background):
-            // Cancel refresh timer while backgrounded; it restarts on .active
-            return .cancel(id: CancelID.tokenRefreshTimer)
+            // Cancel refresh timer + pending review prompt while backgrounded;
+            // both restart on the next .active
+            return .merge(
+                .cancel(id: CancelID.tokenRefreshTimer),
+                .cancel(id: CancelID.reviewPrompt)
+            )
 
         case .didChangeScenePhase:
             return .none
@@ -140,7 +164,8 @@ public struct AppReducer {
             state.walletState.user = nil
             state.path = StackState()             // clear any navigation
             state.authState = .init()             // show login sheet
-            return .none
+            // Never let a pending review prompt land on the login sheet
+            return .cancel(id: CancelID.reviewPrompt)
 
         case .walletAction:
             return .none
@@ -168,7 +193,8 @@ public struct AppReducer {
         case .isSheetLogin(isPresented: let isPresented):
             state.authState = isPresented ? .init() : nil
 
-            return .none
+            // Never let a pending review prompt land on the login sheet
+            return isPresented ? .cancel(id: CancelID.reviewPrompt) : .none
 
         case let .deepLink(url):
             // Handle auth callback URL: cardify.addame.com.eCardify://auth/callback
@@ -262,7 +288,11 @@ public struct AppReducer {
         case .tokenRefreshFailed:
             state.walletState.$isAuthorized.withLock { $0 = false }
             state.authState = .init()  // open login sheet on session expiry
-            return .cancel(id: CancelID.tokenRefreshTimer)
+            return .merge(
+                .cancel(id: CancelID.tokenRefreshTimer),
+                // Never let a pending review prompt land on the login sheet
+                .cancel(id: CancelID.reviewPrompt)
+            )
 
         case .path:
             return .none

@@ -195,6 +195,7 @@ final class AppReducerTests: XCTestCase {
             $0.keychainClient = .noop
             $0.build.identifier = { "com.test" }
             $0.continuousClock = TestClock()
+            $0.analyticsClient.track = { _ in }
         }
 
         store.exhaustivity = .off

@@ -256,7 +256,6 @@ final class ScreenshotTests: XCTestCase {
 
         let store = Store<GenericPassForm.State, GenericPassForm.Action>(
             initialState: GenericPassForm.State(
-                products: ECProduct.demoProducts,
                 vCard: .demoAlif,
                 telephone: .init(type: .work, number: "+8801712345678"),
                 email: "alif@ecardify.app"

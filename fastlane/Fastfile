@@ -88,7 +88,7 @@ platform :ios do
       # in App Store Connect.
       distribute_external: true,
       groups: ["External Testers"],
-      changelog: "Warmer celebration screen after creating your first card; rating prompt only at the right moment.",
+      changelog: "Smarter rate-us prompt timing (second-chance prompt for engaged users); refreshed App Store metadata; small stability improvements.",
       # Waiting is required when distribute_external is true so the
       # external-release call has a processed build to target.
       skip_waiting_for_build_processing: false
@@ -114,6 +114,10 @@ platform :ios do
     key = api_key
     deliver(
       api_key: key,
+      # Creates/edits the ASC version slot matching the project version —
+      # without this, deliver dies with "Cannot find edit app store version"
+      # when the live version is Ready for Sale and no draft slot exists.
+      app_version: get_version_number(xcodeproj: XCODE_PROJECT, target: "eCardify"),
       skip_binary_upload: true,
       skip_screenshots: true,
       submit_for_review: true,

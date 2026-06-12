@@ -659,33 +659,22 @@ public struct GenericPassForm {
                 // their success state before any prompt (moment of joy).
                 await send(.showCardCreated(wp))
 
-                // Review prompt: trigger ONLY on the very first successful
-                // card save (cards.count == 1 after insert).
-                //
-                // Why exactly-1: Apple gives us a hard budget of 3 prompts
-                // per user per 365 days. We want to spend one at the peak
-                // emotional moment — the user's first-ever card, moments
-                // after they saved it. Re-prompting on card #2/#3 would
-                // burn the quota on a lower-emotion event and may preempt
-                // future better moments (e.g. post-upgrade).
+                // Review prompt: spend one quota slot at the peak emotional
+                // moment — the user's first-ever card, moments after they
+                // saved it. ReviewPromptGate stamps the attempt so the
+                // session-based fallback in AppReducer waits its interval
+                // before asking again.
                 //
                 // Edge case (accepted): a user who deletes their only card
                 // and creates a new one will hit `count == 1` a second
-                // time. Apple's 365-day system limit prevents spamming, so
-                // at worst we "waste" one quota slot — benign.
+                // time. Apple's 365-day system limit prevents spamming.
                 //
                 // Small delay so the "Card Created" screen has a moment to
                 // settle before the system alert appears on top of it.
                 #if os(iOS)
                 if let cards = try? await localDatabase.find(), cards.count == 1 {
                     try? await Task.sleep(nanoseconds: 800_000_000) // 0.8s
-                    await MainActor.run {
-                        if let scene = UIApplication.shared.connectedScenes
-                            .compactMap({ $0 as? UIWindowScene })
-                            .first(where: { $0.activationState == .foregroundActive }) {
-                            SKStoreReviewController.requestReview(in: scene)
-                        }
-                    }
+                    await ReviewPromptGate.requestNow()
                 }
                 #endif
 

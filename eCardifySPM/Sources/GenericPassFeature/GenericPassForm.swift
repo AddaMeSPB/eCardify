@@ -647,6 +647,14 @@ public struct GenericPassForm {
                 return .none
             }
 
+            // Reset the draft after a successful save. The draft otherwise
+            // persists (here and in the parent WalletPassList) and re-opening
+            // the form would re-submit the same card under a brand-new
+            // WalletPass id — creating a duplicate public card with a `-2` slug.
+            // `.empty` is computed, so this also hands the next card a fresh id.
+            state.vCard = .empty
+            state.walletPass = nil
+
             return .run { [localDatabase] send in
 
                 do {

@@ -1,5 +1,1 @@
-Neuer Feinschliff für deine Karten.
-• Besseres Timing für die Bewertungsanfrage — sie wartet jetzt auf den richtigen Moment, statt dich zu unterbrechen.
-• Aufgefrischte App-Store-Seite, damit neue Nutzer eCardify leichter finden.
-• Kleine Stabilitätsverbesserungen unter der Haube.
-Danke, dass du dein Business mit eCardify teilst.
+Beim Bearbeiten wird eine Karte jetzt direkt aktualisiert – so zeigen dein Wallet und dein öffentliches Profil immer eine saubere, aktuelle Karte. Dazu einige Verbesserungen der Stabilität.

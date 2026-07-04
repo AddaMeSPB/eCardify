@@ -1,5 +1,1 @@
-Un coup de neuf pour vos cartes.
-• Meilleur timing pour la demande d'avis — elle attend désormais le bon moment au lieu de vous interrompre.
-• Page App Store actualisée pour que eCardify soit plus facile à trouver.
-• Petites améliorations de stabilité.
-Merci de partager votre activité avec eCardify.
+Modifier une carte la met désormais à jour directement : votre portefeuille et votre profil public affichent toujours une carte unique et à jour. Avec quelques améliorations de fiabilité.

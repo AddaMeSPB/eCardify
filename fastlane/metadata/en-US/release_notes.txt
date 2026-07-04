@@ -1,5 +1,1 @@
-A fresh coat of polish for your cards.
-• Smarter timing for the rate-us prompt — it now waits for the right moment instead of interrupting you.
-• Refreshed App Store page so new people can find eCardify more easily.
-• Small stability improvements under the hood.
-Thank you for sharing your business with eCardify.
+Editing a card now updates it in place, so your wallet and public profile always show one clean, up-to-date card. Plus a few reliability improvements.

@@ -1,5 +1,11 @@
 default_platform(:ios)
 
+# `xcodebuild -showBuildSettings` is slow to resolve this project's ~50 SPM
+# packages; the default 3s timeout makes build_app fail before archiving.
+# Give it generous headroom (override via env if needed).
+ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] ||= "180"
+ENV["FASTLANE_XCODEBUILD_SETTINGS_RETRIES"] ||= "5"
+
 # ---------- Constants ----------
 XCODE_PROJECT = "eCardify.xcodeproj"
 IOS_SCHEME    = "eCardify"
@@ -88,7 +94,7 @@ platform :ios do
       # in App Store Connect.
       distribute_external: true,
       groups: ["External Testers"],
-      changelog: "Smarter rate-us prompt timing (second-chance prompt for engaged users); refreshed App Store metadata; small stability improvements.",
+      changelog: "Editing a card now updates it in place, so your wallet and public profile always show one clean, up-to-date card. Plus a few reliability improvements.",
       # Waiting is required when distribute_external is true so the
       # external-release call has a processed build to target.
       skip_waiting_for_build_processing: false

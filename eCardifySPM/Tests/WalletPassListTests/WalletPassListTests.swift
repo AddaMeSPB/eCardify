@@ -89,13 +89,17 @@ final class WalletPassListTests: XCTestCase {
     func testCreateGenericFormButtonTapped() async {
         var state = WalletPassList.State()
         state.$isAuthorized.withLock { $0 = true }
+        // `VCard.empty` is computed (fresh id per access), so the expectation must
+        // use the exact draft the reducer reads from `state.vCard` — a new `.empty`
+        // here would have a different id and fail the state assertion.
+        let draft = state.vCard ?? .empty
 
         let store = TestStore(initialState: state) {
             WalletPassList()
         }
 
         await store.send(.createGenericFormButtonTapped) {
-            $0.destination = .add(.init(user: nil, vCard: .empty))
+            $0.destination = .add(.init(user: nil, vCard: draft))
         }
     }
 

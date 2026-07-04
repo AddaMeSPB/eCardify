@@ -64,23 +64,16 @@ final class SettingsFeatureTests: XCTestCase {
     // MARK: - Leave Review
 
     func testLeaveReviewButtonTapped() async {
-        var openedURL: URL?
-
+        // The review prompt is now requested natively in the view via
+        // `@Environment(\.requestReview)` (see SettingsView), so the reducer
+        // action is an intentional no-op — it opens no URL and changes no state.
         let store = TestStore(
             initialState: Settings.State()
         ) {
             Settings()
-        } withDependencies: {
-            $0.applicationClient.open = { url, _ in
-                openedURL = url
-                return true
-            }
         }
 
         await store.send(.leaveUsAReviewButtonTapped)
-
-        XCTAssertNotNil(openedURL)
-        XCTAssertTrue(openedURL?.absoluteString.contains("itunes.apple.com") ?? false)
     }
 
     // MARK: - Our App Links

@@ -1,1 +1,1 @@
-Editing a card now updates it in place, so your wallet and public profile always show one clean, up-to-date card. Plus a few reliability improvements.
+New: Inspiration gallery. Browse real business cards created by the eCardify community, open any card to see it live with its QR code, and start your own in one tap. Plus small polish and reliability improvements.

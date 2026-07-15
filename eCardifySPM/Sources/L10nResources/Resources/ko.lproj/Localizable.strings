@@ -275,5 +275,15 @@
 <!-- CardCreatedView v1.9.3 -->
 <key>Your card is ready! 🎉</key><string>카드가 준비되었어요! 🎉</string>
 <key>Beautiful work — time to make an unforgettable first impression.</key><string>멋져요 — 이제 잊을 수 없는 첫인상을 만들어 보세요.</string>
+
+<!-- Discover / Inspiration gallery v1.9.7 -->
+<key>Inspiration</key><string>영감</string>
+<key>Get inspired by real cards from our community</key><string>커뮤니티의 실제 카드에서 영감을 받아보세요</string>
+<key>Search by name, company, or title</key><string>이름, 회사 또는 직책으로 검색</string>
+<key>No cards found</key><string>카드를 찾을 수 없습니다</string>
+<key>Try a different search term</key><string>다른 검색어를 시도해 보세요</string>
+<key>Create My Card</key><string>내 카드 만들기</string>
+<key>No internet connection.</key><string>인터넷에 연결되어 있지 않습니다.</string>
+<key>Unable to load cards. Please try again.</key><string>카드를 불러오지 못했습니다. 다시 시도해 주세요.</string>
 </dict>
 </plist>

@@ -275,5 +275,15 @@
 <!-- CardCreatedView v1.9.3 -->
 <key>Your card is ready! 🎉</key><string>Your card is ready! 🎉</string>
 <key>Beautiful work — time to make an unforgettable first impression.</key><string>Beautiful work — time to make an unforgettable first impression.</string>
+
+<!-- Discover / Inspiration gallery v1.9.7 -->
+<key>Inspiration</key><string>Inspiration</string>
+<key>Get inspired by real cards from our community</key><string>Get inspired by real cards from our community</string>
+<key>Search by name, company, or title</key><string>Search by name, company, or title</string>
+<key>No cards found</key><string>No cards found</string>
+<key>Try a different search term</key><string>Try a different search term</string>
+<key>Create My Card</key><string>Create My Card</string>
+<key>No internet connection.</key><string>No internet connection.</string>
+<key>Unable to load cards. Please try again.</key><string>Unable to load cards. Please try again.</string>
 </dict>
 </plist>

@@ -1,1 +1,1 @@
-Ao editar um cartão, ele agora é atualizado na hora, para que sua carteira e seu perfil público mostrem sempre um cartão único e atualizado. Com algumas melhorias de estabilidade.
+Novidade: galeria de inspiração. Explore cartões de visita reais criados pela comunidade eCardify, abra qualquer cartão para vê-lo ao vivo com seu código QR e crie o seu com um toque. Além de melhorias de estabilidade.

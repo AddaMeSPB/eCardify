@@ -1,1 +1,1 @@
-Modifier une carte la met désormais à jour directement : votre portefeuille et votre profil public affichent toujours une carte unique et à jour. Avec quelques améliorations de fiabilité.
+Nouveau : galerie d'inspiration. Parcourez de vraies cartes de visite créées par la communauté eCardify, ouvrez chaque carte pour la voir en direct avec son code QR, et créez la vôtre en un geste. Avec aussi des améliorations de fiabilité.

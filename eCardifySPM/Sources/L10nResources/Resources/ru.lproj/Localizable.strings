@@ -275,5 +275,15 @@
 <!-- CardCreatedView v1.9.3 -->
 <key>Your card is ready! 🎉</key><string>Ваша карточка готова! 🎉</string>
 <key>Beautiful work — time to make an unforgettable first impression.</key><string>Отличная работа — пора произвести незабываемое первое впечатление.</string>
+
+<!-- Discover / Inspiration gallery v1.9.7 -->
+<key>Inspiration</key><string>Вдохновение</string>
+<key>Get inspired by real cards from our community</key><string>Вдохновляйтесь настоящими визитками нашего сообщества</string>
+<key>Search by name, company, or title</key><string>Поиск по имени, компании или должности</string>
+<key>No cards found</key><string>Визитки не найдены</string>
+<key>Try a different search term</key><string>Попробуйте другой запрос</string>
+<key>Create My Card</key><string>Создать мою визитку</string>
+<key>No internet connection.</key><string>Нет подключения к интернету.</string>
+<key>Unable to load cards. Please try again.</key><string>Не удалось загрузить визитки. Попробуйте ещё раз.</string>
 </dict>
 </plist>

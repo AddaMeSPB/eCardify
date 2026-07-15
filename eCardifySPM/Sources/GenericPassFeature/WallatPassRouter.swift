@@ -56,6 +56,7 @@ public struct WalletPassList {
         case dismissAddGenericFormButtonTapped
         case navigateSettingsButtonTapped
         case scanCardButtonTapped
+        case discoverButtonTapped
 
     }
 
@@ -253,6 +254,17 @@ public struct WalletPassList {
         case .destination(.presented(.cardCreated)):
             return .none
 
+        // Discover CTA: close the gallery, then run the normal create flow
+        // (auth-gated inside createGenericFormButtonTapped).
+        // Must stay ABOVE the catch-all `case .destination:` or it never matches.
+        case .destination(.presented(.discover(.delegate(.createCard)))):
+            state.destination = nil
+            return .run { send in
+                // Let the sheet dismiss settle before presenting the form
+                try await clock.sleep(for: .milliseconds(400))
+                await send(.createGenericFormButtonTapped)
+            }
+
         case .destination(.presented(.add(.buildPKPassFrom(url: let passUrl)))):
 
             return .run { send in
@@ -308,6 +320,10 @@ public struct WalletPassList {
             state.destination = .settings(.init(currentUser: currentUser))
             return .none
 
+        case .discoverButtonTapped:
+            state.destination = .discover(.init())
+            return .none
+
         case .scanCardButtonTapped:
             // Open the card creation form — the form already has scanner
             // built-in via the camera button (VNRecognize). Navigate to form
@@ -330,6 +346,7 @@ public struct WalletPassList {
             case add(GenericPassForm.State)
             case settings(Settings.State)
             case cardCreated(CardCreated.State)
+            case discover(Discover.State)
         }
 
         @CasePathable
@@ -339,6 +356,7 @@ public struct WalletPassList {
             case add(GenericPassForm.Action)
             case settings(Settings.Action)
             case cardCreated(CardCreated.Action)
+            case discover(Discover.Action)
         }
 
         public init() {}
@@ -363,6 +381,10 @@ public struct WalletPassList {
 
             Scope(state: \.cardCreated, action: \.cardCreated) {
                 CardCreated()
+            }
+
+            Scope(state: \.discover, action: \.discover) {
+                Discover()
             }
         }
     }

@@ -1,1 +1,1 @@
-Al editar una tarjeta ahora se actualiza al instante, para que tu cartera y tu perfil público muestren siempre una tarjeta limpia y al día. Además, mejoras de estabilidad.
+Nuevo: galería de inspiración. Explora tarjetas de presentación reales creadas por la comunidad de eCardify, abre cualquier tarjeta para verla en vivo con su código QR y crea la tuya con un toque. Además, mejoras de estabilidad.

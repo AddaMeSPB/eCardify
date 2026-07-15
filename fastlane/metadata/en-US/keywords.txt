@@ -1,1 +1,1 @@
-nfc,wallet,networking,contact,vcard,tap,contactless,share,profile,lead,conference,event,maker,holder
+free,nfc,vcard,tap,maker,virtual,ai,reader,exchange,networking,visiting,ecard,creator,swap,contact

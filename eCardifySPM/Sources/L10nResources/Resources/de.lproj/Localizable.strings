@@ -275,5 +275,15 @@
 <!-- CardCreatedView v1.9.3 -->
 <key>Your card is ready! 🎉</key><string>Deine Karte ist fertig! 🎉</string>
 <key>Beautiful work — time to make an unforgettable first impression.</key><string>Gut gemacht — Zeit für einen unvergesslichen ersten Eindruck.</string>
+
+<!-- Discover / Inspiration gallery v1.9.7 -->
+<key>Inspiration</key><string>Inspiration</string>
+<key>Get inspired by real cards from our community</key><string>Lass dich von echten Karten aus unserer Community inspirieren</string>
+<key>Search by name, company, or title</key><string>Nach Name, Firma oder Position suchen</string>
+<key>No cards found</key><string>Keine Karten gefunden</string>
+<key>Try a different search term</key><string>Versuche einen anderen Suchbegriff</string>
+<key>Create My Card</key><string>Meine Karte erstellen</string>
+<key>No internet connection.</key><string>Keine Internetverbindung.</string>
+<key>Unable to load cards. Please try again.</key><string>Karten konnten nicht geladen werden. Bitte versuche es erneut.</string>
 </dict>
 </plist>

@@ -73,6 +73,14 @@ public struct WalletPassView: View {
             ) { store in
                 CardCreatedView(store: store)
             }
+            .sheet(
+                item: $store.scope(
+                    state: \.destination?.discover,
+                    action: \.destination.discover
+                )
+            ) { store in
+                DiscoverView(store: store)
+            }
     }
 
     private var scrollContent: some View {
@@ -89,6 +97,18 @@ public struct WalletPassView: View {
 
     @ToolbarContentBuilder
     private var settingsToolbar: some ToolbarContent {
+        // Community gallery is public — visible logged-in and logged-out
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                store.send(.discoverButtonTapped)
+            } label: {
+                Image(systemName: "sparkles.rectangle.stack")
+                    .font(ECTypography.body())
+                    .foregroundStyle(ECColors.primary)
+            }
+            .accessibilityIdentifier("discover_button")
+        }
+
         if store.isAuthorized {
             ToolbarItem(placement: .topBarLeading) {
                 Button {

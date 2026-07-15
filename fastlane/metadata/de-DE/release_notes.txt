@@ -1,1 +1,1 @@
-Beim Bearbeiten wird eine Karte jetzt direkt aktualisiert – so zeigen dein Wallet und dein öffentliches Profil immer eine saubere, aktuelle Karte. Dazu einige Verbesserungen der Stabilität.
+Neu: Inspirations-Galerie. Entdecke echte Visitenkarten aus der eCardify-Community, öffne jede Karte in der Live-Ansicht mit QR-Code und erstelle deine eigene mit einem Tipp. Dazu kleine Verbesserungen für mehr Zuverlässigkeit.

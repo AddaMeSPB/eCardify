@@ -1,1 +1,1 @@
-Business Card Scanner & QR
+QR Scanner, vCard & Contacts

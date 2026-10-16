@@ -2,26 +2,59 @@
 import UIKit
 import SwiftUI
 import PassKit
+import LoggerKit
 import Foundation
+import L10nResources
 import ComposableArchitecture
 
 public struct AddPassRepresentableView: UIViewControllerRepresentable {
 
-    public typealias UIViewControllerType = PKAddPassesViewController
+    public typealias UIViewControllerType = UIViewController
 
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
 
     @Binding var pass: PKPass
 
-    public func makeUIViewController(context: Context) -> PKAddPassesViewController {
+    public func makeUIViewController(context: Context) -> UIViewController {
         guard let passVC = PKAddPassesViewController(pass: self.pass) else {
-            fatalError("Failed to initialize PKAddPassesViewController with the provided pass")
+            // PKAddPassesViewController(pass:) returns nil when the pass can't
+            // be presented (e.g. Wallet unavailable). Never crash — show a
+            // dismissible fallback instead.
+            sharedLogger.logError("PKAddPassesViewController(pass:) returned nil — cannot present Add to Wallet UI")
+            return UIHostingController(
+                rootView: AddPassUnavailableView {
+                    dismiss()
+                }
+            )
         }
         return passVC
     }
 
-    public func updateUIViewController(_ uiViewController: PKAddPassesViewController, context: Context) {
+    public func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         // Nothing goes here
+    }
+}
+
+/// Shown inside the sheet when PKAddPassesViewController can't be created.
+struct AddPassUnavailableView: View {
+    var onClose: () -> Void
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.largeTitle)
+                .foregroundStyle(.secondary)
+            Text(L("Unable to Add Pass"))
+                .font(.headline)
+            Text(L("This pass can't be added to Apple Wallet right now. Please contact support."))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            Button(L("Close"), action: onClose)
+                .buttonStyle(.bordered)
+                .padding(.top, 8)
+        }
+        .padding()
     }
 }
 

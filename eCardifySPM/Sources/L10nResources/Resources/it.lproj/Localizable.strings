@@ -285,5 +285,15 @@
 <key>Create My Card</key><string>Crea la mia carta</string>
 <key>No internet connection.</key><string>Nessuna connessione a Internet.</string>
 <key>Unable to load cards. Please try again.</key><string>Impossibile caricare le carte. Riprova.</string>
+
+<!-- Add-to-Wallet failure alerts (GenericPassFeature) -->
+<key>Download Failed</key><string>Download non riuscito</string>
+<key>The pass could not be downloaded. Please check your connection and try again.</key><string>Impossibile scaricare il pass. Controlla la connessione e riprova.</string>
+<key>Wallet Unavailable</key><string>Wallet non disponibile</string>
+<key>This device can't add passes to Apple Wallet.</key><string>Questo dispositivo non può aggiungere pass ad Apple Wallet.</string>
+<key>Invalid Pass</key><string>Pass non valido</string>
+<key>This pass can't be added to Apple Wallet. Please contact support.</key><string>Questo pass non può essere aggiunto ad Apple Wallet. Contatta l'assistenza.</string>
+<key>Unable to Add Pass</key><string>Impossibile aggiungere il pass</string>
+<key>This pass can't be added to Apple Wallet right now. Please contact support.</key><string>Al momento questo pass non può essere aggiunto ad Apple Wallet. Contatta l'assistenza.</string>
 </dict>
 </plist>

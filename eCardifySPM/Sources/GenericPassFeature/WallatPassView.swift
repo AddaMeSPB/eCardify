@@ -24,6 +24,9 @@ public struct WalletPassView: View {
                 addButton
             }
         }
+        // Kept off the mainScrollView chain — one more modifier there and the
+        // type-checker times out ("unable to type-check in reasonable time").
+        .alert($store.scope(state: \.alert, action: \.alert))
     }
 
     private var mainScrollView: some View {

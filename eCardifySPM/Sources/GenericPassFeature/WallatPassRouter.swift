@@ -4,6 +4,7 @@ import SwiftUI
 import LoggerKit
 import APIClient
 import Foundation
+import L10nResources
 import SettingsFeature
 import VNRecognizeFeature
 import ECSharedModels
@@ -25,6 +26,7 @@ public struct WalletPassList {
         }
 
         @Presents public var destination: Destination.State?
+        @Presents public var alert: AlertState<Alert>?
 
         public var vCard: VCard? = .empty
         public var wPass: IdentifiedArrayOf<WalletPassDetails.State> = []
@@ -40,6 +42,8 @@ public struct WalletPassList {
 
     @CasePathable
     public enum Action: BindableAction {
+        case alert(PresentationAction<Alert>)
+        case addPassFailed(AddPassFailure)
         case binding(BindingAction<State>)
         case onAppear
         case wPass(IdentifiedActionOf<WalletPassDetails>)
@@ -60,6 +64,17 @@ public struct WalletPassList {
 
     }
 
+    /// Alert is dismiss-only (default OK button) — no custom actions.
+    public enum Alert: Equatable {}
+
+    /// Why a pass couldn't reach Apple Wallet. Each case maps to a
+    /// user-facing alert in `addPassFailed` — never fail silently.
+    public enum AddPassFailure: Equatable {
+        case downloadFailed
+        case deviceCannotAddPasses
+        case invalidPassFile
+    }
+
     public init() {}
 
     @Dependency(\.build) var build
@@ -78,6 +93,7 @@ public struct WalletPassList {
             .ifLet(\.$destination, action: \.destination) {
                 Destination()
             }
+            .ifLet(\.$alert, action: \.alert)
             .forEach(\.wPassLocal, action: \.wPass) {
                 WalletPassDetails()
             }
@@ -85,6 +101,50 @@ public struct WalletPassList {
 
     func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
+
+        case .alert:
+            return .none
+
+        case .addPassFailed(let failure):
+            // A presented sheet blocks alerts from the root view — dismiss it,
+            // let the dismissal settle, then re-enter to show the alert.
+            // Pushed destinations (.add, .settings) are kept: popping them
+            // would skip the .destination(.dismiss) vCard sync and throw away
+            // the user's navigation. If one is covering the root when the
+            // failure lands (only possible if the user navigated during the
+            // download), the binding-driven alert presents once the root
+            // reappears — deferred, not lost. The failure is logged either way.
+            switch state.destination {
+            case .addPass, .cardCreated, .digitalCard, .discover:
+                state.destination = nil
+                return .run { send in
+                    try await clock.sleep(for: .milliseconds(550))
+                    await send(.addPassFailed(failure))
+                }
+            case .add, .settings, .none:
+                break
+            }
+            switch failure {
+            case .downloadFailed:
+                state.alert = AlertState {
+                    TextState(L("Download Failed"))
+                } message: {
+                    TextState(L("The pass could not be downloaded. Please check your connection and try again."))
+                }
+            case .deviceCannotAddPasses:
+                state.alert = AlertState {
+                    TextState(L("Wallet Unavailable"))
+                } message: {
+                    TextState(L("This device can't add passes to Apple Wallet."))
+                }
+            case .invalidPassFile:
+                state.alert = AlertState {
+                    TextState(L("Invalid Pass"))
+                } message: {
+                    TextState(L("This pass can't be added to Apple Wallet. Please contact support."))
+                }
+            }
+            return .none
 
         case .binding:
             return .none
@@ -270,22 +330,41 @@ public struct WalletPassList {
             return .run { send in
                 guard let url = URL(string: passUrl) else {
                     sharedLogger.logError("Invalid pass URL: \(passUrl)")
+                    await send(.addPassFailed(.invalidPassFile))
                     return
                 }
 
-                let urlRequest = URLRequest(url: url)
-                let (data, response) = try await URLSession.shared.data(for: urlRequest)
+                let data: Data
+                do {
+                    let urlRequest = URLRequest(url: url)
+                    let (body, response) = try await URLSession.shared.data(for: urlRequest)
 
-                guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-                    let status = (response as? HTTPURLResponse)?.statusCode ?? -1
-                    sharedLogger.logError("Pass download failed with status \(status)")
+                    guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+                        let status = (response as? HTTPURLResponse)?.statusCode ?? -1
+                        sharedLogger.logError("Pass download failed with status \(status) url: \(passUrl)")
+                        await send(.addPassFailed(.downloadFailed))
+                        return
+                    }
+                    data = body
+                } catch {
+                    sharedLogger.logError("Pass download failed url: \(passUrl) error: \(error.localizedDescription)")
+                    await send(.addPassFailed(.downloadFailed))
                     return
                 }
 
-                let canAddPassResult = await PKAddPassesViewController.canAddPasses()
+                guard await PKAddPassesViewController.canAddPasses() else {
+                    sharedLogger.logError("PKAddPassesViewController.canAddPasses() == false — device can't add passes")
+                    await send(.addPassFailed(.deviceCannotAddPasses))
+                    return
+                }
 
-                if canAddPassResult {
-                    await send(.sendPass(try PKPass(data: data)))
+                do {
+                    let pass = try PKPass(data: data)
+                    await send(.sendPass(pass))
+                } catch {
+                    // Corrupt or badly signed .pkpass (e.g. expired signing cert)
+                    sharedLogger.logError("PKPass(data:) failed url: \(passUrl) error: \(error.localizedDescription)")
+                    await send(.addPassFailed(.invalidPassFile))
                 }
             }
 

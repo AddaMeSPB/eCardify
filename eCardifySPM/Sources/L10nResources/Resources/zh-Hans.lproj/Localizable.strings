@@ -285,5 +285,15 @@
 <key>Create My Card</key><string>创建我的名片</string>
 <key>No internet connection.</key><string>无网络连接。</string>
 <key>Unable to load cards. Please try again.</key><string>无法加载名片，请重试。</string>
+
+<!-- Add-to-Wallet failure alerts (GenericPassFeature) -->
+<key>Download Failed</key><string>下载失败</string>
+<key>The pass could not be downloaded. Please check your connection and try again.</key><string>无法下载通行证。请检查网络连接后重试。</string>
+<key>Wallet Unavailable</key><string>Apple 钱包不可用</string>
+<key>This device can't add passes to Apple Wallet.</key><string>此设备无法将通行证添加到 Apple 钱包。</string>
+<key>Invalid Pass</key><string>通行证无效</string>
+<key>This pass can't be added to Apple Wallet. Please contact support.</key><string>此通行证无法添加到 Apple 钱包。请联系支持团队。</string>
+<key>Unable to Add Pass</key><string>无法添加通行证</string>
+<key>This pass can't be added to Apple Wallet right now. Please contact support.</key><string>此通行证目前无法添加到 Apple 钱包。请联系支持团队。</string>
 </dict>
 </plist>

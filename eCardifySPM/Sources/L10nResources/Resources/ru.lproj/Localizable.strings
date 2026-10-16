@@ -285,5 +285,15 @@
 <key>Create My Card</key><string>Создать мою визитку</string>
 <key>No internet connection.</key><string>Нет подключения к интернету.</string>
 <key>Unable to load cards. Please try again.</key><string>Не удалось загрузить визитки. Попробуйте ещё раз.</string>
+
+<!-- Add-to-Wallet failure alerts (GenericPassFeature) -->
+<key>Download Failed</key><string>Ошибка загрузки</string>
+<key>The pass could not be downloaded. Please check your connection and try again.</key><string>Не удалось загрузить пропуск. Проверьте подключение и повторите попытку.</string>
+<key>Wallet Unavailable</key><string>Wallet недоступен</string>
+<key>This device can't add passes to Apple Wallet.</key><string>На этом устройстве нельзя добавлять пропуска в Apple Wallet.</string>
+<key>Invalid Pass</key><string>Недействительный пропуск</string>
+<key>This pass can't be added to Apple Wallet. Please contact support.</key><string>Этот пропуск не удаётся добавить в Apple Wallet. Пожалуйста, обратитесь в поддержку.</string>
+<key>Unable to Add Pass</key><string>Не удалось добавить пропуск</string>
+<key>This pass can't be added to Apple Wallet right now. Please contact support.</key><string>Сейчас этот пропуск не удаётся добавить в Apple Wallet. Пожалуйста, обратитесь в поддержку.</string>
 </dict>
 </plist>

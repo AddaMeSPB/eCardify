@@ -171,4 +171,102 @@ final class WalletPassListTests: XCTestCase {
         await store.send(.onAppear)
         // No state change, no login trigger
     }
+
+    // MARK: - Add-to-Wallet Failures
+
+    /// Every pass failure must surface an alert. Silent failures hid an
+    /// expired signing cert for two years — every pass was un-addable and
+    /// the app gave no feedback (support case 2026-10).
+    func testAddPassFailed_downloadFailed_showsAlert() async {
+        let store = TestStore(initialState: WalletPassList.State()) {
+            WalletPassList()
+        }
+
+        await store.send(.addPassFailed(.downloadFailed)) {
+            $0.alert = AlertState {
+                TextState("Download Failed")
+            } message: {
+                TextState("The pass could not be downloaded. Please check your connection and try again.")
+            }
+        }
+
+        await store.send(.alert(.dismiss)) {
+            $0.alert = nil
+        }
+    }
+
+    func testAddPassFailed_deviceCannotAddPasses_showsAlert() async {
+        let store = TestStore(initialState: WalletPassList.State()) {
+            WalletPassList()
+        }
+
+        await store.send(.addPassFailed(.deviceCannotAddPasses)) {
+            $0.alert = AlertState {
+                TextState("Wallet Unavailable")
+            } message: {
+                TextState("This device can't add passes to Apple Wallet.")
+            }
+        }
+    }
+
+    func testAddPassFailed_invalidPassFile_showsAlert() async {
+        let store = TestStore(initialState: WalletPassList.State()) {
+            WalletPassList()
+        }
+
+        await store.send(.addPassFailed(.invalidPassFile)) {
+            $0.alert = AlertState {
+                TextState("Invalid Pass")
+            } message: {
+                TextState("This pass can't be added to Apple Wallet. Please contact support.")
+            }
+        }
+    }
+
+    /// A failure arriving while a sheet is up (e.g. CardCreated → Add to
+    /// Wallet) must dismiss the sheet first, wait for the dismissal to
+    /// settle, then re-enter to present the alert — otherwise SwiftUI drops
+    /// an alert presented in the same update as a sheet dismissal.
+    func testAddPassFailed_dismissesPresentedSheet_thenAlerts() async {
+        var state = WalletPassList.State()
+        state.destination = .cardCreated(.init(walletPass: .mock))
+
+        let store = TestStore(initialState: state) {
+            WalletPassList()
+        } withDependencies: {
+            $0.continuousClock = ImmediateClock()
+        }
+
+        await store.send(.addPassFailed(.invalidPassFile)) {
+            $0.destination = nil
+        }
+
+        await store.receive(\.addPassFailed) {
+            $0.alert = AlertState {
+                TextState("Invalid Pass")
+            } message: {
+                TextState("This pass can't be added to Apple Wallet. Please contact support.")
+            }
+        }
+    }
+
+    /// A pushed destination (settings) doesn't block alerts — it must NOT
+    /// be dismissed when a late failure arrives.
+    func testAddPassFailed_keepsPushedDestination() async {
+        var state = WalletPassList.State()
+        let user = UserOutput.withFirstName
+        state.destination = .settings(.init(currentUser: user))
+
+        let store = TestStore(initialState: state) {
+            WalletPassList()
+        }
+
+        await store.send(.addPassFailed(.downloadFailed)) {
+            $0.alert = AlertState {
+                TextState("Download Failed")
+            } message: {
+                TextState("The pass could not be downloaded. Please check your connection and try again.")
+            }
+        }
+    }
 }

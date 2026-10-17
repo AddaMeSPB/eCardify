@@ -94,7 +94,7 @@ platform :ios do
       # in App Store Connect.
       distribute_external: true,
       groups: ["External Testers"],
-      changelog: "New: Inspiration gallery. Browse real business cards created by the eCardify community, open any card to see it live with its QR code, and start your own in one tap. Plus small polish and reliability improvements.",
+      changelog: "Adding your card to Apple Wallet is now more dependable: when a pass can't be added (download issue, Wallet unavailable, or an invalid pass), the app shows a clear localized alert instead of failing silently. Plus logging improvements for faster support.",
       # Waiting is required when distribute_external is true so the
       # external-release call has a processed build to target.
       skip_waiting_for_build_processing: false

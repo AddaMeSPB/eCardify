@@ -1,1 +1,1 @@
-Kleine Verbesserungen.
+Das Hinzufügen Ihrer Karte zu Apple Wallet ist jetzt zuverlässiger. Falls ein Pass nicht sofort hinzugefügt werden kann, zeigt die App eine klare Meldung in Ihrer Sprache mit den nächsten Schritten – dazu Verbesserungen unter der Haube.

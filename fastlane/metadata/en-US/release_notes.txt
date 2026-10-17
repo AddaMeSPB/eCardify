@@ -1,1 +1,1 @@
-Minor improvements.
+Adding your card to Apple Wallet is now more dependable. If a pass can't be added right away, the app shows a clear message in your language with what to do next — plus reliability improvements under the hood.

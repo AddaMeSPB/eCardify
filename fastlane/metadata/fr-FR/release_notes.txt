@@ -1,1 +1,1 @@
-Petites améliorations.
+L'ajout de votre carte à Apple Wallet est désormais plus fiable. Si un pass ne peut pas être ajouté immédiatement, l'app affiche un message clair dans votre langue avec la marche à suivre, ainsi que des améliorations de stabilité.

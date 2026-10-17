@@ -35,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AA0000012C0E000000000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C3118F3A2A532CD500D77A10 /* WalletPass.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WalletPass.json; sourceTree = "<group>"; };
 		C38FFE2F2A3B405B00BB3E8C /* Development.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Development.xcconfig; sourceTree = "<group>"; };
 		C399ED812A69A50A0097D485 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -48,7 +49,6 @@
 		C3B189C62A6C549E00EDE004 /* eCardifyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eCardifyUITests.swift; sourceTree = "<group>"; };
 		C3B189C82A6C549E00EDE004 /* eCardifyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eCardifyUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C3B189CF2A6E6F4A00EDE004 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
-		AA0000012C0E000000000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C3DEA2802A0E962600EC76C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C3FDFDB72A4F28CE00229340 /* Cards.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cards.storekit; sourceTree = "<group>"; };
 		C3FDFDB82A4F45B100229340 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -227,12 +227,12 @@
 				"es-US",
 			);
 			mainGroup = C3A452322A07F4AC009D8F95;
-			productRefGroup = C3A4523C2A07F4AC009D8F95 /* Products */;
-			projectDirPath = "";
-			projectRoot = "";
 			packageReferences = (
 				C3FF00002A6A5E6D003B9A09 /* XCLocalSwiftPackageReference "eCardifySPM" */,
 			);
+			productRefGroup = C3A4523C2A07F4AC009D8F95 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				C3A4523A2A07F4AC009D8F95 /* eCardify */,
 				C3B189C32A6C549E00EDE004 /* eCardifyUITests */,
@@ -454,7 +454,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconCircle;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = eCardify/eCardify.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = 541141AE5BA3C9C6431F7D32B4518C80328AFAAF;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 43;
 				DEVELOPMENT_ASSET_PATHS = "\"eCardify/Preview Content\"";
 				DEVELOPMENT_TEAM = 6989658CU5;
@@ -480,6 +481,7 @@
 				MARKETING_VERSION = 1.9.10;
 				PRODUCT_BUNDLE_IDENTIFIER = cardify.addame.com.eCardify;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore cardify.addame.com.eCardify";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

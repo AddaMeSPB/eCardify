@@ -72,6 +72,21 @@ platform :ios do
   lane :beta do
     key = api_key
     match(type: "appstore", readonly: true, api_key: key)
+    # Pin the Release archive to manual signing with the match App Store
+    # profile. Automatic signing archives fail on this machine whenever a
+    # stray development cert is newer than Xcode's managed profile (hit
+    # 2026-10-17: profile doesn't include "Apple Development: Created via
+    # API"). The SHA1 pins eCardify's distribution cert — two distribution
+    # certs live in this keychain and xcodebuild otherwise picks by age.
+    update_code_signing_settings(
+      path: XCODE_PROJECT,
+      use_automatic_signing: false,
+      team_id: TEAM_ID,
+      build_configurations: ["Release"],
+      code_sign_identity: "541141AE5BA3C9C6431F7D32B4518C80328AFAAF",
+      profile_name: "match AppStore #{BUNDLE_ID}",
+      targets: ["eCardify"]
+    )
     build_app(
       project: XCODE_PROJECT,
       scheme: IOS_SCHEME,

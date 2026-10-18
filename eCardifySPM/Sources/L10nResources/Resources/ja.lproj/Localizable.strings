@@ -295,5 +295,18 @@
 <key>This pass can't be added to Apple Wallet. Please contact support.</key><string>このパスはApple Walletに追加できません。サポートにお問い合わせください。</string>
 <key>Unable to Add Pass</key><string>パスを追加できません</string>
 <key>This pass can't be added to Apple Wallet right now. Please contact support.</key><string>現在、このパスはApple Walletに追加できません。サポートにお問い合わせください。</string>
+
+<!-- Card delete + duplicate-save warning (GenericPassFeature) -->
+<key>Delete Card</key><string>カードを削除</string>
+<key>Delete</key><string>削除</string>
+<key>Cancel</key><string>キャンセル</string>
+<key>This will permanently delete this card, its public page, and its Add to Wallet link. This action cannot be undone.</key><string>このカードと公開ページ、Apple Walletに追加するためのリンクが完全に削除されます。この操作は取り消せません。</string>
+<key>Unable to delete the card. Please try again.</key><string>カードを削除できませんでした。もう一度お試しください。</string>
+<key>Card Already Exists</key><string>カードはすでに存在します</string>
+<key>Edit Existing Card</key><string>既存のカードを編集</string>
+<key>Create Anyway</key><string>このまま作成</string>
+<key>You already have a card for %@. Edit it instead?</key><string>%@のカードはすでにあります。そのカードを編集しますか？</string>
+<key>Save Changes</key><string>変更を保存</string>
+<key>This updates your existing card — no new purchase needed.</key><string>既存のカードが更新されます。新たな購入は不要です。</string>
 </dict>
 </plist>

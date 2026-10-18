@@ -295,5 +295,18 @@
 <key>This pass can't be added to Apple Wallet. Please contact support.</key><string>此通行证无法添加到 Apple 钱包。请联系支持团队。</string>
 <key>Unable to Add Pass</key><string>无法添加通行证</string>
 <key>This pass can't be added to Apple Wallet right now. Please contact support.</key><string>此通行证目前无法添加到 Apple 钱包。请联系支持团队。</string>
+
+<!-- Card delete + duplicate-save warning (GenericPassFeature) -->
+<key>Delete Card</key><string>删除名片</string>
+<key>Delete</key><string>删除</string>
+<key>Cancel</key><string>取消</string>
+<key>This will permanently delete this card, its public page, and its Add to Wallet link. This action cannot be undone.</key><string>此名片及其公开页面和添加到 Apple Wallet 的链接将被永久删除。此操作无法撤销。</string>
+<key>Unable to delete the card. Please try again.</key><string>无法删除名片，请重试。</string>
+<key>Card Already Exists</key><string>名片已存在</string>
+<key>Edit Existing Card</key><string>编辑现有名片</string>
+<key>Create Anyway</key><string>仍要创建</string>
+<key>You already have a card for %@. Edit it instead?</key><string>您已有 %@ 的名片。要改为编辑它吗？</string>
+<key>Save Changes</key><string>保存更改</string>
+<key>This updates your existing card — no new purchase needed.</key><string>将更新您现有的名片，无需再次购买。</string>
 </dict>
 </plist>

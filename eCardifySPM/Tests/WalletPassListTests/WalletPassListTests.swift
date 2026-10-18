@@ -269,4 +269,105 @@ final class WalletPassListTests: XCTestCase {
             }
         }
     }
+
+    // MARK: - Delete Card
+
+    /// Tapping Delete in a row's context menu must ask for confirmation
+    /// first — deletion is destructive and irreversible.
+    func testDeleteCardTapped_showsConfirmationAlert() async {
+        let pass = WalletPass.mock
+        var state = WalletPassList.State()
+        state.wPassLocal = [.init(wp: pass, vCard: pass.vCard)]
+
+        let store = TestStore(initialState: state) {
+            WalletPassList()
+        }
+
+        await store.send(.wPass(.element(id: pass.id, action: .deleteCardButtonTapped))) {
+            $0.alert = AlertState {
+                TextState("Delete Card")
+            } actions: {
+                ButtonState(role: .destructive, action: .confirmDelete(id: pass.id)) {
+                    TextState("Delete")
+                }
+                ButtonState(role: .cancel) {
+                    TextState("Cancel")
+                }
+            } message: {
+                TextState("This will permanently delete this card, its public page, and its Add to Wallet link. This action cannot be undone.")
+            }
+        }
+
+        // Cancelling leaves the list untouched.
+        await store.send(.alert(.dismiss)) {
+            $0.alert = nil
+        }
+    }
+
+    /// A successful delete removes the row from both the rendered list and
+    /// the remote mirror.
+    func testWpDeleteResponse_removesRow() async {
+        let pass = WalletPass.mock
+        var state = WalletPassList.State()
+        state.wPass = [.init(wp: pass, vCard: pass.vCard)]
+        state.wPassLocal = [.init(wp: pass, vCard: pass.vCard)]
+
+        let store = TestStore(initialState: state) {
+            WalletPassList()
+        }
+
+        await store.send(.wpDeleteResponse(id: pass.id)) {
+            $0.wPass = []
+            $0.wPassLocal = []
+        }
+    }
+
+    /// A failed delete must tell the user — never fail silently.
+    func testWpDeleteFailed_showsAlert() async {
+        let store = TestStore(initialState: WalletPassList.State()) {
+            WalletPassList()
+        }
+
+        await store.send(.wpDeleteFailed) {
+            $0.alert = AlertState {
+                TextState("Error")
+            } message: {
+                TextState("Unable to delete the card. Please try again.")
+            }
+        }
+    }
+
+    /// A malformed pass id fails fast with the error alert — no request is
+    /// attempted. (Real ids are ObjectId hex strings; this is the guard rail.)
+    func testConfirmDelete_invalidId_showsErrorAlert() async {
+        var state = WalletPassList.State()
+        state.alert = AlertState {
+            TextState("Delete Card")
+        } actions: {
+            ButtonState(role: .destructive, action: .confirmDelete(id: "not-a-hex-id")) {
+                TextState("Delete")
+            }
+            ButtonState(role: .cancel) {
+                TextState("Cancel")
+            }
+        } message: {
+            TextState("This will permanently delete this card, its public page, and its Add to Wallet link. This action cannot be undone.")
+        }
+
+        let store = TestStore(initialState: state) {
+            WalletPassList()
+        }
+
+        await store.send(.alert(.presented(.confirmDelete(id: "not-a-hex-id")))) {
+            $0.alert = nil
+        }
+
+        await store.receive(\.wpDeleteFailed) {
+            $0.alert = AlertState {
+                TextState("Error")
+            } message: {
+                TextState("Unable to delete the card. Please try again.")
+            }
+        }
+    }
 }

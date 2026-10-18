@@ -295,5 +295,18 @@
 <key>This pass can't be added to Apple Wallet. Please contact support.</key><string>Этот пропуск не удаётся добавить в Apple Wallet. Пожалуйста, обратитесь в поддержку.</string>
 <key>Unable to Add Pass</key><string>Не удалось добавить пропуск</string>
 <key>This pass can't be added to Apple Wallet right now. Please contact support.</key><string>Сейчас этот пропуск не удаётся добавить в Apple Wallet. Пожалуйста, обратитесь в поддержку.</string>
+
+<!-- Card delete + duplicate-save warning (GenericPassFeature) -->
+<key>Delete Card</key><string>Удалить визитку</string>
+<key>Delete</key><string>Удалить</string>
+<key>Cancel</key><string>Отмена</string>
+<key>This will permanently delete this card, its public page, and its Add to Wallet link. This action cannot be undone.</key><string>Визитка, её публичная страница и ссылка для добавления в Apple Wallet будут удалены навсегда. Это действие нельзя отменить.</string>
+<key>Unable to delete the card. Please try again.</key><string>Не удалось удалить визитку. Попробуйте ещё раз.</string>
+<key>Card Already Exists</key><string>Визитка уже существует</string>
+<key>Edit Existing Card</key><string>Изменить существующую визитку</string>
+<key>Create Anyway</key><string>Всё равно создать</string>
+<key>You already have a card for %@. Edit it instead?</key><string>У вас уже есть визитка для %@. Хотите изменить её?</string>
+<key>Save Changes</key><string>Сохранить изменения</string>
+<key>This updates your existing card — no new purchase needed.</key><string>Ваша визитка будет обновлена — новая покупка не нужна.</string>
 </dict>
 </plist>

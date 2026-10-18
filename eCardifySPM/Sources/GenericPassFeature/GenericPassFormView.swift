@@ -243,7 +243,16 @@ public struct GenericPassFormView: View {
 
     private var paymentSection: some View {
         VStack(alignment: .trailing, spacing: ECSpacing.sm) {
-            if store.isEligibleForFreeCard {
+            if store.isUpdatingExistingCard {
+                // Updating an owned card is free — never show purchase framing
+                // here, and never depend on StoreKit products having loaded.
+                saveChangesButton
+
+                Text(L("This updates your existing card — no new purchase needed."))
+                    .font(ECTypography.caption())
+                    .foregroundStyle(ECColors.textSecondary)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            } else if store.isEligibleForFreeCard {
                 freeCardButton
 
                 Text(L("Free Card"))
@@ -316,6 +325,33 @@ public struct GenericPassFormView: View {
             Spacer()
         }
         .padding(.top, ECSpacing.xxs)
+    }
+
+    // MARK: - Save Changes Button (edit mode — no purchase involved)
+
+    private var saveChangesButton: some View {
+        Button {
+            store.send(.createPass)
+        } label: {
+            if store.isActivityIndicatorVisible {
+                ProgressView()
+                    .tint(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(ECSpacing.sm)
+            } else {
+                Text(L("Save Changes"))
+                    .font(ECTypography.headline())
+                    .minimumScaleFactor(0.5)
+                    .frame(maxWidth: .infinity)
+                    .padding(ECSpacing.sm)
+            }
+        }
+        .foregroundStyle(.white)
+        .background(store.isFormValid ? ECColors.primary : ECColors.textSecondary)
+        .clipShape(RoundedRectangle(cornerRadius: ECRadius.md))
+        .disabled(!store.isFormValid || store.isActivityIndicatorVisible)
+        .buttonStyle(.borderless)
+        .accessibilityIdentifier("save_changes_button")
     }
 
     // MARK: - Free Card Button

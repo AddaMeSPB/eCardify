@@ -182,7 +182,14 @@ let package = Package(
                 "AppConfiguration", "DesignSystem"
             ]
         ),
-        .testTarget(name: "GenericPassFormTests", dependencies: ["GenericPassFeature", "LocalDatabaseClient"]),
+        .testTarget(
+            name: "GenericPassFormTests",
+            dependencies: [
+                "GenericPassFeature",
+                "LocalDatabaseClient",
+                .product(name: "GRDB", package: "GRDB.swift"),
+            ]
+        ),
         .testTarget(name: "GenericPassFormUITests", dependencies: ["GenericPassFeature"]),
 
         .testTarget(

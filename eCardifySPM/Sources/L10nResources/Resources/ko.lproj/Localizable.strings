@@ -295,5 +295,18 @@
 <key>This pass can't be added to Apple Wallet. Please contact support.</key><string>이 패스는 Apple Wallet에 추가할 수 없습니다. 지원팀에 문의해 주세요.</string>
 <key>Unable to Add Pass</key><string>패스를 추가할 수 없음</string>
 <key>This pass can't be added to Apple Wallet right now. Please contact support.</key><string>지금은 이 패스를 Apple Wallet에 추가할 수 없습니다. 지원팀에 문의해 주세요.</string>
+
+<!-- Card delete + duplicate-save warning (GenericPassFeature) -->
+<key>Delete Card</key><string>카드 삭제</string>
+<key>Delete</key><string>삭제</string>
+<key>Cancel</key><string>취소</string>
+<key>This will permanently delete this card, its public page, and its Add to Wallet link. This action cannot be undone.</key><string>이 카드와 공개 페이지, Apple Wallet 추가 링크가 영구적으로 삭제됩니다. 이 작업은 취소할 수 없습니다.</string>
+<key>Unable to delete the card. Please try again.</key><string>카드를 삭제하지 못했습니다. 다시 시도해 주세요.</string>
+<key>Card Already Exists</key><string>이미 존재하는 카드</string>
+<key>Edit Existing Card</key><string>기존 카드 편집</string>
+<key>Create Anyway</key><string>그래도 만들기</string>
+<key>You already have a card for %@. Edit it instead?</key><string>%@의 카드가 이미 있습니다. 기존 카드를 편집하시겠습니까?</string>
+<key>Save Changes</key><string>변경 사항 저장</string>
+<key>This updates your existing card — no new purchase needed.</key><string>기존 카드가 업데이트됩니다. 추가 구매는 필요 없습니다.</string>
 </dict>
 </plist>

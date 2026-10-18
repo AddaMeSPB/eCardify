@@ -51,6 +51,16 @@ public struct AppDatabase {
 
         }
 
+        // WalletPass encodes `publicSlug` since the public-cards feature.
+        // Codable persistence omits nil optionals, so saves only worked while
+        // the slug was nil — writing a pass that HAS a slug (edit-existing
+        // flow caches the server row) needs the column to exist.
+        migrator.registerMigration("addPublicSlugToWalletPass") { db in
+            try db.alter(table: "wallet_passes") { t in
+                t.add(column: "publicSlug", .text)
+            }
+        }
+
         return migrator
     }
 }

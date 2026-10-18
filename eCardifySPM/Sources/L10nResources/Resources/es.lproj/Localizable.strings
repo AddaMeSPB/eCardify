@@ -295,5 +295,18 @@
 <key>This pass can't be added to Apple Wallet. Please contact support.</key><string>Este pase no se puede agregar a Apple Wallet. Por favor, contacte con soporte.</string>
 <key>Unable to Add Pass</key><string>No se puede agregar el pase</string>
 <key>This pass can't be added to Apple Wallet right now. Please contact support.</key><string>Este pase no se puede agregar a Apple Wallet en este momento. Por favor, contacte con soporte.</string>
+
+<!-- Card delete + duplicate-save warning (GenericPassFeature) -->
+<key>Delete Card</key><string>Eliminar tarjeta</string>
+<key>Delete</key><string>Eliminar</string>
+<key>Cancel</key><string>Cancelar</string>
+<key>This will permanently delete this card, its public page, and its Add to Wallet link. This action cannot be undone.</key><string>Esta tarjeta, su página pública y el enlace para añadirla a Apple Wallet se eliminarán permanentemente. Esta acción no se puede deshacer.</string>
+<key>Unable to delete the card. Please try again.</key><string>No se pudo eliminar la tarjeta. Inténtalo de nuevo.</string>
+<key>Card Already Exists</key><string>La tarjeta ya existe</string>
+<key>Edit Existing Card</key><string>Editar tarjeta existente</string>
+<key>Create Anyway</key><string>Crear de todos modos</string>
+<key>You already have a card for %@. Edit it instead?</key><string>Ya tienes una tarjeta para %@. ¿Quieres editarla en su lugar?</string>
+<key>Save Changes</key><string>Guardar cambios</string>
+<key>This updates your existing card — no new purchase needed.</key><string>Se actualizará tu tarjeta existente, sin una nueva compra.</string>
 </dict>
 </plist>

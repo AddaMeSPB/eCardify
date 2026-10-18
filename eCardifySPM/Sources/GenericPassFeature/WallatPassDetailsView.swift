@@ -34,6 +34,7 @@ public struct WalletPassDetails {
         case addPassToWallet
         case qrCode(Image)
         case viewCardButtonTapped
+        case deleteCardButtonTapped
         case writeNFCVCard
         case writeNFCURL
         case nfcWriteResult(Result<Bool, NFCWriteError>)
@@ -81,6 +82,11 @@ public struct WalletPassDetails {
             return .none
 
         case .viewCardButtonTapped:
+            return .none
+
+        case .deleteCardButtonTapped:
+            // Handled by the parent (WalletPassList) — it owns the list,
+            // the confirmation alert, and the API/local-cache deletion.
             return .none
 
         case .writeNFCVCard:
@@ -367,6 +373,12 @@ public struct WalletPassDetailsView: View {
             store.send(.addPassToWallet)
         } label: {
             Label(L("Add to Apple Wallet"), systemImage: "wallet.pass.fill")
+        }
+
+        Button(role: .destructive) {
+            store.send(.deleteCardButtonTapped)
+        } label: {
+            Label(L("Delete Card"), systemImage: "trash")
         }
     }
 

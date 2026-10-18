@@ -1,3 +1,4 @@
+import GRDB
 import XCTest
 import ComposableArchitecture
 import ECSharedModels
@@ -329,5 +330,297 @@ final class GenericPassFormTests: XCTestCase {
             "Flag should be recovered — no paid cards exist")
         XCTAssertTrue(store.state.isEligibleForFreeCard,
             "User should be eligible for free card again")
+    }
+
+    // MARK: - Duplicate-name warning
+
+    /// Saving a NEW card (different vCard id) under a name the user already
+    /// has must warn — matching case- and whitespace-insensitively.
+    func testCreatePass_duplicateName_showsWarning() async {
+        var existingVCard = VCard.empty
+        existingVCard.contact.firstName = "Jane"
+        existingVCard.contact.lastName = "Smith"
+        let existingPass = WalletPass(_id: .init(), ownerId: .init(), vCard: existingVCard)
+
+        // Different capitalization + stray whitespace must still match.
+        var draft = VCard.empty
+        draft.contact.firstName = " jane"
+        draft.contact.lastName = "SMITH "
+
+        var state = GenericPassForm.State(
+            isFormValid: true,
+            user: .withFirstName,
+            vCard: draft,
+            existingCards: [existingPass]
+        )
+        state.$isAuthorized.withLock { $0 = true }
+
+        let store = TestStore(initialState: state) {
+            GenericPassForm()
+        } withDependencies: {
+            $0.keychainClient = .noop
+            $0.build.identifier = { "com.test" }
+        }
+
+        await store.send(.createPass) {
+            $0.alert = AlertState {
+                TextState("Card Already Exists")
+            } actions: {
+                ButtonState(action: .editExistingCard(vCardID: existingVCard.id)) {
+                    TextState("Edit Existing Card")
+                }
+                ButtonState(action: .createAnyway) {
+                    TextState("Create Anyway")
+                }
+                ButtonState(role: .cancel) {
+                    TextState("Cancel")
+                }
+            } message: {
+                TextState("You already have a card for Jane Smith. Edit it instead?")
+            }
+        }
+    }
+
+    /// "Edit Existing Card" loads the matching card into the form, so the
+    /// save carries its vCard id and the server updates it in place.
+    func testEditExistingCard_loadsExistingCardIntoForm() async {
+        var existingVCard = VCard.empty
+        existingVCard.contact.firstName = "Jane"
+        existingVCard.contact.lastName = "Smith"
+        existingVCard.position = "CEO"
+        let existingPass = WalletPass(_id: .init(), ownerId: .init(), vCard: existingVCard)
+
+        var draft = VCard.empty
+        draft.contact.firstName = "Jane"
+        draft.contact.lastName = "Smith"
+
+        var state = GenericPassForm.State(
+            user: .withFirstName,
+            vCard: draft,
+            existingCards: [existingPass]
+        )
+        state.alert = AlertState {
+            TextState("Card Already Exists")
+        } actions: {
+            ButtonState(action: .editExistingCard(vCardID: existingVCard.id)) {
+                TextState("Edit Existing Card")
+            }
+            ButtonState(action: .createAnyway) {
+                TextState("Create Anyway")
+            }
+            ButtonState(role: .cancel) {
+                TextState("Cancel")
+            }
+        } message: {
+            TextState("You already have a card for Jane Smith. Edit it instead?")
+        }
+
+        let store = TestStore(initialState: state) {
+            GenericPassForm()
+        }
+
+        await store.send(.alert(.presented(.editExistingCard(vCardID: existingVCard.id)))) {
+            $0.alert = nil
+            $0.editingExistingPass = existingPass
+            $0.vCard = existingVCard
+            $0.colorPalette = existingPass.colorPalette
+        }
+    }
+
+    /// Saving in edit mode must keep the existing pass identity (_id) and go
+    /// straight to the server save — no purchase, no free-card consumption.
+    func testCreatePass_editingExistingCard_skipsPurchaseAndKeepsIdentity() async {
+        var existingVCard = VCard.empty
+        existingVCard.contact.firstName = "Jane"
+        existingVCard.contact.lastName = "Smith"
+        let existingPass = WalletPass(
+            _id: .init(),
+            ownerId: .init(),
+            vCard: existingVCard,
+            isPaid: true,
+            publicSlug: "jane-smith"
+        )
+
+        var state = GenericPassForm.State(
+            isFormValid: true,
+            user: .withFirstName,
+            vCard: existingVCard,
+            existingCards: [existingPass]
+        )
+        state.editingExistingPass = existingPass
+        state.$isAuthorized.withLock { $0 = true }
+        // A user with no free card left: the NEW-card path would go through
+        // .buyProduct here — edit mode must not.
+        state.$hasUsedFreeCard.withLock { $0 = true }
+
+        let store = TestStore(initialState: state) {
+            GenericPassForm()
+        } withDependencies: {
+            $0.keychainClient = .noop
+            $0.build.identifier = { "com.test" }
+            $0.localDatabase = .empty()
+        }
+        store.exhaustivity = .off
+
+        await store.send(.createPass)
+
+        // Straight to the server save — .buyProduct would mean a double charge.
+        await store.receive(\.saveToServer)
+
+        XCTAssertEqual(store.state.walletPass?._id, existingPass._id,
+            "Edit must keep the pass _id so the server updates the row in place")
+        XCTAssertEqual(store.state.walletPass?.publicSlug, "jane-smith",
+            "Edit must keep the public slug so the card's URL survives")
+    }
+
+    // MARK: - Local database migration
+
+    /// Production databases were created WITHOUT the publicSlug column (nil
+    /// slugs were silently omitted by Codable persistence, which is why saves
+    /// used to work). The upgrade path must add the column, keep legacy rows,
+    /// and allow saving a pass WITH a slug — the edit-existing flow does that.
+    /// DEBUG's eraseDatabaseOnSchemaChange never exercises this, hence an
+    /// explicit test.
+    func testMigration_oldDatabaseGainsPublicSlugColumn() async throws {
+        let dbQueue = try DatabaseQueue()
+
+        // Reproduce the ORIGINAL on-disk schema and a legacy row.
+        var legacySchema = DatabaseMigrator()
+        legacySchema.registerMigration("createWalletPass") { db in
+            try db.create(table: "wallet_passes") { t in
+                t.column("_id", .text).notNull().unique()
+                t.primaryKey(["_id"])
+                t.column("ownerId", .text)
+                t.column("vCard", .text).notNull()
+                t.column("colorPalette", .text).notNull()
+                t.column("isPaid", .boolean).notNull().defaults(to: false)
+                t.column("isDataSavedOnServer", .boolean).notNull().defaults(to: false)
+                t.column("createdAt", .datetime)
+                t.column("updatedAt", .datetime)
+            }
+        }
+        try legacySchema.migrate(dbQueue)
+        try await dbQueue.write { db in
+            try db.execute(
+                sql: "INSERT INTO wallet_passes (_id, ownerId, vCard, colorPalette) VALUES (?, ?, ?, ?)",
+                arguments: ["6ad000000000000000000001", "6ad000000000000000000002", "{}", "{}"]
+            )
+        }
+
+        // Opening AppDatabase runs the real migrator over the legacy database.
+        let appDatabase = try AppDatabase(dbQueue)
+
+        // The legacy row survived (no erase, no failed migration)…
+        let legacyCount = try await dbQueue.read { db in
+            try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM wallet_passes")
+        }
+        XCTAssertEqual(legacyCount, 1, "legacy row must survive the migration")
+
+        // …and a pass WITH a public slug now saves and round-trips.
+        let pass = WalletPass(
+            _id: .init(),
+            ownerId: .init(),
+            vCard: .empty,
+            isPaid: true,
+            publicSlug: "jane-smith"
+        )
+        try await appDatabase.create(wp: pass)
+        let fetched = try await appDatabase.findBy(id: pass.id)
+        XCTAssertEqual(fetched?.publicSlug, "jane-smith",
+            "a pass with a slug must save into the migrated schema")
+    }
+
+    /// "Create Anyway" marks the save confirmed and retries createPass —
+    /// the duplicate check must not fire a second time.
+    func testCreateAnyway_setsFlagAndRetries() async {
+        var draft = VCard.empty
+        draft.contact.firstName = "Jane"
+        draft.contact.lastName = "Smith"
+
+        // isFormValid=false stops the retried createPass before any side
+        // effects — this test only asserts the confirm-and-retry wiring.
+        var state = GenericPassForm.State(
+            isFormValid: false,
+            user: .withFirstName,
+            vCard: draft
+        )
+        state.$isAuthorized.withLock { $0 = true }
+        state.alert = AlertState {
+            TextState("Card Already Exists")
+        } actions: {
+            ButtonState(action: .createAnyway) {
+                TextState("Create Anyway")
+            }
+        } message: {
+            TextState("You already have a card for Jane Smith. Edit it instead?")
+        }
+
+        let store = TestStore(initialState: state) {
+            GenericPassForm()
+        } withDependencies: {
+            $0.keychainClient = .noop
+            $0.build.identifier = { "com.test" }
+        }
+
+        await store.send(.alert(.presented(.createAnyway))) {
+            $0.alert = nil
+            $0.duplicateSaveConfirmed = true
+        }
+
+        await store.receive(\.createPass)
+    }
+
+    /// Re-saving the SAME card (matching vCard id) must not warn — and even
+    /// without edit mode set (sheet dismissed mid-edit, form reopened with
+    /// the persisted draft), the save must adopt the existing card's identity
+    /// instead of charging for a create the server would merge anyway.
+    func testCreatePass_resaveSameCard_noWarning_adoptsEditMode() async {
+        var existingVCard = VCard.empty
+        existingVCard.contact.firstName = "Jane"
+        existingVCard.contact.lastName = "Smith"
+        let existingPass = WalletPass(
+            _id: .init(),
+            ownerId: .init(),
+            vCard: existingVCard,
+            isPaid: true,
+            publicSlug: "jane-smith"
+        )
+
+        // A second card with the SAME name but a different vCard id (the
+        // "Create Anyway" outcome) must not re-trigger the warning when the
+        // first card is re-saved.
+        var secondVCard = VCard.empty
+        secondVCard.contact.firstName = "Jane"
+        secondVCard.contact.lastName = "Smith"
+        let secondPass = WalletPass(_id: .init(), ownerId: .init(), vCard: secondVCard, isPaid: true)
+
+        var state = GenericPassForm.State(
+            isFormValid: true,
+            user: .withFirstName,
+            vCard: existingVCard, // same vCard id as the existing card
+            existingCards: [existingPass, secondPass]
+        )
+        state.$isAuthorized.withLock { $0 = true }
+        // No free card left: the NEW-card path would mean .buyProduct here.
+        state.$hasUsedFreeCard.withLock { $0 = true }
+
+        let store = TestStore(initialState: state) {
+            GenericPassForm()
+        } withDependencies: {
+            $0.keychainClient = .noop
+            $0.build.identifier = { "com.test" }
+            $0.localDatabase = .empty()
+        }
+        store.exhaustivity = .off
+
+        await store.send(.createPass)
+        await store.receive(\.saveToServer)
+
+        XCTAssertNil(store.state.alert,
+            "Re-saving the same card must not trigger the duplicate warning")
+        XCTAssertEqual(store.state.editingExistingPass?._id, existingPass._id,
+            "Re-save of an existing card must adopt edit mode")
+        XCTAssertEqual(store.state.walletPass?._id, existingPass._id,
+            "Re-save must keep the existing pass _id — not mint a new one")
     }
 }

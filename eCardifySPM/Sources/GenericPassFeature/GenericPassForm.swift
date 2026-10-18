@@ -40,7 +40,8 @@ public struct GenericPassForm {
             user: UserOutput? = nil,
             vCard: VCard,
             telephone: VCard.Telephone = .empty,
-            email: String = ""
+            email: String = "",
+            existingCards: [WalletPass] = []
         ) {
             self.isActivityIndicatorVisible = isActivityIndicatorVisible
             self.storeKitState = storeKitState
@@ -54,6 +55,7 @@ public struct GenericPassForm {
             self.vCard = vCard
             self.telephone = telephone
             self.email = email
+            self.existingCards = existingCards
         }
 
         public var vCard: VCard
@@ -86,6 +88,33 @@ public struct GenericPassForm {
         /// Set to true when saveToServer fails with 401/403.
         /// After re-login succeeds, auto-retries the save.
         public var pendingSave: Bool = false
+
+        /// The user's current cards (passed in by WalletPassList) — used for
+        /// the soft duplicate-name warning before creating a NEW card.
+        public var existingCards: [WalletPass] = []
+        /// Set when the user chose "Create Anyway" on the duplicate-name
+        /// warning, so the retried save skips the check.
+        public var duplicateSaveConfirmed: Bool = false
+        /// Set when the user chose "Edit Existing Card": the save keeps this
+        /// pass's identity (_id + public slug) so the server updates the row
+        /// in place, and it skips the purchase/free-card gate — the card is
+        /// already paid for.
+        public var editingExistingPass: WalletPass? = nil
+        /// True when saving the current draft updates one of the user's
+        /// existing cards (edit mode chosen, or the draft carries an existing
+        /// card's vCard id). Such a save is free, so the UI must offer a plain
+        /// save button instead of purchase framing, and the duplicate-name
+        /// warning must stay out of the way.
+        public var isUpdatingExistingCard: Bool {
+            // The id comparison matters: a scan can replace the draft with a
+            // fresh vCard while `editingExistingPass` is still set — that save
+            // is a NEW card, so purchase framing and the duplicate warning
+            // must come back.
+            if let editing = editingExistingPass, editing.vCard.id == vCard.id {
+                return true
+            }
+            return existingCards.contains { $0.vCard.id == vCard.id }
+        }
 
     }
 
@@ -133,6 +162,20 @@ public struct GenericPassForm {
     public enum AlertAction: Equatable {
         case retrySave
         case loginAndRetry
+        /// Duplicate-name warning: load the matching existing card into the
+        /// form so saving it updates that card in place.
+        case editExistingCard(vCardID: UUID)
+        /// Duplicate-name warning: the user really wants a second card with
+        /// the same name (e.g. same person, different organization).
+        case createAnyway
+    }
+
+    /// Case- and whitespace-insensitive key for comparing holder names.
+    static func normalizedName(_ name: String) -> String {
+        name.lowercased()
+            .components(separatedBy: .whitespacesAndNewlines)
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
     }
 
     public init() {}
@@ -202,6 +245,27 @@ public struct GenericPassForm {
             state.$isAuthorized.withLock { $0 = false }
             return .run { send in
                 await send(.openSheetLogin(true))
+            }
+
+        case .alert(.presented(.editExistingCard(let vCardID))):
+            // Load the existing card into the form and switch to edit mode:
+            // the save keeps the pass identity, so the server updates the row
+            // in place instead of creating a duplicate — and it must not
+            // charge again for a card the user already owns.
+            if let existing = state.existingCards.first(where: { $0.vCard.id == vCardID }) {
+                state.editingExistingPass = existing
+                state.vCard = existing.vCard
+                state.colorPalette = existing.colorPalette
+            } else {
+                // Unreachable in practice — the id came from this same list.
+                sharedLogger.logError("editExistingCard: no card with vCard id \(vCardID) in existingCards")
+            }
+            return .none
+
+        case .alert(.presented(.createAnyway)):
+            state.duplicateSaveConfirmed = true
+            return .run { send in
+                await send(.createPass)
             }
 
         case .alert:
@@ -455,6 +519,40 @@ public struct GenericPassForm {
                 return .none
             }
 
+            // Soft duplicate guard: saving a NEW card (different vCard id)
+            // under a name the user already has is usually a mis-tap, so warn
+            // once — but never block: same name + different organization is
+            // legitimate. Updating an existing card (edit mode, or a draft
+            // that IS one of the user's cards) must never warn — with two
+            // same-name cards, warning here would offer "Edit Existing Card",
+            // which would overwrite the draft with the OTHER card.
+            if !state.duplicateSaveConfirmed, !state.isUpdatingExistingCard {
+                let draftName = Self.normalizedName(state.vCard.contact.fullName)
+                if !draftName.isEmpty,
+                   let existing = state.existingCards.first(where: {
+                    $0.vCard.id != state.vCard.id
+                        && Self.normalizedName($0.vCard.contact.fullName) == draftName
+                }) {
+                    let existingName = existing.vCard.contact.fullName
+                    state.alert = AlertState {
+                        TextState(L("Card Already Exists"))
+                    } actions: {
+                        ButtonState(action: .editExistingCard(vCardID: existing.vCard.id)) {
+                            TextState(L("Edit Existing Card"))
+                        }
+                        ButtonState(action: .createAnyway) {
+                            TextState(L("Create Anyway"))
+                        }
+                        ButtonState(role: .cancel) {
+                            TextState(L("Cancel"))
+                        }
+                    } message: {
+                        TextState(L("You already have a card for \(existingName). Edit it instead?"))
+                    }
+                    return .none
+                }
+            }
+
             // Prevent double-tap: disable button immediately
             state.isActivityIndicatorVisible = true
 
@@ -468,6 +566,51 @@ public struct GenericPassForm {
                 state.vCard.imageURLs.append(.init(type: .thumbnail, urlString: "https://ecardify.ams3.cdn.digitaloceanspaces.com/default/avatar_d.png"))
             }
 
+            // Keep edit mode truthful before picking the save path:
+            // - stale (e.g. a scan replaced the draft with a fresh vCard id):
+            //   drop it, this save is a new card;
+            // - missing, but the draft IS one of the user's cards (the sheet
+            //   was dismissed mid-edit and reopened — the parent persists the
+            //   draft): adopt it. The server merges such a save into that card
+            //   anyway, so routing it through purchase would charge for an
+            //   update.
+            if let editing = state.editingExistingPass, editing.vCard.id != state.vCard.id {
+                state.editingExistingPass = nil
+            }
+            if state.editingExistingPass == nil,
+               let resaved = state.existingCards.first(where: { $0.vCard.id == state.vCard.id }) {
+                state.editingExistingPass = resaved
+                // The parent persists only the draft vCard, not the palette —
+                // keep the card's saved palette unless the user picked one in
+                // this session.
+                if state.colorPalette == .default {
+                    state.colorPalette = resaved.colorPalette
+                }
+            }
+
+            // Edit mode: keep the existing pass's identity (_id + public slug)
+            // so the server upserts the same row and the local cache row is
+            // updated, not twinned — and skip the purchase/free-card gate,
+            // because this card is already paid for.
+            if let editing = state.editingExistingPass {
+                var updated = editing
+                updated.vCard = state.vCard
+                updated.colorPalette = state.colorPalette
+                state.walletPass = updated
+                return .run { [updated] send in
+                    do {
+                        // `create` is a GRDB upsert (saved) — the card may not
+                        // be in the local cache if it was created on another
+                        // device.
+                        try await localDatabase.create(wp: updated)
+                        await send(.saveToServer)
+                    } catch {
+                        sharedLogger.logError("edit-existing local save error:- \(error.localizedDescription)")
+                        await send(.passResponseFailed(reason: "Failed to save card locally. Please try again."))
+                    }
+                }
+            }
+
             let walletPass = WalletPass(
                 _id: .init(),
                 ownerId: currentUserID,
@@ -478,9 +621,10 @@ public struct GenericPassForm {
             state.walletPass = walletPass
 
             // Free Tier: first card with basic templates is free
-            // Note: hasUsedFreeCard is set in .passResponse AFTER server confirms,
-            // so the UI keeps showing "Create Your Free Card" with a spinner
-            // instead of flipping to the payment button prematurely.
+            // Note: hasUsedFreeCard is set in .passResponse AFTER server confirms
+            // (and skipped there in edit mode), so the UI keeps showing
+            // "Create Your Free Card" with a spinner instead of flipping to
+            // the payment button prematurely.
             if state.isEligibleForFreeCard && state.storeKitState.type == .basic {
                 state.walletPass?.isPaid = true
                 guard let wp = state.walletPass else { return .none }
@@ -636,8 +780,9 @@ public struct GenericPassForm {
 
             // Mark free card as used only AFTER server confirms success.
             // This prevents the UI from flipping to the payment button
-            // while the API call is still in progress.
-            if state.isEligibleForFreeCard {
+            // while the API call is still in progress. Updating an existing
+            // card is not a create — it must not consume the free card.
+            if state.isEligibleForFreeCard && state.editingExistingPass == nil {
                 state.$hasUsedFreeCard.withLock { $0 = true }
             }
 
@@ -654,6 +799,14 @@ public struct GenericPassForm {
             // `.empty` is computed, so this also hands the next card a fresh id.
             state.vCard = .empty
             state.walletPass = nil
+            // Fresh draft, fresh duplicate check — and the saved card must be
+            // current in `existingCards` if the user makes another one from
+            // this same sheet session (replace, not append, so an edited card
+            // doesn't appear twice).
+            state.duplicateSaveConfirmed = false
+            state.editingExistingPass = nil
+            state.existingCards.removeAll { $0.id == wp.id }
+            state.existingCards.append(wp)
 
             return .run { [localDatabase] send in
 
@@ -694,6 +847,10 @@ public struct GenericPassForm {
 
         case .passResponseFailed(let reason):
             state.isActivityIndicatorVisible = false
+            // Re-arm the duplicate warning: a "Create Anyway" only covers the
+            // save it confirmed. If that save failed and the user edits the
+            // draft (e.g. to another existing name), warn again.
+            state.duplicateSaveConfirmed = false
 
             // Auth error (401/403): token expired or missing — need re-login
             if reason == "AUTH_ERROR" {

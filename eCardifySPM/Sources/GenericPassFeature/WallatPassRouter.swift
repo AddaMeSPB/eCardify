@@ -51,6 +51,8 @@ public struct WalletPassList {
         case wpResponseFailed(String)
         case wpLocalDataResponse([WalletPass])
         case wpLocalDataFailed
+        case wpDeleteResponse(id: String)
+        case wpDeleteFailed
         case getWP
         case retryButtonTapped
         case sendPass(PKPass)
@@ -64,8 +66,10 @@ public struct WalletPassList {
 
     }
 
-    /// Alert is dismiss-only (default OK button) — no custom actions.
-    public enum Alert: Equatable {}
+    public enum Alert: Equatable {
+        /// User confirmed deleting the card with this (hex) id.
+        case confirmDelete(id: String)
+    }
 
     /// Why a pass couldn't reach Apple Wallet. Each case maps to a
     /// user-facing alert in `addPassFailed` — never fail silently.
@@ -102,7 +106,59 @@ public struct WalletPassList {
     func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
 
+        case .alert(.presented(.confirmDelete(let id))):
+            guard let objectId = ObjectId(id) else {
+                sharedLogger.logError("Delete failed — pass id is not a valid ObjectId: \(id)")
+                return .send(.wpDeleteFailed)
+            }
+            return .run { send in
+                do {
+                    _ = try await apiClient.request(
+                        for: .walletPasses(.delete(id: objectId)),
+                        as: WalletPassDeleteResponse.self
+                    )
+                } catch APIError.serviceError(let statusCode, _) where statusCode == 404 {
+                    // Already gone server-side — finish the local cleanup.
+                    sharedLogger.log("Delete: pass \(id) already absent on server — cleaning up locally")
+                } catch {
+                    sharedLogger.logError("Delete failed for pass \(id): \(error.localizedDescription)")
+                    await send(.wpDeleteFailed)
+                    return
+                }
+                do {
+                    try await localDatabase.deleteBy(id: id)
+                } catch {
+                    // The server row is gone — that's the source of truth, so
+                    // this still reports success. Retry the cache cleanup once;
+                    // if it fails again, the stale row only resurfaces OFFLINE
+                    // on a later launch (the remote refresh replaces the
+                    // in-memory list, not the cache). Accepted: deleteBy only
+                    // throws on catastrophic DB errors, and pruning the cache
+                    // against the remote list could drop unsynced local cards.
+                    sharedLogger.logError("Delete: local cache cleanup failed for \(id), retrying: \(error.localizedDescription)")
+                    do {
+                        try await localDatabase.deleteBy(id: id)
+                    } catch {
+                        sharedLogger.logError("Delete: local cache cleanup failed twice for \(id) — leaving stale row: \(error.localizedDescription)")
+                    }
+                }
+                await send(.wpDeleteResponse(id: id))
+            }
+
         case .alert:
+            return .none
+
+        case .wpDeleteResponse(let id):
+            state.wPassLocal.remove(id: id)
+            state.wPass.remove(id: id)
+            return .none
+
+        case .wpDeleteFailed:
+            state.alert = AlertState {
+                TextState(L("Error"))
+            } message: {
+                TextState(L("Unable to delete the card. Please try again."))
+            }
             return .none
 
         case .addPassFailed(let failure):
@@ -256,6 +312,23 @@ public struct WalletPassList {
                 }
             }
 
+            if wpaction == .deleteCardButtonTapped, state.wPassLocal[id: id] != nil {
+                state.alert = AlertState {
+                    TextState(L("Delete Card"))
+                } actions: {
+                    ButtonState(role: .destructive, action: .confirmDelete(id: id)) {
+                        TextState(L("Delete"))
+                    }
+                    ButtonState(role: .cancel) {
+                        TextState(L("Cancel"))
+                    }
+                } message: {
+                    // Honest scope: we remove the card, its public page and the
+                    // Add-to-Wallet link — a pass already added to the phone's
+                    // Wallet stays until the user removes it there.
+                    TextState(L("This will permanently delete this card, its public page, and its Add to Wallet link. This action cannot be undone."))
+                }
+            }
 
             return .none
 
@@ -384,7 +457,13 @@ public struct WalletPassList {
             guard state.isAuthorized else {
                 return .send(.openSheetLogin(true))
             }
-            state.destination = .add(.init(user: state.user, vCard: state.vCard ?? .empty))
+            state.destination = .add(
+                .init(
+                    user: state.user,
+                    vCard: state.vCard ?? .empty,
+                    existingCards: state.wPassLocal.map(\.wp)
+                )
+            )
             return .none
 
         case .dismissAddGenericFormButtonTapped:
@@ -410,7 +489,13 @@ public struct WalletPassList {
             guard state.isAuthorized else {
                 return .send(.openSheetLogin(true))
             }
-            state.destination = .add(.init(user: state.user, vCard: state.vCard ?? .empty))
+            state.destination = .add(
+                .init(
+                    user: state.user,
+                    vCard: state.vCard ?? .empty,
+                    existingCards: state.wPassLocal.map(\.wp)
+                )
+            )
             return .none
 
         }
